@@ -1,6 +1,6 @@
 # 🏆 Ballon d'Or - Comunidade SPFC
 
-![Escudo SPFC]([https://logodownload.org/wp-content/uploads/2015/05/sao-paulo-futebol-clube-logo-escudo-1.png](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Brasao_do_Sao_Paulo_Futebol_Clube.svg/1027px-Brasao_do_Sao_Paulo_Futebol_Clube.svg.png))
+![Escudo SPFC](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Brasao_do_Sao_Paulo_Futebol_Clube.svg/1027px-Brasao_do_Sao_Paulo_Futebol_Clube.svg.png)
 
 Este é o site de votação para a premiação anual "Ballon d'Or" da comunidade de torcedores do São Paulo FC no Discord. O projeto foi criado para permitir que os membros e a staff votem em diversas categorias de forma segura, divertida e centralizada.
 
