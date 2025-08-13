@@ -1,4 +1,4 @@
-const ADMIN_USER_ID = "327480550594052097"
+const ADMIN_USER_ID = "9e3c0f66-eeaa-408b-a75b-f6417af41ee9"
 
 const painelResultados = document.getElementById("painel-resultados")
 const acessoNegado = document.getElementById("acesso-negado")
