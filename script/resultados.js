@@ -13,6 +13,13 @@ const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 async function verificarAcesso() {
   // pega o usuario logado
   const {data: {user}} = await _supabase.auth.getUser()
+
+
+// ADICIONE ESTAS DUAS LINHAS AQUI PARA DEPURAR
+    console.log('ID do usuário que está logado:', user ? user.id : 'Ninguém logado');
+    console.log('ID do Admin que eu espero:', ADMIN_USER_ID);
+
+
     // se o usuario logado é o ID do admin
     if(user && user.id === ADMIN_USER_ID) {
       console.log("Acesso concedido. Bem vindo, Claiverty!")
