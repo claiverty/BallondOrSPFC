@@ -11,97 +11,89 @@ const {createClient} = supabase
 const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // funcao para carreegar os resultados e graficos
-// Substitua sua função antiga por esta versão com "espiões"
 async function carregarResultados() {
-    console.log('--- ETAPA 1: Iniciando busca por votos...');
-    const { data: votos, error } = await _supabase.from('votos').select('*');
+  console.log("Buscando votos na Supabase...");
+  const { data: votos, error} = await _supabase.from("votos").select("*")
 
-    if (error) {
-        console.error('ERRO na busca de votos:', error);
-        alert('Não foi possível carregar os resultados.');
-        return;
+  if(error) {
+    console.error("Erro ao buscar votos:", error)
+    alert("Não foi possível carregar os resultados.")
+    return
+  }
+  
+  if(votos.length === 0) {
+    console.log("Nenhum voto encontrado para exibir")
+    return
+  }
+
+  console.log("Votos encontrados:", votos)
+
+  // mapeando entre os nomes das colunas e ids no html
+  const categorias = {
+      mais_querido: "graficoMaisQuerido",
+      staff_do_ano: "graficoStaffAno",
+      membro_do_ano: "graficoMembroAno",
+      membro_mais_ativo: "graficoMembroAtivo",
+      rei_da_resenha: "graficoReiResenha",
+      o_mais_chato: "graficoMaisChato"
+  }
+
+  // processa e gria grafico para cada categoria
+  for (const categoriaNome in categorias) {
+    const canvasId = categorias[categoriaNome]
+    const contagemVotos = {}
+
+    // contagem de votos para a categoria
+    for (const voto of votos) {
+      const indicado = voto[categoriaNome]
+      if(indicado) {
+        contagemVotos[indicado] = (contagemVotos[indicado] || 0) + 1
+      }
     }
 
-    // ESPAÇO DE VERIFICAÇÃO 1: O que veio do Supabase?
-    console.log('--- ETAPA 2: Dados recebidos do Supabase:', votos);
-    
-    if (!votos || votos.length === 0) {
-        console.log('AVISO: A tabela de votos está vazia. Nenhum gráfico será desenhado.');
-        return;
-    }
+    // prepara os dados do grafico
+    const labels = Object.keys(contagemVotos)
+    const dataPoints = Object.values(contagemVotos)
 
-    const categorias = {
-        mais_querido: 'graficoMaisQuerido',
-        staff_do_ano: 'graficoStaffAno',
-        membro_do_ano: 'graficoMembroAno',
-        membro_mais_ativo: 'graficoMembroAtivo',
-        rei_da_resenha: 'graficoReiResenha',
-        o_mais_chato: 'graficoMaisChato'
-    };
-
-    console.log('--- ETAPA 3: Iniciando contagem de votos para cada categoria...');
-    for (const categoriaNome in categorias) {
-        const canvasId = categorias[categoriaNome];
-        const contagemVotos = {};
-
-        for (const voto of votos) {
-            const indicado = voto[categoriaNome];
-            if (indicado) {
-                contagemVotos[indicado] = (contagemVotos[indicado] || 0) + 1;
-            }
-        }
-
-        // ESPAÇO DE VERIFICAÇÃO 2: A contagem funcionou?
-        console.log(`-> Contagem para "${categoriaNome}":`, contagemVotos);
-
-        const labels = Object.keys(contagemVotos);
-        const dataPoints = Object.values(contagemVotos);
-
-        // ESPAÇO DE VERIFICAÇÃO 3: Os dados para o gráfico estão corretos?
-        console.log(`-> Preparando gráfico "${canvasId}" com:`, { labels, dataPoints });
-
-        // Só desenha o gráfico se tiver pelo menos um voto para a categoria
-        if (labels.length > 0) {
-            new Chart(document.getElementById(canvasId), {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total de Votos',
-                        data: dataPoints,
-                        backgroundColor: 'rgba(224, 0, 0, 0.8)',
-                        borderColor: 'rgba(255, 255, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
+    // cria o grafico
+    if (labels.length > 0) {
+        new Chart(document.getElementById(canvasId), {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "Total de Votos",
+              data: dataPoints,
+              backgroundColor: "rgba(224, 0, 0, 0.8)",
+              borderColor: "rgba(255, 255, 255, 1)",
+              borderWidth: 1
+            }]
+          },
+          options: {
+                    indexAxis: 'y', // Deixa as barras na horizontal, melhor para ler os nomes
                     scales: {
                         x: {
                             beginAtZero: true,
                             ticks: {
-                                color: '#fff',
-                                stepSize: 1
+                                color: '#fff', // Cor dos números no eixo X
+                                stepSize: 1 // Garante que a contagem seja de 1 em 1
                             }
                         },
                         y: {
                             ticks: {
-                                color: '#fff'
+                                color: '#fff' // Cor dos nomes no eixo Y
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false
+                            display: false // Esconde a legenda "Total de Votos"
                         }
                     }
                 }
-            });
-            console.log(`--> Gráfico para "${categoriaNome}" desenhado com sucesso.`);
-        } else {
-            console.log(`--> Nenhum voto para "${categoriaNome}", gráfico não será desenhado.`);
-        }
+        })
     }
+  }
 }
 
 async function verificarAcesso() {
@@ -112,13 +104,15 @@ async function verificarAcesso() {
     if(user && user.id === ADMIN_USER_ID) {
       console.log("Acesso concedido. Bem vindo, Claiverty!")
       painelResultados.classList.remove("hidden")
+      
+      // AQUI ESTÁ A MUDANÇA PRINCIPAL
+      carregarResultados();
+
     } else {
     // se nao esta logado ou é outro usuario
     console.log("Acesso negado!")
     acessoNegado.classList.remove("hidden") 
     }
-  
-  
 }
 
 verificarAcesso()
