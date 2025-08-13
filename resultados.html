@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - Ballon d'Or SPFC</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="acesso-negado" class="hidden">
+            <h1>⛔ Acesso Negado</h1>
+            <p>Você não tem permissão para ver esta página.</p>
+            <a href="index.html" class="botao-principal" style="margin-top: 20px;">Voltar para o Início</a>
+        </div>
+
+        <div id="painel-resultados" class="hidden">
+            <h1>📊 Resultados da Votação</h1>
+            <p>Resultados em tempo real da premiação Ballon d'Or.</p>
+            
+            <div class="grafico-container">
+                <h2>🏆 O mais querido</h2>
+                <canvas id="graficoMaisQuerido"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h2>🛡️ Staff do Ano</h2>
+                <canvas id="graficoStaffAno"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h2>⭐ Membro do Ano</h2>
+                <canvas id="graficoMembroAno"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h2>🗣️ Membro mais ativo</h2>
+                <canvas id="graficoMembroAtivo"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h2>😂 Rei da resenha</h2>
+                <canvas id="graficoReiResenha"></canvas>
+            </div>
+            <div class="grafico-container">
+                <h2>😠 O mais chato</h2>
+                <canvas id="graficoMaisChato"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/script/resultados.js"></script>
+</body>
+</html>

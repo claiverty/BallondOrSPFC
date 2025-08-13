@@ -157,3 +157,15 @@ footer {
     margin-top: 40px;
     color: #888;
 }
+
+/* Estilos para a página de resultados */
+.grafico-container {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 8px;
+}
+.grafico-container h2 {
+    border: none;
+    margin-bottom: 15px;
+}
