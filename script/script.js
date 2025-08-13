@@ -37,9 +37,9 @@ loginButton.addEventListener("click", loginComDiscord)
 
 // funcao para enviar os votos
 async function handleFormSubit() {
-  event.preventDefault()
+event.preventDefault()
 
-  const submitButton = event.target.queryselector("button[type= 'submit']")
+  const submitButton = formVotacao.querySelector("button[type= 'submit']")
   submitButton.disabled = true
   submitButton.textContent = "Enviando..."
 
