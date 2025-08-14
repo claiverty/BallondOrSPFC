@@ -119,6 +119,8 @@ if(document.getElementById("cronometro")) {
     const agora = new Date().getTime()
     const distancia = dataFinal - agora
 
+    console.log("Data e hora Final Configurada", new Date(dataFinal).toLocaleString("pt-br"))
+
     //calcula o tempo
     const dias = Math.floor(distancia / (1000 * 60 * 60 * 24))
     const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
