@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #1a1a1a;
+    background-color: #110E0E;
     color: #ffffff;
     display: flex;
     justify-content: center;
@@ -19,7 +19,7 @@ body {
 .container {
     width: 100%;
     max-width: 700px;
-    background-color: #2b2b2b;
+    background-color: #110E0E;
     border-radius: 10px;
     padding: 30px;
     text-align: center;
@@ -61,7 +61,7 @@ h2 {
 }
 
 .categorias-lista li {
-    background-color: #333;
+    background-color: #1c1b1b;
     margin: 10px 0;
     padding: 15px;
     border-radius: 5px;
@@ -168,4 +168,71 @@ footer {
 .grafico-container h2 {
     border: none;
     margin-bottom: 15px;
+}
+
+/* Estilos dos Cards de Votação */
+
+/* Organiza os cards em uma grade */
+.categoria-bloco {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    border: none;
+    background: none;
+}
+
+/* Esconde o radio button original, pois o card será o botão */
+.card-indicado input[type="radio"] {
+    display: none;
+}
+
+/* Estilo da label, que funciona como o nosso card clicável */
+.card-indicado label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 10px;
+    background-color: #2b2b2b;
+    border: 2px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Efeito ao passar o mouse por cima */
+.card-indicado label:hover {
+    background-color: #3f3f3f;
+    transform: translateY(-5px);
+}
+
+/* Estilo da foto do indicado */
+.card-indicado img {
+    width: 80px;
+    height: 90px;
+    object-fit: cover; /* Garante que a imagem preencha o círculo sem distorcer */
+    border: 2px solid #555;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Estilo do nome do indicado */
+.card-indicado span {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #ccc;
+}
+
+/* Quando o radio button escondido é selecionado, muda o estilo da sua label (o card) */
+.card-indicado input[type="radio"]:checked + label {
+    background-color: #e00000;
+    border-color: #fff;
+}
+
+/* Também muda a cor da borda da imagem e do nome */
+.card-indicado input[type="radio"]:checked + label img {
+    border-color: #fff;
+}
+
+.card-indicado input[type="radio"]:checked + label span {
+    color: #fff;
 }

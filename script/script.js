@@ -61,7 +61,7 @@ event.preventDefault()
   }
   
   if(existingVote) {
-    alert("Você já votou! Obrigaado por participar.")
+    alert("Você já votou antes! Obrigado por participar.")
     formVotacao.classList.add("hidden")
     statusMessage.innerHTML = `<h2>Seu voto já foi registrado anteriormente. ✅</h2><p>Obrigado, ${user.user_metadata.full_name}! Os resultados serão divulgados em breve.</p>`
     return
