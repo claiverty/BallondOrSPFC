@@ -17,7 +17,7 @@ function updateUserInterface(user) {
         document.body.classList.add('logged-out');
         statusMessage.textContent = 'Faça o login com seu Discord para poder votar.';
     }
-}}
+}
 
 async function loginComDiscord() {
     await _supabase.auth.signInWithOAuth({ provider: 'discord' });
