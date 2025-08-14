@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ballon d'Or SPFC - Votação</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/style.css"> 
+    <link rel="stylesheet" href="/style/votacao.css"> 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
@@ -13,7 +14,6 @@
     <div class="container">
         <header>
             <h1>Página de Votação</h1>
-            <p id="mensagem-status">Faça o login com seu Discord para poder votar.</p>
         </header>
 
         <main>
@@ -23,158 +23,69 @@
             </button>
 
             <form id="form-votacao" class="hidden">
+                <p id="mensagem-status">Faça o login com seu Discord para poder votar.</p>
                 
                 <fieldset class="categoria-bloco">
-                    <legend>🛡️ Staff do Ano</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="mais_querido" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="mais_querido" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="mais_querido" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="mais_querido" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="mais_querido" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <legend>🏆 O mais querido</legend>
+                    <div class="opcao"><input type="radio" id="mq1" name="mais_querido" value="Indicado 1"><label for="mq1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="mq2" name="mais_querido" value="Indicado 2"><label for="mq2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="mq3" name="mais_querido" value="Indicado 3"><label for="mq3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="mq4" name="mais_querido" value="Indicado 4"><label for="mq4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="mq5" name="mais_querido" value="Indicado 5"><label for="mq5">Indicado 5</label></div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>🏆 O mais querido</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="staff_do_ano" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="staff_do_ano" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="staff_do_ano" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="staff_do_ano" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="staff_do_ano" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <legend>🛡️ Staff do Ano</legend>
+                    <div class="opcao"><input type="radio" id="sa1" name="staff_do_ano" value="Indicado 1"><label for="sa1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="sa2" name="staff_do_ano" value="Indicado 2"><label for="sa2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="sa3" name="staff_do_ano" value="Indicado 3"><label for="sa3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="sa4" name="staff_do_ano" value="Indicado 4"><label for="sa4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="sa5" name="staff_do_ano" value="Indicado 5"><label for="sa5">Indicado 5</label></div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
                     <legend>⭐ Membro do Ano</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="membro_do_ano" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="membro_do_ano" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="membro_do_ano" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="membro_do_ano" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="membro_do_ano" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <div class="opcao"><input type="radio" id="ma1" name="membro_do_ano" value="Indicado 1"><label for="ma1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="ma2" name="membro_do_ano" value="Indicado 2"><label for="ma2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="ma3" name="membro_do_ano" value="Indicado 3"><label for="ma3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="ma4" name="membro_do_ano" value="Indicado 4"><label for="ma4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="ma5" name="membro_do_ano" value="Indicado 5"><label for="ma5">Indicado 5</label></div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
                     <legend>🗣️ Membro mais ativo</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="membro_mais_ativo" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="membro_mais_ativo" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="membro_mais_ativo" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="membro_mais_ativo" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="membro_mais_ativo" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <div class="opcao"><input type="radio" id="mmat1" name="membro_mais_ativo" value="Indicado 1"><label for="mmat1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="mmat2" name="membro_mais_ativo" value="Indicado 2"><label for="mmat2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="mmat3" name="membro_mais_ativo" value="Indicado 3"><label for="mmat3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="mmat4" name="membro_mais_ativo" value="Indicado 4"><label for="mmat4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="mmat5" name="membro_mais_ativo" value="Indicado 5"><label for="mmat5">Indicado 5</label></div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
                     <legend>😂 Rei da resenha</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="rei_da_resenha" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="rei_da_resenha" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="rei_da_resenha" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="rei_da_resenha" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="rei_da_resenha" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <div class="opcao"><input type="radio" id="rr1" name="rei_da_resenha" value="Indicado 1"><label for="rr1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="rr2" name="rei_da_resenha" value="Indicado 2"><label for="rr2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="rr3" name="rei_da_resenha" value="Indicado 3"><label for="rr3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="rr4" name="rei_da_resenha" value="Indicado 4"><label for="rr4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="rr5" name="rei_da_resenha" value="Indicado 5"><label for="rr5">Indicado 5</label></div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
                     <legend>😠 O mais chato</legend>
-                    <div class="opcao">
-                        <input type="radio" id="mq1" name="o_mais_chato" value="Indicado 1">
-                        <label for="mq1">Indicado 1</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq2" name="o_mais_chato" value="Indicado 2">
-                        <label for="mq2">Indicado 2</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq3" name="o_mais_chato" value="Indicado 3">
-                        <label for="mq3">Indicado 3</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq4" name="o_mais_chato" value="Indicado 4">
-                        <label for="mq4">Indicado 4</label>
-                    </div>
-                    <div class="opcao">
-                        <input type="radio" id="mq5" name="o_mais_chato" value="Indicado 5">
-                        <label for="mq5">Indicado 5</label>
-                    </div>
+                    <div class="opcao"><input type="radio" id="mc1" name="o_mais_chato" value="Indicado 1"><label for="mc1">Indicado 1</label></div>
+                    <div class="opcao"><input type="radio" id="mc2" name="o_mais_chato" value="Indicado 2"><label for="mc2">Indicado 2</label></div>
+                    <div class="opcao"><input type="radio" id="mc3" name="o_mais_chato" value="Indicado 3"><label for="mc3">Indicado 3</label></div>
+                    <div class="opcao"><input type="radio" id="mc4" name="o_mais_chato" value="Indicado 4"><label for="mc4">Indicado 4</label></div>
+                    <div class="opcao"><input type="radio" id="mc5" name="o_mais_chato" value="Indicado 5"><label for="mc5">Indicado 5</label></div>
                 </fieldset>
 
                 <button type="submit" class="botao-principal">Enviar Votos</button>
             </form>
-
         </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/script/script.js"></script>
-    </body>
+    <script type="module" src="/script/votacao.js"></script>
+
+</body>
 </html>
