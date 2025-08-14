@@ -5,16 +5,19 @@ const formVotacao = document.getElementById('form-votacao');
 
 function updateUserInterface(user) {
     const statusMessage = formVotacao.querySelector('#mensagem-status');
+
     if (user) {
+        // se tem usuário, define o estado como logado
+        document.body.classList.remove('logged-out');
+        document.body.classList.add('logged-in');
         statusMessage.textContent = `Logado como: ${user.user_metadata.full_name}. Vote agora!`;
-        loginButton.classList.add('hidden');
-        formVotacao.classList.remove('hidden');
     } else {
+        // se não tem, define o estado como deslogado
+        document.body.classList.remove('logged-in');
+        document.body.classList.add('logged-out');
         statusMessage.textContent = 'Faça o login com seu Discord para poder votar.';
-        loginButton.classList.remove('hidden');
-        formVotacao.classList.add('hidden');
     }
-}
+}}
 
 async function loginComDiscord() {
     await _supabase.auth.signInWithOAuth({ provider: 'discord' });

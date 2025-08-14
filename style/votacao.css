@@ -1,3 +1,16 @@
+#form-votacao {
+    display: none;
+}
+
+/* Quando o usuário está logado (body.logged-in) */
+body.logged-in #login-btn {
+    display: none; /* Esconde o botão de login */
+}
+body.logged-in #form-votacao {
+    display: block; /* Mostra o formulário */
+}
+
+
 /* Estilos do botão do Discord */
 .botao-discord {
     display: inline-flex;
