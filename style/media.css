@@ -1,0 +1,49 @@
+@media (max-width: 850px) {
+    .lista-vencedores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* estilos do Header para telas menores*/
+@media (max-width: 600px) {
+    .header-container {
+        flex-direction: row;
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 10px 20px;
+    }
+
+    .header-logo {
+        margin-bottom: 0; 
+    }
+
+    .header-logo img {
+        height: 30px; 
+    }
+
+    .main-nav ul {
+        flex-direction: row;
+        align-items: center; 
+        gap: 10px; 
+    }
+
+    .main-nav li a {
+        font-size: 0.9em;
+        padding: 5px 8px; 
+        border-bottom: none;
+    }
+
+    .header-award-logo {
+        margin-top: 0; 
+    }
+
+    .header-award-logo img {
+        height: 30px;
+    }
+}
+
+@media (max-width: 500px) {
+    .lista-vencedores {
+        grid-template-columns: 1fr;
+    }
+}
