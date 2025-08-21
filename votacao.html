@@ -11,12 +11,28 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Página de Votação</h1>
-            <p id="mensagem-status">Faça o login com seu Discord para poder votar.</p>
-        </header>
+        <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="header-logo">
+                <img src="/images/SPFC Gold Logo.png" alt="Escudo SPFC">
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="votacao.html">VOTAÇÃO</a></li>
+                    <li><a href="#">HALL DA FAMA</a></li>
+                </ul>
+            </nav>
+            <div class="header-award-logo">
+                <img src="/images/Ballon d'Or Logo.png" alt="Logo Ballon d'Or">
+            </div>
+        </div>
+    </header>
 
         <main>
+            <h1>Página de Votação</h1>
+            <p id="mensagem-status">Faça o login com seu Discord para poder votar.</p>
+
             <button id="login-btn" class="botao-discord">
                 <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a69f118df70ad7828d4_icon_clyde_white_RGB.svg" alt="Logo Discord" width="24">
                 Login com Discord
@@ -26,46 +42,46 @@
                 
                 
                 <fieldset class="categoria-bloco">
-                    <legend>🏆 O mais querido</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">O mais querido</legend>
                     <div class="card-indicado">
                         <input type="radio" id="mq1" name="mais_querido" value="Indicado 1">
                         <label for="mq1">
-                            <img src="images/cali2.jpg" alt="Foto do Indicado 1">
+                            <img src="images/clai.png" alt="Foto do Indicado 1">
                             <span>Indicado 1</span>
                         </label>
                     </div>
                     <div class="card-indicado">
                         <input type="radio" id="mq2" name="mais_querido" value="Indicado 2">
                         <label for="mq2">
-                            <img src="images/placeholder.jpg" alt="Foto do Indicado 2">
+                            <img src="/images/indicado.jpg" alt="Foto do Indicado 2">
                             <span>Indicado 2</span>
                         </label>
                     </div>
                     <div class="card-indicado">
                         <input type="radio" id="mq3" name="mais_querido" value="Indicado 3">
                         <label for="mq3">
-                            <img src="images/placeholder.jpg" alt="Foto do Indicado 3">
+                            <img src="/images/indicado.jpg" alt="Foto do Indicado 3">
                             <span>Indicado 3</span>
                         </label>
                     </div>
                     <div class="card-indicado">
                         <input type="radio" id="mq4" name="mais_querido" value="Indicado 4">
                         <label for="mq4">
-                            <img src="images/placeholder.jpg" alt="Foto do Indicado 4">
+                            <img src="/images/indicado.jpg" alt="Foto do Indicado 4">
                             <span>Indicado 4</span>
                         </label>
                     </div>
                     <div class="card-indicado">
                         <input type="radio" id="mq5" name="mais_querido" value="Indicado 5">
                         <label for="mq5">
-                            <img src="images/placeholder.jpg" alt="Foto do Indicado 5">
+                            <img src="/images/indicado.jpg" alt="Foto do Indicado 5">
                             <span>Indicado 5</span>
                         </label>
                     </div>
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>🛡️ Staff do Ano</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">Staff do Ano</legend>
                     <div class="card-indicado">
                         <input type="radio" id="sa1" name="staff_do_ano" value="Indicado 1">
                         <label for="sa1">
@@ -104,7 +120,7 @@
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>⭐ Membro do Ano</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">Membro do Ano</legend>
                     <div class="card-indicado">
                         <input type="radio" id="ma1" name="membro_do_ano" value="Indicado 1">
                         <label for="ma1">
@@ -143,7 +159,7 @@
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>🗣️ Membro mais ativo</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">Membro mais ativo</legend>
                     <div class="card-indicado">
                         <input type="radio" id="mma1" name="membro_mais_ativo" value="Indicado 1">
                         <label for="mma1">
@@ -182,7 +198,7 @@
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>😂 Rei da resenha</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">Rei da resenha</legend>
                     <div class="card-indicado">
                         <input type="radio" id="rr1" name="rei_da_resenha" value="Indicado 1">
                         <label for="rr1">
@@ -221,7 +237,7 @@
                 </fieldset>
 
                 <fieldset class="categoria-bloco">
-                    <legend>😠 O mais chato</legend>
+                    <legend><img src="/images/Ballon d'Or Logo.png" alt="Ícone Categoria">O mais chato</legend>
                     <div class="card-indicado">
                         <input type="radio" id="mc1" name="o_mais_chato" value="Indicado 1">
                         <label for="mc1">

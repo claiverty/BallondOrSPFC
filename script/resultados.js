@@ -70,24 +70,24 @@ async function carregarResultados() {
             }]
           },
           options: {
-                    indexAxis: 'y', // Deixa as barras na horizontal, melhor para ler os nomes
+                    indexAxis: 'y', // deixa as barras na horizontal, melhor para ler os nomes
                     scales: {
                         x: {
                             beginAtZero: true,
                             ticks: {
-                                color: '#fff', // Cor dos números no eixo X
-                                stepSize: 1 // Garante que a contagem seja de 1 em 1
+                                color: '#fff', // dor dos números no eixo X
+                                stepSize: 1 // darante que a contagem seja de 1 em 1
                             }
                         },
                         y: {
                             ticks: {
-                                color: '#fff' // Cor dos nomes no eixo Y
+                                color: '#fff' // cor dos nomes no eixo Y
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: false // Esconde a legenda "Total de Votos"
+                            display: false // esconde a legenda "Total de Votos"
                         }
                     }
                 }
@@ -105,7 +105,7 @@ async function verificarAcesso() {
       console.log("Acesso concedido. Bem vindo, Claiverty!")
       painelResultados.classList.remove("hidden")
       
-      // AQUI ESTÁ A MUDANÇA PRINCIPAL
+      
       carregarResultados();
 
     } else {

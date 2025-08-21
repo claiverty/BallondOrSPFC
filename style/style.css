@@ -16,6 +16,72 @@ body {
     padding: 20px;
 }
 
+/* header */
+.main-header {
+    width: 100%;
+    background-color: #111;
+    padding: 10px 0;
+    border-bottom: 2px solid #D4AF37;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.container {
+    margin-top: 120px;
+}
+
+.header-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.header-logo img {
+    height: 50px;
+    display: block;
+}
+
+.main-nav {
+    
+    flex-grow: 1;
+    text-align: center;
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline-flex; 
+    gap: 40px; 
+}
+
+.main-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1em;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-bottom-color 0.2s;
+}
+
+.main-nav a:hover {
+    color: #D4AF37;
+    border-bottom-color: #D4AF37;
+}
+
+
+.header-award-logo img {
+    height: 50px;
+    display: block;
+}
+
 .container {
     width: 100%;
     max-width: 700px;
@@ -23,7 +89,7 @@ body {
     border-radius: 10px;
     padding: 30px;
     text-align: center;
-    border: 1px solid #e00000;
+    border: 1px solid #D4AF37;
 }
 
 .logo {
@@ -35,7 +101,7 @@ h1 {
     font-weight: 900;
     font-size: 2.5em;
     margin-bottom: 10px;
-    color: #e00000;
+    color: #D4AF37;
 }
 
 .subtitulo {
@@ -48,12 +114,12 @@ h2 {
     font-weight: 700;
     font-size: 1.8em;
     margin-bottom: 20px;
-    border-bottom: 2px solid #e00000;
+    border-bottom: 2px solid #D4AF37;
     display: inline-block;
     padding-bottom: 5px;
 }
 
-/* Lista de Categorias */
+/* lista de categorias */
 .categorias-lista ul {
     list-style: none;
     padding: 0;
@@ -68,10 +134,18 @@ h2 {
     font-size: 1.1em;
 }
 
-/* Botões */
+/* estilos para o ícone da categoria */
+.categorias-lista li img {
+    height: 2em;
+    width: auto;
+    margin-right: 2px; 
+    vertical-align: middle;
+}
+
+/* botões */
 .botao-principal {
     display: inline-block;
-    background-color: #e00000;
+    background-color: #D4AF37;
     color: #ffffff;
     padding: 15px 30px;
     border-radius: 5px;
@@ -84,7 +158,7 @@ h2 {
 }
 
 .botao-principal:hover {
-    background-color: #ad0000;
+    background-color: #b4912f;
 }
 
 .botao-discord {
@@ -106,7 +180,7 @@ h2 {
     background-color: #4752C4;
 }
 
-/* Formulário */
+/* formulário */
 #mensagem-status {
     margin-bottom: 20px;
     font-size: 1.1em;
@@ -133,7 +207,7 @@ h2 {
     font-size: 1.4em;
     font-weight: 700;
     padding: 0 10px;
-    color: #e00000;
+    color: #D4AF37;
 }
 
 .opcao {
@@ -149,7 +223,7 @@ h2 {
 
 input[type="radio"] {
     transform: scale(1.2);
-    accent-color: #e00000;
+    accent-color: #D4AF37;
 }
 
 
@@ -158,7 +232,7 @@ footer {
     color: #888;
 }
 
-/* Estilos para a página de resultados */
+/* estilos para a página de resultados */
 .grafico-container {
     margin-top: 40px;
     padding: 20px;
@@ -170,9 +244,9 @@ footer {
     margin-bottom: 15px;
 }
 
-/* Estilos dos Cards de Votação */
+/* estilos dos Cards de Votação */
 
-/* Organiza os cards em uma grade */
+/* organiza os cards em uma grade */
 .categoria-bloco {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -181,32 +255,40 @@ footer {
     background: none;
 }
 
-/* Esconde o radio button original, pois o card será o botão */
+/* estilos para o ícone da categoria na legenda */
+.categoria-bloco legend img {
+    height: 2em; 
+    width: auto;
+    margin-right: 5px; 
+    vertical-align: middle; 
+}
+
+/* esconde o radio button original, pois o card será o botão */
 .card-indicado input[type="radio"] {
     display: none;
 }
 
-/* Estilo da label, que funciona como o nosso card clicável */
+/* estilo da label, que funciona como o nosso card clicável */
 .card-indicado label {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     padding: 15px 10px;
-    background-color: #2b2b2b;
+    background-color: #1f1f1f;
     border: 2px solid #444;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
 
-/* Efeito ao passar o mouse por cima */
+/* efeito ao passar o mouse por cima */
 .card-indicado label:hover {
-    background-color: #3f3f3f;
+    background-color: #2d2c2c;
     transform: translateY(-5px);
 }
 
-/* Estilo da foto do indicado */
+/* estilo da foto do indicado */
 .card-indicado img {
     width: 80px;
     height: 90px;
@@ -215,20 +297,20 @@ footer {
     transition: border-color 0.2s ease-in-out;
 }
 
-/* Estilo do nome do indicado */
+/* estilo do nome do indicado */
 .card-indicado span {
     font-size: 0.9em;
     font-weight: bold;
     color: #ccc;
 }
 
-/* Quando o radio button escondido é selecionado, muda o estilo da sua label (o card) */
+/* quando o radio button escondido é selecionado, muda o estilo da sua label (o card) */
 .card-indicado input[type="radio"]:checked + label {
-    background-color: #e00000;
+    background-color: #D4AF37;
     border-color: #fff;
 }
 
-/* Também muda a cor da borda da imagem e do nome */
+/* também muda a cor da borda da imagem e do nome */
 .card-indicado input[type="radio"]:checked + label img {
     border-color: #fff;
 }
@@ -236,3 +318,4 @@ footer {
 .card-indicado input[type="radio"]:checked + label span {
     color: #fff;
 }
+
