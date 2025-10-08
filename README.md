@@ -11,6 +11,7 @@ Este é o site de votação para a premiação anual "Ballon d'Or" da comunidade
 * **Autenticação via Discord:** Login obrigatório com uma conta do Discord para votar, garantindo um voto único por membro.
 * **Interface Reativa:** O site reconhece se o usuário está logado, mostrando o formulário de votação ou o botão de login conforme o caso.
 * **Armazenamento de Dados:** Os votos são registrados de forma anônima e segura em um banco de dados na nuvem.
+* **Contagem de Votos:** No site tem um painel escondido que aparece apenas para os admin, e nesse painel mostra os votos que cada participante teve, fazendo assim uma contagem automática.
 
 ## 🗳️ Categorias da Premiação
 
