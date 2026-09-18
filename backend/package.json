@@ -22,6 +22,7 @@
     "zod": "^4.1.5"
   },
   "devDependencies": {
-    "@types/pg": "^8.15.5"
+    "@types/pg": "^8.15.5",
+    "typescript": "^5.9.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "npm run build -w @awards/api",
+  "buildCommand": "cd .. && npm run build -w @awards/contracts && npm run build -w @awards/api",
   "functions": {
     "api/index.ts": { "includeFiles": "certs/**" }
   },
