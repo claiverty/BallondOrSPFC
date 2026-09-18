@@ -77,17 +77,34 @@ export function Shell() {
                 }}
               />
             )}
+            {auth.session && (
+              <div className="menu-member-actions">
+                <span>{auth.identity?.display_name ?? 'Membro'}</span>
+                {auth.identity?.role !== 'user' && auth.identity && (
+                  <Link className="text-link" to="/admin" onClick={() => setMenu(false)}>
+                    Administração
+                  </Link>
+                )}
+                <button onClick={() => auth.logout()}>
+                  Sair <LogOut size={16} aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </nav>
           <div className="header-actions">
             {auth.session ? (
               <>
                 <span className="user-name">{auth.identity?.display_name ?? 'Membro'}</span>
                 {auth.identity?.role !== 'user' && auth.identity && (
-                  <Link className="text-link" to="/admin">
+                  <Link className="text-link header-admin-link" to="/admin">
                     Admin
                   </Link>
                 )}
-                <button className="icon-button" aria-label="Sair" onClick={() => auth.logout()}>
+                <button
+                  className="icon-button header-logout-button"
+                  aria-label="Sair"
+                  onClick={() => auth.logout()}
+                >
                   <LogOut size={18} />
                 </button>
               </>

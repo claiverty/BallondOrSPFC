@@ -145,6 +145,11 @@
   .desktop-login-button {
     display: none;
   }
+  .header-actions .user-name,
+  .header-actions .header-admin-link,
+  .header-actions .header-logout-button {
+    display: none;
+  }
   .main-nav.open a {
     width: 100%;
     display: flex;
@@ -188,6 +193,37 @@
     color: #050505;
     background: var(--gold-light);
     transform: none;
+  }
+  .main-nav.open .menu-member-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 28px;
+    color: var(--gold-light);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .main-nav.open .menu-member-actions .text-link {
+    width: auto;
+    padding: 0;
+    color: var(--gold-light);
+    font-size: 11px;
+  }
+  .main-nav.open .menu-member-actions .text-link::after {
+    display: none;
+  }
+  .main-nav.open .menu-member-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--gold-light);
+    background: transparent;
   }
   .main-nav a {
     padding: 14px 0;

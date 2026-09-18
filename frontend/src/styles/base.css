@@ -248,6 +248,9 @@ textarea:focus-visible {
 .menu-login-button {
   display: none;
 }
+.menu-member-actions {
+  display: none;
+}
 .icon-button {
   background: none;
   border: 0;
