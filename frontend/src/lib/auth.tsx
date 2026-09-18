@@ -39,12 +39,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
+    let active = true;
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (active) setSession(nextSession);
     });
-    const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
-    return () => data.subscription.unsubscribe();
+    const restoreSession = async () => {
+      const callbackParams = new URLSearchParams(location.hash.slice(1));
+      const accessToken = callbackParams.get('access_token');
+      const refreshToken = callbackParams.get('refresh_token');
+      const result =
+        accessToken && refreshToken
+          ? await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            })
+          : await supabase.auth.getSession();
+
+      if (!active) return;
+      setSession(result.data.session);
+      setLoading(false);
+
+      if (accessToken && refreshToken) {
+        window.history.replaceState({}, document.title, `${location.pathname}${location.search}`);
+      }
+    };
+    void restoreSession();
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
   }, []);
   const identity = useQuery({
     queryKey: ['identity', session?.user.id],

@@ -14,14 +14,14 @@ export function Home() {
             <em>Ballon d’Or</em>
             <strong>SÃO PAULO</strong>
           </h1>
-          <div className="award-hero-actions">
-            <Link className="award-hero-cta" to="/2026/vote">
-              <span>Votar agora</span>
-              <span className="award-hero-cta-arrow" aria-hidden="true">
-                <ArrowRight size={22} strokeWidth={1.8} />
-              </span>
-            </Link>
-          </div>
+        </div>
+        <div className="award-hero-actions">
+          <Link className="award-hero-cta" to="/2026/vote">
+            <span>Votar agora</span>
+            <span className="award-hero-cta-arrow" aria-hidden="true">
+              <ArrowRight size={22} strokeWidth={1.8} />
+            </span>
+          </Link>
         </div>
       </div>
     </section>

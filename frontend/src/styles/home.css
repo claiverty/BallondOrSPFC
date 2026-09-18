@@ -50,6 +50,7 @@
 .award-hero-center {
   position: relative;
   z-index: 1;
+  width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -139,6 +140,7 @@
 }
 .award-hero-actions {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 12px;
   margin-top: 28px;
