@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build -w @awards/web",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://REPLACE_API_DOMAIN.vercel.app/api/:path*" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}

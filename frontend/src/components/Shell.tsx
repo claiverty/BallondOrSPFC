@@ -1,0 +1,148 @@
+import { useState } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { ArrowUpRight, Menu, X, LogOut } from 'lucide-react';
+import { demoMode, useAuth } from '../lib/auth';
+import { useEdition } from '../lib/queries';
+function SpfcMark() {
+  return <img className="spfc-mark" src="/images/spfc-gold-logo.png" alt="" aria-hidden="true" />;
+}
+function DiscordMark() {
+  return (
+    <svg className="discord-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20.32 4.37A19.8 19.8 0 0 0 15.5 3c-.2.35-.44.82-.6 1.2a18.3 18.3 0 0 0-5.8 0A12.7 12.7 0 0 0 8.5 3a19.4 19.4 0 0 0-4.83 1.37C.62 8.9-.2 13.3.2 17.63A19.8 19.8 0 0 0 6.12 20.6c.48-.65.9-1.34 1.25-2.07a12.4 12.4 0 0 1-1.96-.95c.17-.13.34-.27.5-.4 3.78 1.76 7.87 1.76 11.6 0 .17.14.34.28.5.4-.62.37-1.28.69-1.97.96.36.72.78 1.41 1.25 2.06a19.8 19.8 0 0 0 5.92-2.97c.48-5.03-.82-9.39-2.89-13.26ZM8.68 14.99c-1.16 0-2.11-1.07-2.11-2.39s.93-2.39 2.11-2.39 2.13 1.08 2.11 2.39c0 1.32-.94 2.39-2.11 2.39Zm7.58 0c-1.16 0-2.1-1.07-2.1-2.39s.93-2.39 2.1-2.39c1.18 0 2.13 1.08 2.11 2.39 0 1.32-.93 2.39-2.11 2.39Z" />
+    </svg>
+  );
+}
+function LoginButton({ className, onClick }: { className?: string; onClick: () => void }) {
+  return (
+    <button className={`login-button ${className ?? ''}`} onClick={onClick}>
+      <DiscordMark />
+      <span>Entrar</span>
+    </button>
+  );
+}
+export function Shell() {
+  const [menu, setMenu] = useState(false);
+  const [error, setError] = useState('');
+  const auth = useAuth();
+  const location = useLocation();
+  const firstSegment = location.pathname.split('/')[1];
+  const reserved = ['history', 'hall-of-fame', 'records', 'rules', 'members', 'auth', 'admin'];
+  const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
+  const { data: edition } = useEdition(editionSlug);
+  const year = edition?.slug;
+  const routes = [
+    ['Início', '/'],
+    ['Indicados', year ? `/${year}/nominees` : '/history'],
+    ['Vencedores', year ? `/${year}/winners` : '/hall-of-fame'],
+    ['Histórico', '/history'],
+  ];
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Pular para o conteúdo
+      </a>
+      {demoMode && (
+        <div className="demo-strip">
+          PREVIEW DA PLATAFORMA <span>Dados demonstrativos. Nenhum voto real é registrado.</span>
+          <Link to="/admin">
+            Explorar administração <ArrowUpRight size={13} aria-hidden="true" />
+          </Link>
+        </div>
+      )}
+      <header className="header">
+        <div className="header-inner">
+          <Link to="/" className="brand" aria-label="Ballon d’Or São Paulo — Início">
+            <SpfcMark />
+            <span>
+              <strong>Ballon d’Or</strong>
+              <small>SÃO PAULO</small>
+            </span>
+          </Link>
+          <nav className={menu ? 'main-nav open' : 'main-nav'} aria-label="Navegação principal">
+            {routes.map(([name, path]) => (
+              <NavLink key={name} end to={path} onClick={() => setMenu(false)}>
+                {name}
+              </NavLink>
+            ))}
+            <NavLink to="/hall-of-fame" onClick={() => setMenu(false)}>
+              Hall of Fame
+            </NavLink>
+            {!auth.session && (
+              <LoginButton
+                className="menu-login-button"
+                onClick={() => {
+                  setMenu(false);
+                  auth.login().catch((e) => setError(e.message));
+                }}
+              />
+            )}
+          </nav>
+          <div className="header-actions">
+            {auth.session ? (
+              <>
+                <span className="user-name">{auth.identity?.display_name ?? 'Membro'}</span>
+                {auth.identity?.role !== 'user' && auth.identity && (
+                  <Link className="text-link" to="/admin">
+                    Admin
+                  </Link>
+                )}
+                <button className="icon-button" aria-label="Sair" onClick={() => auth.logout()}>
+                  <LogOut size={18} />
+                </button>
+              </>
+            ) : (
+              <LoginButton
+                className="desktop-login-button"
+                onClick={() => auth.login().catch((e) => setError(e.message))}
+              />
+            )}
+            <button
+              className="icon-button menu-button"
+              aria-label={menu ? 'Fechar menu' : 'Abrir menu'}
+              aria-expanded={menu}
+              onClick={() => setMenu(!menu)}
+            >
+              {menu ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+      </header>
+      {error && (
+        <div className="global-notice" role="alert">
+          {error}
+          <button aria-label="Fechar aviso" className="icon-button" onClick={() => setError('')}>
+            <X size={18} />
+          </button>
+        </div>
+      )}
+      <main id="main" key={location.pathname}>
+        <Outlet />
+      </main>
+      <footer className="footer">
+        <div className="footer-top">
+          <Link to="/" className="brand">
+            <SpfcMark />
+            <span>
+              <strong>Ballon d’Or</strong>
+              <small>SÃO PAULO</small>
+            </span>
+          </Link>
+          <p>
+            Um projeto da comunidade.
+            <br />
+            Para quem faz parte da nossa história.
+          </p>
+          <Link className="text-link" to="/hall-of-fame">
+            Entre para a história <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        <div className="footer-bottom">
+          <span>© {new Date().getFullYear()} Ballon d’Or SPFC</span>
+          <span>Feito por torcedores. Movido pela comunidade.</span>
+          <Link to="/rules">Regras e privacidade</Link>
+        </div>
+      </footer>
+    </>
+  );
+}

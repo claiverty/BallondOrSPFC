@@ -1,0 +1,297 @@
+.voting-page {
+  padding-top: 36px;
+  padding-bottom: 80px;
+  min-height: 75vh;
+}
+.vote-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 1px;
+  gap: 20px;
+}
+.vote-topline > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.voting-progress {
+  margin: 28px 0 40px;
+}
+.voting-progress > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--gold-light);
+  letter-spacing: 1.3px;
+  margin-bottom: 14px;
+}
+progress {
+  appearance: none;
+  border: 0;
+  height: 3px;
+  background: var(--border);
+  width: 100%;
+  border-radius: 2px;
+  display: block;
+}
+progress::-webkit-progress-bar {
+  background: var(--border);
+}
+progress::-webkit-progress-value {
+  background: var(--gold);
+}
+progress::-moz-progress-bar {
+  background: var(--gold);
+}
+.step-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+.step-buttons button {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--muted);
+}
+.step-buttons button.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.step-buttons button.done {
+  background: #373021;
+  color: var(--gold);
+}
+.vote-category-heading {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.vote-category-heading h1 {
+  font-size: 64px;
+  margin: 10px 0 18px;
+}
+.vote-category-heading p {
+  color: var(--muted);
+  font-size: 14px;
+}
+.voting-grid .nominee-photo {
+  height: 270px;
+}
+.vote-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  gap: 16px;
+}
+.vote-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.vote-review {
+  border: 1px solid var(--border);
+  padding: 0 24px;
+}
+.vote-review > div {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.vote-review > div:last-child {
+  border-bottom: 0;
+}
+.vote-review > div > span {
+  font: 400 28px var(--font-display);
+  color: var(--gold);
+}
+.vote-review > div > div {
+  display: flex;
+  flex-direction: column;
+}
+.vote-review small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.vote-review strong {
+  font: 400 27px var(--font-display);
+}
+.vote-review button {
+  margin-left: auto;
+}
+.vote-success {
+  text-align: center;
+}
+.vote-success > svg {
+  color: var(--gold);
+  margin: 20px auto;
+}
+.vote-success .page-heading h1,
+.vote-success .page-heading p {
+  margin-left: auto;
+  margin-right: auto;
+}
+.nomination-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+}
+.nomination-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nomination-categories button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  padding: 16px;
+  min-height: 50px;
+  font-size: 12px;
+}
+.nomination-categories button.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.nomination-workspace {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 32px;
+}
+.nomination-workspace h2 {
+  font-size: 40px;
+  margin: 10px 0 16px;
+}
+.nomination-workspace > p {
+  color: var(--muted);
+}
+.nomination-workspace > .button {
+  margin-top: 24px;
+}
+.chosen-members > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--gold);
+  padding: 12px 16px;
+  margin: 20px 0;
+}
+.chosen-members small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}
+.member-search {
+  margin: 24px 0;
+}
+.member-search label {
+  font-size: 12px;
+}
+.search-input {
+  position: relative;
+  margin-top: 8px;
+}
+.search-input svg {
+  position: absolute;
+  top: 15px;
+  left: 16px;
+  color: var(--gold);
+}
+.search-input input {
+  padding-left: 46px;
+}
+.member-search [role='status'] {
+  font-size: 11px;
+  color: var(--muted);
+  padding-top: 8px;
+}
+.search-results {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+.search-results button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  margin-top: 6px;
+  min-height: 60px;
+}
+.search-results button:hover {
+  border-color: var(--gold);
+}
+.search-results img {
+  width: 40px;
+  height: 45px;
+  object-fit: cover;
+}
+.search-results small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}
+.search-results button > svg:last-child {
+  margin-left: auto;
+}
+.manual-form {
+  padding: 20px;
+  border: 1px solid var(--border);
+  margin-top: 16px;
+}
+.manual-form p {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 12px 0;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #4a4b3d;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  min-height: 46px;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #919285;
+}
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+select {
+  cursor: pointer;
+}

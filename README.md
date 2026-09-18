@@ -1,38 +1,70 @@
-# 🏆 Ballon d'Or - Comunidade SPFC
+# Ballon d’Or SPFC Platform
 
-![Escudo SPFC](https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Brasao_do_Sao_Paulo_Futebol_Clube.svg/200px-Brasao_do_Sao_Paulo_Futebol_Clube.svg.png)
+Reconstrução full stack da premiação da comunidade SPFC no Discord. Edições, categorias, períodos e regras são dados configurados pela administração.
 
-Este é o site de votação para a premiação anual "Ballon d'Or" da comunidade de torcedores do São Paulo FC no Discord. O projeto foi criado para permitir que os membros e a staff votem em diversas categorias de forma segura, divertida e centralizada.
+```text
+frontend/             React, Vite, TypeScript e experiência pública/admin
+backend/              NestJS, Fastify, autenticação e regras de domínio
+packages/contracts/   Tipos, schemas Zod e state machine
+supabase/             Migrations aditivas e seed fictício
+legacy/               Código e assets originais preservados, fora do deploy
+tests/               Domínio, SQL/PostgreSQL, HTTP e Playwright
+docs/                Auditoria, arquitetura, migração, operação e validação
+```
 
-## ✨ Funcionalidades Principais
+## Preview local
 
-* **Página de Apresentação:** Uma landing page que introduz o projeto e descreve todas as categorias da premiação.
-* **Sistema de Votação Seguro:** Formulário de votação completo com 5 indicados para cada categoria.
-* **Autenticação via Discord:** Login obrigatório com uma conta do Discord para votar, garantindo um voto único por membro.
-* **Interface Reativa:** O site reconhece se o usuário está logado, mostrando o formulário de votação ou o botão de login conforme o caso.
-* **Armazenamento de Dados:** Os votos são registrados de forma anônima e segura em um banco de dados na nuvem.
-* **Contagem de Votos:** No site tem um painel escondido que aparece apenas para os admins, e nesse painel mostra os votos que cada participante teve, fazendo assim uma contagem automática.
+Node.js 22.18+ e dependências do workspace. Com as dependências disponíveis:
 
-## 🗳️ Categorias da Premiação
+```sh
+npm run dev
+```
 
--   O mais querido (o mais querido e amado do servidor)
--   Staff do Ano (o mais eficiente e presente)
--   Membro do Ano (O melhor membro)
--   Membro mais ativo (o que mais aparece no chat/voz)
--   Rei da resenha (quem mais puxa papo e mantém o chat vivo)
--   O mais chato
+Abra a URL exibida. Sem variáveis Supabase, o modo de desenvolvimento usa dados demonstrativos e identifica o preview em todas as páginas. Nenhum voto, indicação ou ação administrativa real é gravado nesse modo. No build de produção o preview exige `VITE_DEMO_MODE=true` explícito; sem configuração a plataforma não simula autenticação.
 
-## 🚀 Tecnologias Utilizadas
+## Conectar serviços reais
 
-* **Frontend:** HTML5, CSS3, JavaScript
-* **Backend & Banco de Dados:** [Supabase](https://supabase.com/)
-* **Autenticação:** Supabase Auth com provedor Discord (OAuth2)
-* **Hospedagem:** [Vercel](https://vercel.com/)
-* **Controle de Versão:** [GitHub](https://github.com/)
+Copie `frontend/.env.example` para `frontend/.env` e `backend/.env.example` para `backend/.env`, preencha os valores e defina `VITE_DEMO_MODE=false`. Não publique secrets nem envie valores privados em mensagens.
 
-## 💻 Criador
+```sh
+npm run db:migrate
+npm run db:seed        # Somente banco de desenvolvimento separado
+npm run dev:backend   # Terminal 1: API em :3001
+npm run dev           # Terminal 2: frontend com proxy /api
+```
 
-* **Claiverty Rodrigues**
+Configure Discord OAuth no Supabase, bot no servidor e primeiro super_admin conforme [operação](docs/04-operations.md). As migrations criam schema `awards` separado; não alteram `public.votos`. Banco existente não foi acessado ou modificado. Não executar migração/seed em produção sem seguir [plano de migração](docs/03-migration-plan.md).
 
----
-*Este é um projeto feito para fãs, sem fins lucrativos.*
+## Fluxos implementados
+
+- Home por fase/período, categorias, indicados, cerimônia e contagem regressiva.
+- Supabase Auth/Discord OAuth, identidade verificada e autorização por roles privadas.
+- Busca Discord server-side, debounce, oito resultados, cache curto e tratamento de rate limits.
+- Indicações editáveis por categoria; fallback manual; revisão agrupada/paginada e associação de ID; candidatos oficiais com elegibilidade.
+- Votação por etapas, seleção por teclado, rascunho por edição/pessoa, revisão e envio transacional/idempotente; uma cédula por edição.
+- Administração de edições/categorias/regras/ordem, duplicação, ciclo de vida, usuários/funções e mídia no Supabase Storage.
+- Analytics privados e agregados, apuração em snapshot, resolução de empate auditada e publicação explícita.
+- Vencedores, histórico, Hall of Fame, perfis históricos e ranking de vitórias derivado do banco.
+- Swagger em `/api/docs`; CI com PostgreSQL e Playwright.
+
+## Verificação
+
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run build
+npm run test:e2e
+```
+
+A suíte local usa PostgreSQL em PGlite e mocks nas fronteiras externas de Auth/Discord. A suíte de concorrência com conexões PostgreSQL independentes roda no CI, ou localmente com `TEST_DATABASE_URL` apontando somente para o banco isolado `awards_test`. OAuth/bot reais e deploy precisam de smoke tests em staging. Veja [validação e limites](docs/05-validation.md).
+
+O código segue os parâmetros de formatação do Prettier em `.prettierrc.json`; não é necessário instalar uma ferramenta para seguir esse padrão.
+
+## Documentação
+
+- [Auditoria do legado](docs/01-legacy-audit.md)
+- [ADR e arquitetura](docs/02-architecture.md)
+- [Plano de migração](docs/03-migration-plan.md)
+- [Configuração, deploy e operação](docs/04-operations.md)
+- [Validação e limites](docs/05-validation.md)
