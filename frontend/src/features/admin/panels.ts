@@ -8,4 +8,5 @@ export { ResultsPanel } from './ResultsPanel';
 export { AnalyticsPanel } from './AnalyticsPanel';
 export { AuditPanel } from './AuditPanel';
 export { UsersPanel } from './UsersPanel';
+export { MembersPanel } from './MembersPanel';
 export { MediaWrapper } from './MediaWrapper';

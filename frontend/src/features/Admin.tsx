@@ -9,10 +9,11 @@ import {
   AnalyticsPanel,
   AuditPanel,
   UsersPanel,
+  MembersPanel,
   MediaWrapper,
 } from './admin/panels';
-import { useState } from 'react';
-import { Link, NavLink, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, NavLink, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
@@ -20,6 +21,7 @@ import {
   BarChart3,
   CalendarDays,
   ClipboardList,
+  ContactRound,
   FileCheck2,
   Image,
   LayoutDashboard,
@@ -47,6 +49,7 @@ const tabs = [
   ['analytics', 'Estatísticas', BarChart3],
   ['ceremony', 'Cerimônia', CalendarDays],
   ['media', 'Mídia', Image],
+  ['members', 'Perfis', ContactRound],
   ['users', 'Usuários', ShieldCheck],
   ['audit', 'Auditoria', Activity],
 ] as const;
@@ -69,8 +72,12 @@ interface Result {
 export function Admin() {
   const auth = useAuth();
   const { tab = 'overview' } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const client = useQueryClient();
-  const [selected, setSelected] = useState('');
+  const [storedEdition, setStoredEdition] = useState(
+    () => window.localStorage.getItem('admin-selected-edition') ?? '',
+  );
+  const selected = searchParams.get('edition') ?? storedEdition;
   const [creating, setCreating] = useState(false);
   const [duplicate, setDuplicate] = useState(false);
   const [editCat, setEditCat] = useState<Category | null | undefined>();
@@ -78,6 +85,14 @@ export function Admin() {
   const [categoryId, setCategoryId] = useState('');
   const [message, setMessage] = useState('');
   const allowed = demoMode || (!!auth.identity && auth.identity.role !== 'user');
+  const selectEdition = useCallback(
+    (editionId: string) => {
+      window.localStorage.setItem('admin-selected-edition', editionId);
+      setStoredEdition(editionId);
+      setSearchParams({ edition: editionId });
+    },
+    [setSearchParams],
+  );
   const editions = useQuery({
     queryKey: ['admin', 'editions'],
     queryFn: () =>
@@ -88,6 +103,10 @@ export function Admin() {
   });
   const edition = editions.data?.find((e) => e.id === selected) ?? editions.data?.[0];
   const id = edition?.id;
+  useEffect(() => {
+    if (!id || id === selected) return;
+    selectEdition(id);
+  }, [id, selected, selectEdition]);
   const categories = useQuery({
     queryKey: ['admin', 'categories', id],
     queryFn: () =>
@@ -132,6 +151,14 @@ export function Admin() {
           >('/admin/users'),
     enabled: allowed && tab === 'users',
   });
+  const members = useQuery({
+    queryKey: ['admin', 'members'],
+    queryFn: () =>
+      demoMode
+        ? Promise.resolve([])
+        : request<import('./admin/types').HistoricalMember[]>('/admin/members'),
+    enabled: allowed && tab === 'members',
+  });
   const mutation = useMutation({
     mutationFn: ({
       path,
@@ -157,7 +184,7 @@ export function Admin() {
         data.id &&
         (variables.path === '/admin/editions' || variables.path.endsWith('/duplicate'))
       )
-        setSelected(data.id);
+        selectEdition(data.id);
       client.invalidateQueries({ queryKey: ['admin'] });
       client.invalidateQueries({ queryKey: ['editions'] });
       client.invalidateQueries({ queryKey: ['edition'] });
@@ -204,7 +231,7 @@ export function Admin() {
           <select
             value={id ?? ''}
             onChange={(e) => {
-              setSelected(e.target.value);
+              selectEdition(e.target.value);
               setEditCat(undefined);
               setCategoryId('');
             }}
@@ -218,7 +245,7 @@ export function Admin() {
         </label>
         <nav aria-label="Administração">
           {tabs.map(([key, label, Icon]) => (
-            <NavLink key={key} to={`/admin/${key}`}>
+            <NavLink key={key} to={`/admin/${key}${id ? `?edition=${id}` : ''}`}>
               <Icon size={18} aria-hidden="true" />
               {label}
             </NavLink>
@@ -381,6 +408,14 @@ export function Admin() {
                   {tab === 'analytics' && <AnalyticsPanel analytics={analytics} />}
                   {tab === 'audit' && <AuditPanel logs={logs} />}
                   {tab === 'users' && <UsersPanel action={action} users={users} auth={auth} />}
+                  {tab === 'members' && (
+                    <MembersPanel
+                      action={action}
+                      auth={auth}
+                      members={members}
+                      setMessage={setMessage}
+                    />
+                  )}
                   {tab === 'media' && <MediaWrapper edition={edition} setMessage={setMessage} />}
                 </>
               )}

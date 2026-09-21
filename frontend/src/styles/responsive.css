@@ -1028,6 +1028,9 @@
   .admin-list-row > div {
     min-width: 150px;
   }
+  .member-link-row .button-small {
+    width: 100%;
+  }
   .panel-heading {
     align-items: flex-start;
     flex-direction: column;

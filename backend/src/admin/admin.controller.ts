@@ -23,16 +23,19 @@ import {
   ReviewNominationSchema,
   TransitionSchema,
   id,
+  snowflake,
 } from '@awards/contracts';
 import { EditionAdminService } from './edition-admin.service';
 import { CategoryAdminService } from './category-admin.service';
 import { NomineeAdminService } from './nominee-admin.service';
 import { AnalyticsAdminService } from './analytics-admin.service';
 import { UserAdminService } from './user-admin.service';
+import { MemberAdminService } from './member-admin.service';
 import { AuthGuard, AdminGuard, AuthRequest } from '../auth/auth';
 import { DiscordModule } from '../discord/discord';
 import { ZodPipe } from '../common/validation';
 const ReasonSchema = z.object({ reason: z.string().min(3).max(500) });
+const LinkMemberSchema = ReasonSchema.extend({ discord_user_id: snowflake });
 @ApiTags('Administration')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, AdminGuard)
@@ -44,6 +47,7 @@ class AdminController {
     @Inject(NomineeAdminService) private readonly nomineesService: NomineeAdminService,
     @Inject(AnalyticsAdminService) private readonly analyticsService: AnalyticsAdminService,
     @Inject(UserAdminService) private readonly usersService: UserAdminService,
+    @Inject(MemberAdminService) private readonly membersService: MemberAdminService,
   ) {}
   @Get('editions') editions() {
     return this.editionsService.editions();
@@ -179,6 +183,18 @@ class AdminController {
   @Get('users') users() {
     return this.usersService.users();
   }
+  @Get('members') members() {
+    return this.membersService.members();
+  }
+  @ApiZodBody(LinkMemberSchema)
+  @Patch('members/:member/link')
+  linkMember(
+    @Req() r: AuthRequest,
+    @Param('member', ParseUUIDPipe) member: string,
+    @Body(new ZodPipe(LinkMemberSchema)) b: z.output<typeof LinkMemberSchema>,
+  ) {
+    return this.membersService.link(r.identity, member, b.discord_user_id, b.reason);
+  }
   @ApiZodBody(z.object({ role: z.enum(['user', 'admin', 'super_admin']) }))
   @Patch('users/:user/role')
   role(
@@ -198,6 +214,7 @@ class AdminController {
     NomineeAdminService,
     AnalyticsAdminService,
     UserAdminService,
+    MemberAdminService,
   ],
   controllers: [AdminController],
 })

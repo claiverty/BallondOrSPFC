@@ -24,6 +24,15 @@ export interface Result {
   rank: number;
   percentage: number;
 }
+export interface HistoricalMember {
+  id: string;
+  discord_user_id: string;
+  username: string;
+  display_name: string;
+  avatar_url: string | null;
+  wins: number;
+  is_linked: boolean;
+}
 export interface AdminContext {
   edition: Edition;
   id: string | undefined;
@@ -47,5 +56,6 @@ export interface AdminContext {
     Array<{ id: string; display_name: string; discord_user_id: string; role: string }>,
     Error
   >;
+  members: UseQueryResult<HistoricalMember[], Error>;
   auth: { identity: Identity | null };
 }
