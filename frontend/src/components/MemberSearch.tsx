@@ -4,12 +4,22 @@ import { Search, UserRound, ArrowRight, ChevronDown, X } from 'lucide-react';
 import { Nominee } from '@awards/contracts';
 import { demoMode, request } from '../lib/auth';
 import { demoMembers } from '../lib/demo';
+
+function normalizeSearch(value: string) {
+  return value
+    .trim()
+    .replace(/^@+/, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
 export function MemberSearch({ onSelect }: { onSelect: (member: Omit<Nominee, 'id'>) => void }) {
   const [q, setQ] = useState('');
   const [debounced, setDebounced] = useState('');
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    const timeout = setTimeout(() => setDebounced(q.trim()), 350);
+    const timeout = setTimeout(() => setDebounced(normalizeSearch(q)), 350);
     return () => clearTimeout(timeout);
   }, [q]);
   const results = useQuery({
@@ -18,7 +28,11 @@ export function MemberSearch({ onSelect }: { onSelect: (member: Omit<Nominee, 'i
       demoMode
         ? Promise.resolve(
             demoMembers
-              .filter((m) => m.display_name.toLowerCase().includes(debounced.toLowerCase()))
+              .filter((m) =>
+                [m.display_name, m.username].some((value) =>
+                  normalizeSearch(value).includes(debounced),
+                ),
+              )
               .slice(0, 8),
           )
         : request<Omit<Nominee, 'id'>[]>(
@@ -71,8 +85,13 @@ export function MemberSearch({ onSelect }: { onSelect: (member: Omit<Nominee, 'i
           aria-hidden="true"
         />
       </div>
-      {open && q.trim() === debounced && debounced.length >= 2 && (
+      {open && normalizeSearch(q) === debounced && debounced.length >= 2 && (
         <div className="search-dropdown">
+          {demoMode && (
+            <p className="search-preview-hint">
+              Preview: experimente “Claiverty”, “Sukita” ou “Thais”.
+            </p>
+          )}
           <div id="search-status" className="search-status" role="status">
             {results.isFetching
               ? 'Consultando membros…'

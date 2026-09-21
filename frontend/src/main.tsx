@@ -15,10 +15,10 @@ import { AuthProvider, useAuth } from './lib/auth';
 import { Shell } from './components/Shell';
 import { Home } from './features/Home';
 import { Nominees, Winners, History, Member, Records, Rules } from './features/PublicPages';
-const Voting = React.lazy(() => import('./features/Voting').then((m) => ({ default: m.Voting })));
-const Nominations = React.lazy(() =>
-  import('./features/Nominations').then((m) => ({ default: m.Nominations })),
+const EditionStage = React.lazy(() =>
+  import('./features/EditionStage').then((m) => ({ default: m.EditionStage })),
 );
+const Voting = React.lazy(() => import('./features/Voting').then((m) => ({ default: m.Voting })));
 const Admin = React.lazy(() => import('./features/Admin').then((m) => ({ default: m.Admin })));
 import { PageHeading } from './components/ui';
 const client = new QueryClient({
@@ -78,10 +78,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="admin/:tab" element={<Admin />} />
                 <Route path=":slug" element={<Home />} />
                 <Route path=":slug/categories" element={<Nominees categoriesOnly />} />
-                <Route path=":slug/nominees" element={<Nominees />} />
-                <Route path=":slug/nominations" element={<Nominations />} />
+                <Route path=":slug/nominees" element={<EditionStage />} />
+                <Route path=":slug/nominations" element={<EditionStage />} />
                 <Route path=":slug/vote" element={<Voting />} />
-                <Route path=":slug/winners" element={<Winners />} />
+                <Route path=":slug/winners" element={<Navigate to="/hall-of-fame" replace />} />
                 <Route
                   path="*"
                   element={

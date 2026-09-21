@@ -37,7 +37,11 @@ import { ZodPipe } from '../common/validation';
 const ReasonSchema = z.object({ reason: z.string().min(3).max(500) });
 const LinkMemberSchema = ReasonSchema.extend({ discord_user_id: snowflake });
 const ReorderCategoriesSchema = z.object({
-  category_ids: z.array(id).min(1).max(100).refine((ids) => new Set(ids).size === ids.length),
+  category_ids: z
+    .array(id)
+    .min(1)
+    .max(100)
+    .refine((ids) => new Set(ids).size === ids.length),
 });
 @ApiTags('Administration')
 @ApiBearerAuth()
@@ -71,6 +75,12 @@ class AdminController {
     @Body(new ZodPipe(CreateEditionSchema)) b: z.output<typeof CreateEditionSchema>,
   ) {
     return this.editionsService.saveEdition(r.identity.id, b, e);
+  }
+  @Delete('editions/:edition') deleteEdition(
+    @Req() r: AuthRequest,
+    @Param('edition', ParseUUIDPipe) e: string,
+  ) {
+    return this.editionsService.deleteEdition(r.identity.id, e);
   }
   @ApiZodBody(CreateEditionSchema)
   @Post('editions/:edition/duplicate')

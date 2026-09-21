@@ -1,6 +1,7 @@
 import { ApiZodBody } from '../common/openapi';
 import {
   Body,
+  ConflictException,
   Controller,
   ForbiddenException,
   Get,
@@ -46,6 +47,12 @@ export class NominationsService {
       await c.query('select pg_advisory_xact_lock(hashtextextended($1,0))', [
         `${user.id}:${cat.id}`,
       ]);
+      const existing = await c.query(
+        'select 1 from awards.nomination_items where nominator_user_id=$1 and category_id=$2 limit 1',
+        [user.id, cat.id],
+      );
+      if (existing.rows.length)
+        throw new ConflictException('Esta indicação já foi enviada e não pode ser alterada.');
       const resolved: Array<{ member: string | null; manual: string | null }> = [];
       for (const item of data.items) {
         if (item.discord_user_id) {

@@ -1,5 +1,7 @@
-import { Link2, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, Link2, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
+import { isOpen } from '@awards/contracts';
+import { Link } from 'react-router-dom';
 import { MemberSearch } from '../../components/MemberSearch';
 import type { AdminContext } from './types';
 
@@ -7,8 +9,9 @@ export function MembersPanel({
   action,
   auth,
   members,
+  edition,
   setMessage,
-}: Pick<AdminContext, 'action' | 'auth' | 'members' | 'setMessage'>) {
+}: Pick<AdminContext, 'action' | 'auth' | 'members' | 'edition' | 'setMessage'>) {
   const [memberId, setMemberId] = useState<string | null>(null);
   const [reason, setReason] = useState('');
   const selected = members.data?.find((member) => member.id === memberId);
@@ -28,6 +31,11 @@ export function MembersPanel({
             continuam no mesmo perfil.
           </p>
         </div>
+        {isOpen(edition, 'nominations') && (
+          <Link className="button button-small" to={`/${edition.slug}/nominations`}>
+            Enviar indicações <ArrowUpRight size={16} />
+          </Link>
+        )}
       </div>
       {auth.identity?.role !== 'super_admin' && (
         <p className="error-text">Somente o super admin pode vincular perfis.</p>

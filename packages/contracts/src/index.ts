@@ -157,7 +157,7 @@ export const CreateCategorySchema = z.object({
   description: z.string().max(1000).default(''),
   image_url: safeUrl,
   max_nominees: z.number().int().min(2).max(20).default(5),
-  max_nominations: z.number().int().min(1).max(10).default(1),
+  max_nominations: z.number().int().min(1).max(3).default(3),
   vote_required: z.boolean().default(true),
   allow_self_nomination: z.boolean().default(false),
   display_order: z.number().int().min(0).max(1000).default(0),
@@ -196,6 +196,7 @@ export const NominationSchema = z.object({
           'Informe um membro ou um nome manual',
         ),
     )
+    .min(1, 'Escolha pelo menos uma pessoa')
     .max(10),
 });
 export const TransitionSchema = z.object({

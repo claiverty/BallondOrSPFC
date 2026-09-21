@@ -241,7 +241,7 @@ function VotingFlow({ edition, categories }: { edition: Edition; categories: Cat
                 ? 'Confirmando…'
                 : demoMode
                   ? 'Concluir preview'
-                  : 'Confirmar votação'}
+                  : 'Confirmar e enviar votos'}
               <Check size={18} />
             </button>
           </div>

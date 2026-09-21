@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ArrowUpRight, Menu, X, LogOut } from 'lucide-react';
+import { isOpen } from '@awards/contracts';
 import { demoMode, useAuth } from '../lib/auth';
 import { useEdition } from '../lib/queries';
 function SpfcMark() {
@@ -30,11 +31,20 @@ export function Shell() {
   const reserved = ['history', 'hall-of-fame', 'records', 'rules', 'members', 'auth', 'admin'];
   const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
   const { data: edition } = useEdition(editionSlug);
-  const year = edition?.slug;
+  const year = edition?.slug ?? editionSlug;
+  const participationName =
+    edition && isOpen(edition, 'nominations')
+      ? 'Indicação'
+      : edition && isOpen(edition, 'voting')
+        ? 'Votação'
+        : edition && ['DRAFT', 'NOMINATIONS_OPEN', 'NOMINATIONS_REVIEW'].includes(edition.status)
+          ? 'Vencedores'
+          : 'Indicados';
+  const participationPath =
+    participationName === 'Vencedores' ? '/hall-of-fame' : year ? `/${year}/nominees` : '/history';
   const routes = [
     ['Início', '/'],
-    ['Indicados', year ? `/${year}/nominees` : '/history'],
-    ['Vencedores', year ? `/${year}/winners` : '/hall-of-fame'],
+    [participationName, participationPath],
     ['Histórico', '/history'],
   ];
   return (

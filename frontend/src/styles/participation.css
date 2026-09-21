@@ -183,8 +183,22 @@ progress::-moz-progress-bar {
 .nomination-workspace > p {
   color: var(--muted);
 }
-.nomination-workspace > .button {
+.nomination-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
   margin-top: 24px;
+}
+.nomination-actions.full {
+  justify-content: flex-end;
+}
+.nomination-manual-action {
+  min-width: 0;
+}
+.nomination-actions > .button {
+  flex-shrink: 0;
+  margin-top: 0;
 }
 .chosen-members > div {
   display: flex;
@@ -218,7 +232,7 @@ progress::-moz-progress-bar {
   transform: translateY(-50%);
   pointer-events: none;
 }
-.search-input input {
+.member-search .search-input input {
   width: 100%;
   min-height: 58px;
   padding: 14px 92px 14px 54px;
@@ -286,6 +300,13 @@ progress::-moz-progress-bar {
   border-radius: 18px;
   background: var(--surface-raised);
   box-shadow: var(--shadow);
+}
+.search-preview-hint {
+  margin: 0;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
 }
 .search-status {
   font-size: 11px;
@@ -357,9 +378,21 @@ textarea {
     background var(--ease);
 }
 input:not([type='checkbox']),
-select,
-textarea {
+select {
   border-radius: 999px;
+}
+select {
+  min-height: 58px;
+  padding-right: 52px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23e9d5a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+textarea {
+  border-radius: 20px;
 }
 input:not([type='checkbox']):focus,
 select:focus,
@@ -379,4 +412,8 @@ textarea {
 }
 select {
   cursor: pointer;
+}
+option {
+  color: var(--text);
+  background: var(--surface-raised);
 }

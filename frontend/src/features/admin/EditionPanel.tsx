@@ -1,5 +1,5 @@
 import type { AdminContext } from './types';
-import { Copy } from 'lucide-react';
+import { Copy, Trash2 } from 'lucide-react';
 import { EditionForm } from '../AdminForms';
 export function EditionPanel({
   edition,
@@ -7,15 +7,31 @@ export function EditionPanel({
   mutation,
   action,
   setDuplicate,
-}: Pick<AdminContext, 'edition' | 'id' | 'mutation' | 'action' | 'setDuplicate'>) {
+  deleteEdition,
+}: Pick<
+  AdminContext,
+  'edition' | 'id' | 'mutation' | 'action' | 'setDuplicate' | 'deleteEdition'
+>) {
   return (
     <section className="admin-panel">
       <div className="panel-heading">
         <h2>Configuração da edição</h2>
-        <button className="text-link" onClick={() => setDuplicate(true)}>
-          <Copy size={16} />
-          Duplicar para o próximo ano
-        </button>
+        <div className="panel-heading-actions">
+          <button className="text-link" onClick={() => setDuplicate(true)}>
+            <Copy size={16} />
+            Duplicar para o próximo ano
+          </button>
+            {edition.status !== 'ARCHIVED' && deleteEdition && (
+            <button
+              className="text-link danger"
+              onClick={deleteEdition}
+              disabled={mutation.isPending}
+            >
+              <Trash2 size={16} />
+              Excluir edição
+            </button>
+          )}
+        </div>
       </div>
       <EditionForm
         key={id}

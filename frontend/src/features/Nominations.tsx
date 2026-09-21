@@ -41,6 +41,7 @@ export function Nominations() {
         manual_name: n.manual_name ?? undefined,
         display_name: n.display_name ?? n.manual_name ?? 'Membro',
       }));
+  const submitted = !!cat && !!mine.data?.some((n) => n.category_id === cat.id);
   const setChosen = (choices: Choice[]) =>
     setDrafts((previous) => ({ ...previous, [draftKey]: choices }));
   const active = !!e.data && isOpen(e.data, 'nominations');
@@ -52,7 +53,7 @@ export function Nominations() {
         items: chosen.map(({ discord_user_id, manual_name }) => ({ discord_user_id, manual_name })),
       }),
     onSuccess: () => {
-      setMessage('Indicações salvas. Você pode atualizá-las enquanto a fase estiver aberta.');
+      setMessage('Indicações enviadas. Você pode atualizá-las enquanto a fase estiver aberta.');
       client.invalidateQueries({ queryKey: ['nominations'] });
     },
   });
@@ -74,7 +75,7 @@ export function Nominations() {
       <div className="page public-page nomination-page">
         <PageHeading
           eyebrow={`BALLON D’OR SPFC · ${e.data?.year ?? ''}`}
-          title="O reconhecimento começa com você."
+          title="Indicação"
           description="Indique quem marcou o ano. Sua sugestão ajuda a construir a lista de indicados oficiais."
         />
         {!demoMode && !auth.identity ? (
@@ -138,69 +139,85 @@ export function Nominations() {
                             : 'Membro do Discord'}
                         </small>
                       </span>
-                      <button
-                        className="icon-button"
-                        aria-label={`Remover ${m.display_name}`}
-                        onClick={() => setChosen(chosen.filter((_, n) => n !== i))}
-                      >
-                        <X size={18} />
-                      </button>
+                      {!submitted && (
+                        <button
+                          className="icon-button"
+                          aria-label={`Remover ${m.display_name}`}
+                          onClick={() => setChosen(chosen.filter((_, n) => n !== i))}
+                        >
+                          <X size={18} />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
-                {chosen.length < cat.max_nominations && (
+                {submitted ? (
+                  <Notice message="Indicações enviadas. Esta categoria não pode ser editada." />
+                ) : (
                   <>
-                    <MemberSearch onSelect={select} />
-                    <button className="text-link" onClick={() => setManual(!manual)}>
-                      <Plus size={16} />
-                      Não encontrou? Indicar manualmente
-                    </button>
-                    {manual && (
-                      <form
-                        className="manual-form"
-                        onSubmit={form.handleSubmit((v) => {
-                          if (chosen.length >= cat.max_nominations) return;
-                          if (
-                            chosen.some(
-                              (c) => c.manual_name?.toLowerCase() === v.name.toLowerCase(),
-                            )
-                          )
-                            return;
-                          setChosen([...chosen, { manual_name: v.name, display_name: v.name }]);
-                          setManual(false);
-                          form.reset();
-                        })}
+                    {chosen.length < cat.max_nominations && <MemberSearch onSelect={select} />}
+                    <div
+                      className={`nomination-actions${chosen.length >= cat.max_nominations ? ' full' : ''}`}
+                    >
+                      {chosen.length < cat.max_nominations && (
+                        <div className="nomination-manual-action">
+                          <button className="text-link" onClick={() => setManual(!manual)}>
+                            <Plus size={16} />
+                            Não encontrou? Indicar manualmente
+                          </button>
+                          {manual && (
+                            <form
+                              className="manual-form"
+                              onSubmit={form.handleSubmit((v) => {
+                                if (chosen.length >= cat.max_nominations) return;
+                                if (
+                                  chosen.some(
+                                    (c) => c.manual_name?.toLowerCase() === v.name.toLowerCase(),
+                                  )
+                                )
+                                  return;
+                                setChosen([
+                                  ...chosen,
+                                  { manual_name: v.name, display_name: v.name },
+                                ]);
+                                setManual(false);
+                                form.reset();
+                              })}
+                            >
+                              <label>
+                                Nome para revisão
+                                <input {...form.register('name')} />
+                              </label>
+                              {form.formState.errors.name && (
+                                <p role="alert">{form.formState.errors.name.message}</p>
+                              )}
+                              <p>
+                                Esta sugestão precisa ser associada a um membro real pela
+                                administração.
+                              </p>
+                              <button className="button button-outline">
+                                Adicionar sugestão
+                                <Plus size={16} />
+                              </button>
+                            </form>
+                          )}
+                        </div>
+                      )}
+                      <button
+                        className="button"
+                        disabled={save.isPending || chosen.length === 0}
+                        onClick={() =>
+                          demoMode
+                            ? setMessage('Este preview não envia indicações reais.')
+                            : save.mutate()
+                        }
                       >
-                        <label>
-                          Nome para revisão
-                          <input {...form.register('name')} />
-                        </label>
-                        {form.formState.errors.name && (
-                          <p role="alert">{form.formState.errors.name.message}</p>
-                        )}
-                        <p>
-                          Esta sugestão precisa ser associada a um membro real pela administração.
-                        </p>
-                        <button className="button button-outline">
-                          Adicionar sugestão
-                          <Plus size={16} />
-                        </button>
-                      </form>
-                    )}
+                        {save.isPending ? 'Enviando…' : 'Enviar indicações'}
+                        <Check size={18} />
+                      </button>
+                    </div>
                   </>
                 )}
-                <button
-                  className="button"
-                  disabled={save.isPending}
-                  onClick={() =>
-                    demoMode
-                      ? setMessage('Este preview não envia indicações reais.')
-                      : save.mutate()
-                  }
-                >
-                  {save.isPending ? 'Salvando…' : 'Salvar indicações'}
-                  <Check size={18} />
-                </button>
                 {(message || save.error) && <Notice message={message || save.error!.message} />}
               </section>
             )}

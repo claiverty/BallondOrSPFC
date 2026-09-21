@@ -22,6 +22,7 @@ import {
   CalendarDays,
   ClipboardList,
   ContactRound,
+  ChevronDown,
   FileCheck2,
   Image,
   LayoutDashboard,
@@ -86,12 +87,14 @@ export function Admin() {
   const [categoryId, setCategoryId] = useState('');
   const [message, setMessage] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [editionMenuOpen, setEditionMenuOpen] = useState(false);
   const allowed = demoMode || (!!auth.identity && auth.identity.role !== 'user');
   const selectEdition = useCallback(
     (editionId: string) => {
       window.localStorage.setItem('admin-selected-edition', editionId);
       setStoredEdition(editionId);
       setSearchParams({ edition: editionId });
+      setEditionMenuOpen(false);
     },
     [setSearchParams],
   );
@@ -178,7 +181,11 @@ export function Admin() {
       return request<{ id?: string }>(path, method, body);
     },
     onSuccess: (data, variables) => {
-      setMessage('Alteração salva e registrada na auditoria.');
+      setMessage(
+        variables.method === 'DELETE'
+          ? 'Edição excluída.'
+          : 'Alteração salva e registrada na auditoria.',
+      );
       setCreating(false);
       setDuplicate(false);
       setEditCat(undefined);
@@ -187,6 +194,15 @@ export function Admin() {
         (variables.path === '/admin/editions' || variables.path.endsWith('/duplicate'))
       )
         selectEdition(data.id);
+      if (variables.method === 'DELETE') {
+        const replacement = editions.data?.find((item) => item.id !== id);
+        if (replacement) selectEdition(replacement.id);
+        else {
+          window.localStorage.removeItem('admin-selected-edition');
+          setStoredEdition('');
+          setSearchParams({});
+        }
+      }
       client.invalidateQueries({ queryKey: ['admin'] });
       client.invalidateQueries({ queryKey: ['editions'] });
       client.invalidateQueries({ queryKey: ['edition'] });
@@ -196,6 +212,12 @@ export function Admin() {
   const action = (path: string, body?: unknown, method = 'POST') => {
     setMessage('');
     mutation.mutate({ path, body, method });
+  };
+  const deleteEdition = () => {
+    if (!id || !edition || edition.status === 'ARCHIVED') return;
+    if (!window.confirm(`Excluir a edição ${edition.year}? Essa ação não pode ser desfeita.`))
+      return;
+    action(`/admin/editions/${id}`, undefined, 'DELETE');
   };
   if (auth.loading) return <State loading>{null}</State>;
   if (!allowed)
@@ -255,37 +277,66 @@ export function Admin() {
           Control center
           <span />
         </h2>
-        <label>
+        <label className="edition-picker-label">
           Edição ativa
-          <select
-            value={id ?? ''}
-            onChange={(e) => {
-              selectEdition(e.target.value);
-              setEditCat(undefined);
-              setCategoryId('');
-              setSidebarOpen(false);
-            }}
-          >
-            {editions.data?.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.year} · {e.name}
-              </option>
-            ))}
-          </select>
+          <div className="edition-picker">
+            <button
+              type="button"
+              className="edition-picker-trigger"
+              aria-haspopup="listbox"
+              aria-expanded={editionMenuOpen}
+              aria-label={`Edição ativa: ${edition ? `${edition.year} · ${edition.name}` : 'Selecionar edição'}`}
+              onClick={() => setEditionMenuOpen((open) => !open)}
+            >
+              <span>{edition ? `${edition.year} · ${edition.name}` : 'Selecionar edição'}</span>
+              <ChevronDown className={editionMenuOpen ? 'open' : ''} size={18} aria-hidden="true" />
+            </button>
+            {editionMenuOpen && (
+              <div className="edition-picker-menu" role="listbox" aria-label="Edições disponíveis">
+                {editions.data?.map((option) => (
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={option.id === id}
+                    className={option.id === id ? 'active' : ''}
+                    key={option.id}
+                    onClick={() => {
+                      selectEdition(option.id);
+                      setEditCat(undefined);
+                      setCategoryId('');
+                      setSidebarOpen(false);
+                    }}
+                  >
+                    {option.year} · {option.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </label>
         <nav aria-label="Administração">
           {tabs.map(([key, label, Icon]) => (
             <NavLink
               key={key}
               to={`/admin/${key}${id ? `?edition=${id}` : ''}`}
-              onClick={() => setSidebarOpen(false)}
+              onClick={() => {
+                setEditionMenuOpen(false);
+                setSidebarOpen(false);
+              }}
             >
               <Icon size={18} aria-hidden="true" />
               {label}
             </NavLink>
           ))}
         </nav>
-        <Link className="text-link" to="/" onClick={() => setSidebarOpen(false)}>
+        <Link
+          className="text-link"
+          to="/"
+          onClick={() => {
+            setEditionMenuOpen(false);
+            setSidebarOpen(false);
+          }}
+        >
           Ver site público
           <ArrowUpRight size={16} />
         </Link>
@@ -394,6 +445,7 @@ export function Admin() {
                       mutation={mutation}
                       action={action}
                       setDuplicate={setDuplicate}
+                      deleteEdition={demoMode ? undefined : deleteEdition}
                     />
                   )}
                   {tab === 'categories' && (
@@ -446,6 +498,7 @@ export function Admin() {
                     <MembersPanel
                       action={action}
                       auth={auth}
+                      edition={edition}
                       members={members}
                       setMessage={setMessage}
                     />

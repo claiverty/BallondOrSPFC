@@ -103,7 +103,7 @@ export const demoCategories: Category[] = categoryData.map(
     image_url: demoMembers[indices[0]].avatar_url,
     display_order: i,
     max_nominees: 5,
-    max_nominations: 1,
+    max_nominations: 3,
     vote_required: true,
     allow_self_nomination: false,
     archived: false,

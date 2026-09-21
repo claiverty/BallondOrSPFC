@@ -26,6 +26,24 @@
   border-bottom: 1px solid var(--border);
   padding-bottom: 32px;
 }
+.stage-notice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  margin-bottom: 32px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.stage-notice p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.stage-notice .text-link {
+  margin-left: auto;
+}
 .category-jump a {
   border: 1px solid var(--border);
   padding: 10px 16px;
@@ -183,10 +201,6 @@
 }
 .empty p {
   margin: 12px 0;
-}
-.filter-label {
-  max-width: 350px;
-  margin-bottom: 32px;
 }
 .winner-editions {
   display: grid;

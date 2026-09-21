@@ -44,6 +44,7 @@ export interface AdminContext {
   mutation: { isPending: boolean };
   action: (path: string, body?: unknown, method?: string) => void;
   setDuplicate: Dispatch<SetStateAction<boolean>>;
+  deleteEdition: (() => void) | undefined;
   editCat: Category | null | undefined;
   setEditCat: Dispatch<SetStateAction<Category | null | undefined>>;
   category: Category | undefined;

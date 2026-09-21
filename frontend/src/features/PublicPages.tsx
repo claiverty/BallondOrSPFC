@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowUpRight, ArrowRight, Medal } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
@@ -24,6 +23,9 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
   const { slug } = useParams();
   const e = useEdition(slug);
   const cats = useCategories(e.data);
+  const votingFinished =
+    !!e.data &&
+    ['VOTING_CLOSED', 'RESULTS_READY', 'RESULTS_PUBLISHED', 'ARCHIVED'].includes(e.data.status);
   return (
     <State loading={e.isLoading || cats.isLoading} error={e.error ?? cats.error}>
       <div className="page public-page">
@@ -40,6 +42,15 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
               : 'O melhor da comunidade está aqui. Agora, o próximo capítulo é com você.'
           }
         />
+        {votingFinished && (
+          <div className="stage-notice">
+            <span className="eyebrow">A VOTAÇÃO FOI ENCERRADA</span>
+            <p>Confira os vencedores no Hall of Fame.</p>
+            <Link className="text-link" to="/hall-of-fame">
+              Ir para o Hall of Fame <ArrowRight size={16} />
+            </Link>
+          </div>
+        )}
         <div className="category-jump">
           {cats.data?.map((c) => (
             <a key={c.id} href={`#${c.slug}`}>
@@ -91,15 +102,13 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
 export function Winners({ hall = false }: { hall?: boolean }) {
   const { slug } = useParams();
   const winners = useWinners(hall ? undefined : slug);
-  const [filter, setFilter] = useState('');
-  const rows = winners.data?.filter((w) => !filter || w.category_slug === filter);
   const editions = Array.from(
-    (rows ?? []).reduce((groups, winner) => {
+    (winners.data ?? []).reduce((groups, winner) => {
       const current = groups.get(winner.year) ?? [];
       current.push(winner);
       groups.set(winner.year, current);
       return groups;
-    }, new Map<number, NonNullable<typeof rows>[number][]>()),
+    }, new Map<number, NonNullable<typeof winners.data>[number][]>()),
   ).sort(([a], [b]) => b - a);
   return (
     <State loading={winners.isLoading} error={winners.error}>
@@ -113,22 +122,7 @@ export function Winners({ hall = false }: { hall?: boolean }) {
               : 'A comunidade escolheu. Este é o lugar de quem merece ser lembrado.'
           }
         />
-        {hall && (
-          <label className="filter-label">
-            Filtrar categoria
-            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-              <option value="">Todas as categorias</option>
-              {Array.from(
-                new Map(winners.data?.map((w) => [w.category_slug, w.category_name])).entries(),
-              ).map(([key, name]) => (
-                <option key={key} value={key}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        {!rows?.length ? (
+        {!winners.data?.length ? (
           <div className="empty">
             <Medal size={36} aria-hidden="true" />
             <h2>O grande momento está chegando.</h2>
@@ -144,9 +138,6 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                 <div className="winner-edition-heading">
                   <span className="eyebrow">BALLON D’OR SPFC</span>
                   <h2>Vencedores — {year}</h2>
-                  <Link className="text-link" to={`/${year}/winners`}>
-                    Ver edição <ArrowUpRight size={18} />
-                  </Link>
                 </div>
                 <div className="winners-grid">
                   {yearRows.map((w) => {

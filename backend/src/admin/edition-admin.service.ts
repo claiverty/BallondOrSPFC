@@ -19,10 +19,8 @@ export class EditionAdminService {
       await c.query('select pg_advisory_xact_lock(9872026)');
       if (id) {
         const e = await lockEdition(c, id, true);
-        if (['RESULTS_PUBLISHED', 'ARCHIVED'].includes(e.status))
-          throw new ConflictException('Esta edição já foi publicada.');
-        if (e.status !== 'DRAFT' && e.status !== 'VOTING_CLOSED' && e.status !== 'RESULTS_READY')
-          throw new ConflictException('As configurações estão bloqueadas durante o processo.');
+        if (e.status === 'ARCHIVED')
+          throw new ConflictException('Edições arquivadas não podem mais ser alteradas.');
       }
       if (data.is_current)
         await c.query('update awards.editions set is_current=false where is_current');
@@ -55,6 +53,35 @@ export class EditionAdminService {
         'Duplicação sem participantes ou votos',
       );
       return e;
+    });
+  }
+  async deleteEdition(actor: string, id: string) {
+    return this.db.transaction(async (c) => {
+      await c.query('select pg_advisory_xact_lock(9872026)');
+      const e = await lockEdition(c, id, true);
+      if (e.status === 'ARCHIVED')
+        throw new ConflictException('Edições arquivadas não podem ser excluídas.');
+      const activity = await c.query<{ count: number }>(
+        `select (
+          (select count(*) from awards.nomination_items where edition_id=$1) +
+          (select count(*) from awards.ballots where edition_id=$1) +
+          (select count(*) from awards.result_snapshots where edition_id=$1)
+        )::int count`,
+        [id],
+      );
+      if (activity.rows[0]?.count)
+        throw new ConflictException('Esta edição já possui participações e não pode ser excluída.');
+      await c.query('delete from awards.media_assets where edition_id=$1', [id]);
+      await c.query('delete from awards.audit_logs where edition_id=$1', [id]);
+      await c.query('delete from awards.category_nominees where edition_id=$1', [id]);
+      await c.query('delete from awards.categories where edition_id=$1', [id]);
+      await c.query('delete from awards.editions where id=$1', [id]);
+      await c.query(
+        `insert into awards.audit_logs(actor_id,action,entity_id,reason,details)
+         values($1,'edition.deleted',$2,'Exclusão de edição em rascunho',$3)`,
+        [actor, id, JSON.stringify({ status: e.status })],
+      );
+      return { id, deleted: true };
     });
   }
   async transition(actor: string, id: string, data: z.output<typeof TransitionSchema>) {

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -39,21 +40,19 @@ export function EditionForm({
   const dateFields = [
     'nominations_open_at',
     'nominations_close_at',
-    'nominees_reveal_at',
     'voting_open_at',
     'voting_close_at',
-    'ceremony_at',
-    'publish_at',
   ] as const;
   const labels = [
     'Início das indicações',
     'Fim das indicações',
-    'Reveal dos indicados',
     'Início da votação',
     'Fim da votação',
-    'Data da cerimônia',
-    'Publicação planejada',
   ];
+  const year = f.watch('year');
+  useEffect(() => {
+    if (Number.isInteger(year)) f.setValue('slug', String(year), { shouldDirty: false });
+  }, [f, year]);
   return (
     <form className="admin-form" onSubmit={f.handleSubmit(onSave)}>
       <div className="form-grid">
@@ -70,13 +69,10 @@ export function EditionForm({
           <input {...f.register('name')} />
         </label>
         <label>
-          Slug / endereço
-          <input {...f.register('slug')} />
-        </label>
-        <label>
           Ano
           <input type="number" {...f.register('year', { valueAsNumber: true })} />
         </label>
+        <input type="hidden" {...f.register('slug')} />
         <label>
           Tagline
           <input {...f.register('tagline')} />
@@ -95,6 +91,10 @@ export function EditionForm({
             />
           </label>
         ))}
+        <p className="form-hint full">
+          Configure apenas os períodos de indicações e votação. O reveal dos indicados e a
+          publicação dos resultados são feitos manualmente nas etapas administrativas.
+        </p>
         <label>
           URL da cerimônia
           <input type="url" {...f.register('ceremony_url', { setValueAs: (v) => v || null })} />
@@ -177,7 +177,7 @@ export function CategoryForm({
       slug: '',
       description: '',
       max_nominees: 5,
-      max_nominations: 1,
+      max_nominations: 3,
       vote_required: true,
       allow_self_nomination: false,
       display_order: 0,

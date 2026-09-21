@@ -383,6 +383,72 @@
     display: none;
   }
 }
+@media (min-width: 641px) and (max-width: 1100px) {
+  .admin-layout {
+    display: flex;
+    flex-direction: column;
+  }
+  .admin-mobile-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 58px;
+    padding: 7px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-mobile-controls .eyebrow {
+    margin: 0;
+    letter-spacing: 1.5px;
+  }
+  .admin-sidebar-toggle {
+    color: var(--gold-light);
+  }
+  .admin-sidebar {
+    display: block;
+    position: fixed;
+    z-index: 22;
+    top: 76px;
+    bottom: 0;
+    left: 0;
+    width: min(320px, 42vw);
+    padding: 24px 22px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    transform: translateX(-102%);
+    transition: transform 220ms ease;
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-sidebar-close {
+    display: inline-flex;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: var(--gold-light);
+  }
+  .admin-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    z-index: 21;
+    inset: 76px 0 0;
+    width: 100%;
+    border: 0;
+    background: #000a;
+  }
+  .admin-content {
+    padding: 28px 32px 52px;
+  }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .admin-sidebar {
+    top: 89px;
+  }
+  .admin-sidebar-backdrop {
+    inset: 89px 0 0;
+  }
+}
 @media (max-width: 640px) {
   body {
     font-size: 14px;
@@ -936,6 +1002,14 @@
   .nomination-workspace h2 {
     font-size: 36px;
   }
+  .nomination-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .nomination-actions > .button {
+    width: 100%;
+  }
   .admin-layout {
     display: flex;
     flex-direction: column;
@@ -963,7 +1037,7 @@
     top: 72px;
     bottom: 0;
     left: 0;
-    width: min(320px, 86vw);
+    width: min(320px, 78vw);
     padding: 24px 22px;
     overflow-y: auto;
     border-right: 1px solid var(--border);

@@ -101,12 +101,13 @@ export class DiscordService {
     return m;
   }
   async search(q: string) {
-    const key = q.toLowerCase();
+    const normalized = q.trim().replace(/^@+/, '');
+    const key = normalized.toLowerCase();
     const cached = this.cache.get(key);
     if (cached && cached.until > Date.now()) return cached.value as Omit<Nominee, 'id'>[];
     const members = z
       .array(MemberSchema)
-      .parse(await this.request(`/members/search?query=${encodeURIComponent(q)}&limit=8`));
+      .parse(await this.request(`/members/search?query=${encodeURIComponent(normalized)}&limit=8`));
     const value = members.filter((m) => !m.user.bot && !m.pending).map(memberSnapshot);
     if (this.cache.size >= 100) this.cache.delete(this.cache.keys().next().value!);
     this.cache.set(key, { until: Date.now() + 15000, value });

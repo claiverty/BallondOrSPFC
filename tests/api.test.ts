@@ -256,6 +256,9 @@ describe('Nest HTTP and transactional workflows', () => {
     const mine = (await app.inject({ url: `/api/nominations/me?edition_id=${e}`, headers })).json();
     expect(mine[0].discord_user_id).toBe(payload.items[0].discord_user_id);
     expect(
+      (await app.inject({ method: 'POST', url: '/api/nominations', headers, payload })).statusCode,
+    ).toBe(409);
+    expect(
       (
         await app.inject({
           method: 'POST',
