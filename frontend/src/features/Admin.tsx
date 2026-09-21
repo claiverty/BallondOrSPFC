@@ -26,6 +26,7 @@ import {
   Image,
   LayoutDashboard,
   ListOrdered,
+  Menu,
   Plus,
   Settings,
   ShieldCheck,
@@ -84,6 +85,7 @@ export function Admin() {
   const [reason, setReason] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [message, setMessage] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const allowed = demoMode || (!!auth.identity && auth.identity.role !== 'user');
   const selectEdition = useCallback(
     (editionId: string) => {
@@ -220,7 +222,34 @@ export function Admin() {
   const category = categories.data?.find((c) => c.id === categoryId) ?? categories.data?.[0];
   return (
     <div className="admin-layout">
-      <aside className="admin-sidebar">
+      <div className="admin-mobile-controls" aria-label="Controles da administração">
+        <button
+          className="icon-button admin-sidebar-toggle"
+          aria-label="Abrir menu administrativo"
+          aria-expanded={sidebarOpen}
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu size={22} aria-hidden="true" />
+        </button>
+        <span className="eyebrow">
+          ADMINISTRAÇÃO / {tabs.find((t) => t[0] === tab)?.[1].toUpperCase() ?? 'VISÃO GERAL'}
+        </span>
+      </div>
+      {sidebarOpen && (
+        <button
+          className="admin-sidebar-backdrop"
+          aria-label="Fechar menu administrativo"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      <aside className={`admin-sidebar${sidebarOpen ? ' open' : ''}`}>
+        <button
+          className="icon-button admin-sidebar-close"
+          aria-label="Fechar menu administrativo"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <X size={20} aria-hidden="true" />
+        </button>
         <span className="eyebrow">BALLON D’OR SPFC</span>
         <h2>
           Control center
@@ -234,6 +263,7 @@ export function Admin() {
               selectEdition(e.target.value);
               setEditCat(undefined);
               setCategoryId('');
+              setSidebarOpen(false);
             }}
           >
             {editions.data?.map((e) => (
@@ -245,13 +275,17 @@ export function Admin() {
         </label>
         <nav aria-label="Administração">
           {tabs.map(([key, label, Icon]) => (
-            <NavLink key={key} to={`/admin/${key}${id ? `?edition=${id}` : ''}`}>
+            <NavLink
+              key={key}
+              to={`/admin/${key}${id ? `?edition=${id}` : ''}`}
+              onClick={() => setSidebarOpen(false)}
+            >
               <Icon size={18} aria-hidden="true" />
               {label}
             </NavLink>
           ))}
         </nav>
-        <Link className="text-link" to="/">
+        <Link className="text-link" to="/" onClick={() => setSidebarOpen(false)}>
           Ver site público
           <ArrowUpRight size={16} />
         </Link>

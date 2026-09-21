@@ -5,6 +5,15 @@
   margin: auto;
   min-height: 80vh;
 }
+.admin-mobile-controls {
+  display: none;
+}
+.admin-sidebar-backdrop {
+  display: none;
+}
+.admin-sidebar-close {
+  display: none;
+}
 .admin-sidebar {
   background: #151710;
   border-right: 1px solid var(--border);
@@ -94,6 +103,7 @@
 .admin-stats > div {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: 28px;
   padding: 24px;
 }
 .admin-stats small {
@@ -111,6 +121,7 @@
 }
 .admin-panel {
   border: 1px solid var(--border);
+  border-radius: 28px;
   background: var(--surface);
   padding: 28px;
   margin: 24px 0;
