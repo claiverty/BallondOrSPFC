@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Analytics } from '@vercel/analytics/react';
 import { useEffect } from 'react';
 import '@fontsource/cormorant-garamond/latin-400.css';
 import '@fontsource/cormorant-garamond/latin-500.css';
@@ -93,6 +94,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               </Route>
             </Routes>
           </React.Suspense>
+          <Analytics />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
