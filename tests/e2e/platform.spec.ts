@@ -50,12 +50,10 @@ test('admin preview and archive stay isolated from live actions', async ({ page 
   await expect(page.getByRole('heading', { name: 'Categorias', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Nova categoria', exact: true }).click();
   await expect(page.getByLabel('Máximo de indicados')).toHaveValue('5');
-  await page.goto('/2026/winners');
-  await expect(
-    page.getByRole('heading', { name: 'O grande momento está chegando.' }),
-  ).toBeVisible();
   await page.goto('/2025/winners');
-  await expect(page.locator('.winner-card')).toHaveCount(6);
+  await expect(page).toHaveURL(/\/hall-of-fame$/);
+  await expect(page.getByRole('heading', { name: 'Hall of Fame.' })).toBeVisible();
+  await expect(page.locator('.winner-card')).toHaveCount(9);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 test('reduced motion and member pages render without browser errors', async ({ page }) => {
@@ -70,11 +68,9 @@ test('reduced motion and member pages render without browser errors', async ({ p
 
 test('nominations search, manual fallback and category navigation work', async ({ page }) => {
   await page.goto('/2027/nominations');
-  await expect(
-    page.getByRole('heading', { name: 'O reconhecimento começa com você.' }),
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Indicação', exact: true })).toBeVisible();
   await page.getByLabel('Buscar membro do servidor').fill('clai');
-  await page.getByRole('button', { name: 'Claiverty @claiverty' }).click();
+  await page.getByRole('option', { name: /Claiverty @claiverty/ }).click();
   await expect(page.locator('.chosen-members')).toContainText('Claiverty');
   await page.getByRole('button', { name: 'Staff do Ano', exact: true }).click();
   await page.getByRole('button', { name: 'Não encontrou? Indicar manualmente' }).click();
@@ -83,7 +79,7 @@ test('nominations search, manual fallback and category navigation work', async (
   await expect(page.locator('.chosen-members')).toContainText('revisão obrigatória');
   await page.getByRole('button', { name: 'Membro do Ano', exact: true }).click();
   await expect(page.locator('.chosen-members')).toContainText('Claiverty');
-  await page.getByRole('button', { name: 'Salvar indicações' }).click();
+  await page.getByRole('button', { name: 'Enviar indicações' }).click();
   await expect(
     page.getByRole('status').filter({ hasText: 'não envia indicações reais' }),
   ).toBeVisible();
