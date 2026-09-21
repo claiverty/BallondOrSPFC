@@ -45,9 +45,9 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
         {votingFinished && (
           <div className="stage-notice">
             <span className="eyebrow">A VOTAÇÃO FOI ENCERRADA</span>
-            <p>Confira os vencedores no Hall of Fame.</p>
+            <p>Confira os vencedores no Hall da Fama.</p>
             <Link className="text-link" to="/hall-of-fame">
-              Ir para o Hall of Fame <ArrowRight size={16} />
+              Ir para o Hall da Fama <ArrowRight size={16} />
             </Link>
           </div>
         )}
@@ -115,7 +115,7 @@ export function Winners({ hall = false }: { hall?: boolean }) {
       <div className="page public-page">
         <PageHeading
           eyebrow={hall ? 'O RECONHECIMENTO É ETERNO' : `BALLON D’OR SPFC · ${slug}`}
-          title={hall ? 'Hall of Fame.' : 'Eles fizeram história.'}
+          title={hall ? 'Hall da Fama.' : 'Eles fizeram história.'}
           description={
             hall
               ? 'Os nomes que deixaram sua marca, edição após edição.'

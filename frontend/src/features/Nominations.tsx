@@ -53,7 +53,7 @@ export function Nominations() {
         items: chosen.map(({ discord_user_id, manual_name }) => ({ discord_user_id, manual_name })),
       }),
     onSuccess: () => {
-      setMessage('Indicações enviadas. Você pode atualizá-las enquanto a fase estiver aberta.');
+      setMessage('Indicações enviadas. Esta categoria não pode ser editada.');
       client.invalidateQueries({ queryKey: ['nominations'] });
     },
   });
@@ -97,11 +97,7 @@ export function Nominations() {
                 <span>{cats.data?.find((c) => c.id === n.category_id)?.name}</span>
                 <strong>{n.display_name ?? n.manual_name}</strong>
                 <span>
-                  {n.status === 'pending_review'
-                    ? 'Em revisão'
-                    : n.status === 'approved'
-                      ? 'Aprovada'
-                      : 'Rejeitada'}
+                  Recebida
                 </span>
               </div>
             ))}
@@ -135,7 +131,7 @@ export function Nominations() {
                         {m.display_name}
                         <small>
                           {m.manual_name
-                            ? 'Indicação manual · revisão obrigatória'
+                            ? 'Indicação manual · precisa ser associada ao Discord'
                             : 'Membro do Discord'}
                         </small>
                       </span>
@@ -191,10 +187,10 @@ export function Nominations() {
                               {form.formState.errors.name && (
                                 <p role="alert">{form.formState.errors.name.message}</p>
                               )}
-                              <p>
-                                Esta sugestão precisa ser associada a um membro real pela
-                                administração.
-                              </p>
+                                <p>
+                                  Esta sugestão precisa ser associada a um membro real antes da
+                                  classificação.
+                                </p>
                               <button className="button button-outline">
                                 Adicionar sugestão
                                 <Plus size={16} />

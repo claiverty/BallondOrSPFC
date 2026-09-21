@@ -43,6 +43,14 @@ const ReorderCategoriesSchema = z.object({
     .max(100)
     .refine((ids) => new Set(ids).size === ids.length),
 });
+const ReorderNomineesSchema = z.object({
+  nominee_ids: z
+    .array(id)
+    .min(1)
+    .max(20)
+    .refine((ids) => new Set(ids).size === ids.length),
+  reason: z.string().trim().min(3).max(500),
+});
 @ApiTags('Administration')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, AdminGuard)
@@ -165,6 +173,16 @@ class AdminController {
     @Body(new ZodPipe(OfficialNomineeSchema)) b: z.output<typeof OfficialNomineeSchema>,
   ) {
     return this.nomineesService.official(r.identity.id, e, c, b);
+  }
+  @ApiZodBody(ReorderNomineesSchema)
+  @Patch('editions/:edition/categories/:category/nominees/reorder')
+  reorderOfficial(
+    @Req() r: AuthRequest,
+    @Param('edition', ParseUUIDPipe) e: string,
+    @Param('category', ParseUUIDPipe) c: string,
+    @Body(new ZodPipe(ReorderNomineesSchema)) b: z.output<typeof ReorderNomineesSchema>,
+  ) {
+    return this.nomineesService.reorderOfficial(r.identity.id, e, c, b.nominee_ids, b.reason);
   }
   @ApiZodBody(ReasonSchema)
   @Delete('editions/:edition/categories/:category/nominees/:nominee')

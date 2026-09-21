@@ -53,7 +53,7 @@ export function CategoriesPanel({
             { transform: `translateY(${distance}px)` },
             { transform: 'translateY(0)' },
           ],
-          { duration: 280, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+          { duration: 360, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' },
         );
       });
     }
@@ -135,9 +135,9 @@ export function CategoriesPanel({
           />
         </section>
       ) : (
-        orderedCategories.map((c) => (
+        orderedCategories.map((c, index) => (
           <div
-            className={`admin-list-row${draggedId === c.id ? ' is-dragging' : ''}`}
+            className={`admin-list-row category-arrange-row${draggedId === c.id ? ' is-dragging' : ''}`}
             key={c.id}
             ref={(element) => {
               if (element) cardRefs.current.set(c.id, element);
@@ -152,7 +152,7 @@ export function CategoriesPanel({
               setDraggedId(null);
             }}
           >
-            <span className="outline-number">{String(c.display_order + 1).padStart(2, '0')}</span>
+            <span className="outline-number">{String(index + 1).padStart(2, '0')}</span>
             <div>
               <h3>
                 {c.name}

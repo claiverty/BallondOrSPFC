@@ -52,7 +52,7 @@ test('admin preview and archive stay isolated from live actions', async ({ page 
   await expect(page.getByLabel('Máximo de indicados')).toHaveValue('5');
   await page.goto('/2025/winners');
   await expect(page).toHaveURL(/\/hall-of-fame$/);
-  await expect(page.getByRole('heading', { name: 'Hall of Fame.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Hall da Fama.' })).toBeVisible();
   await expect(page.locator('.winner-card')).toHaveCount(9);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

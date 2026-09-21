@@ -45,7 +45,7 @@ const tabs = [
   ['edition', 'Edição', Settings],
   ['categories', 'Categorias', ListOrdered],
   ['nominations', 'Indicações', ClipboardList],
-  ['nominees', 'Indicados oficiais', Users],
+  ['nominees', 'Classificação', Users],
   ['voting', 'Votação', FileCheck2],
   ['results', 'Resultados', Trophy],
   ['analytics', 'Estatísticas', BarChart3],
@@ -465,6 +465,7 @@ export function Admin() {
                       reason={reason}
                       setReason={setReason}
                       action={action}
+                      mutation={mutation}
                       category={category}
                       setCategoryId={setCategoryId}
                       setMessage={setMessage}
@@ -475,9 +476,8 @@ export function Admin() {
                       categories={categories}
                       key={id}
                       id={id}
-                      reason={reason}
-                      setReason={setReason}
                       action={action}
+                      mutation={mutation}
                     />
                   )}
                   {tab === 'results' && (

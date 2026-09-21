@@ -1112,6 +1112,10 @@
     gap: 16px;
     flex-wrap: wrap;
   }
+  .category-arrange-row {
+    border-radius: 22px;
+    padding: 12px;
+  }
   .admin-list-row > .outline-number {
     font-size: 32px;
   }
@@ -1134,6 +1138,52 @@
   .review-row {
     font-size: 11px;
     gap: 12px;
+  }
+  .nominee-classification-list {
+    border-radius: 22px;
+  }
+  .nominee-classification-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+  }
+  .nominee-classification-row {
+    grid-template-columns: minmax(0, 1fr) 40px 40px;
+    gap: 10px;
+    padding: 12px 16px;
+  }
+  .nominee-classification-row:hover {
+    padding-inline: 16px;
+  }
+  .nominee-classification-person {
+    gap: 8px;
+  }
+  .nominee-classification-rank {
+    flex-basis: 24px;
+    font-size: 10px;
+  }
+  .nominee-classification-avatar {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .nominee-classification-person strong {
+    font-size: 11px;
+  }
+  .nominee-remove-button {
+    width: 40px;
+    height: 40px;
+  }
+  .nomination-ranking-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .nomination-ranking-count,
+  .nomination-ranking-action {
+    grid-column: 2;
+    justify-self: start;
+    text-align: left;
   }
   .analytics-row > div {
     min-width: 100%;

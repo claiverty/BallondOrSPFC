@@ -5,12 +5,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Category, OfficialNomineeSchema, ReviewNominationSchema } from '@awards/contracts';
+import {
+  Category,
+  EditionStatus,
+  OfficialNomineeSchema,
+  ReviewNominationSchema,
+} from '@awards/contracts';
 import { z } from 'zod';
 import { PoolClient } from 'pg';
 import { Database } from '../common/database';
 import { audit, category, lockEdition } from '../common/domain';
 import { DiscordService, memberSnapshot, validateEligibility } from '../discord/discord';
+const nomineeEditableStatuses: readonly EditionStatus[] = [
+  'DRAFT',
+  'NOMINATIONS_OPEN',
+  'NOMINATIONS_REVIEW',
+];
 @Injectable()
 export class NomineeAdminService {
   constructor(
@@ -91,7 +101,7 @@ export class NomineeAdminService {
   ) {
     return this.db.transaction(async (c) => {
       const e = await lockEdition(c, edition, true);
-      if (!['DRAFT', 'NOMINATIONS_REVIEW'].includes(e.status))
+      if (!nomineeEditableStatuses.includes(e.status))
         throw new ConflictException('Os indicados oficiais estão bloqueados.');
       const cat = await category(c, catId, edition);
       const member = await this.resolve(c, data.discord_user_id, cat);
@@ -122,7 +132,7 @@ export class NomineeAdminService {
   ) {
     return this.db.transaction(async (c) => {
       const e = await lockEdition(c, edition, true);
-      if (!['DRAFT', 'NOMINATIONS_REVIEW'].includes(e.status))
+      if (!nomineeEditableStatuses.includes(e.status))
         throw new ConflictException('Os indicados oficiais estão bloqueados.');
       await c.query(
         'delete from awards.category_nominees where category_id=$1 and edition_id=$2 and nominee_id=$3',
@@ -130,6 +140,40 @@ export class NomineeAdminService {
       );
       await audit(c, actor, edition, 'nominee.removed', member, reason, { category_id: catId });
       return { deleted: true };
+    });
+  }
+  async reorderOfficial(
+    actor: string,
+    edition: string,
+    catId: string,
+    nomineeIds: string[],
+    reason: string,
+  ) {
+    return this.db.transaction(async (c) => {
+      const e = await lockEdition(c, edition, true);
+      if (!nomineeEditableStatuses.includes(e.status))
+        throw new ConflictException('Os indicados oficiais estão bloqueados.');
+      const existing = await c.query<{ nominee_id: string }>(
+        'select nominee_id from awards.category_nominees where category_id=$1 and edition_id=$2 for update',
+        [catId, edition],
+      );
+      if (
+        existing.rows.length !== nomineeIds.length ||
+        existing.rows.some(({ nominee_id }) => !nomineeIds.includes(nominee_id))
+      )
+        throw new BadRequestException('A ordem informada não corresponde aos indicados da categoria.');
+      await c.query(
+        `update awards.category_nominees as nominee
+         set display_order=ordered.position-1
+         from unnest($1::uuid[]) with ordinality as ordered(id,position)
+         where nominee.category_id=$2 and nominee.edition_id=$3 and nominee.nominee_id=ordered.id`,
+        [nomineeIds, catId, edition],
+      );
+      await audit(c, actor, edition, 'nominees.reordered', catId, reason, {
+        category_id: catId,
+        nominee_ids: nomineeIds,
+      });
+      return { reordered: true };
     });
   }
 }

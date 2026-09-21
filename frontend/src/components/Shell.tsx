@@ -76,7 +76,7 @@ export function Shell() {
               </NavLink>
             ))}
             <NavLink to="/hall-of-fame" onClick={() => setMenu(false)}>
-              Hall of Fame
+              Hall da Fama
             </NavLink>
             {!auth.session && (
               <LoginButton
