@@ -76,7 +76,11 @@ export class DiscordService {
       throw new ServiceUnavailableException('Não foi possível consultar o Discord.');
     });
     if (response.status === 404)
-      throw new ForbiddenException('O membro precisa fazer parte do servidor.');
+      throw new ServiceUnavailableException(
+        path.startsWith('/members/search')
+          ? 'O bot do Discord ainda não está conectado ao servidor configurado.'
+          : 'O membro precisa fazer parte do servidor.',
+      );
     if (response.status === 429) {
       const body = (await response.json()) as { retry_after?: number };
       this.cooldown = Date.now() + Math.max(1, body.retry_after ?? 5) * 1000;

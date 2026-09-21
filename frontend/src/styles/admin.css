@@ -197,6 +197,21 @@
 .admin-list-row > div {
   margin-right: auto;
 }
+.admin-list-row.is-dragging {
+  border-color: var(--gold);
+  opacity: 0.6;
+}
+.admin-list-row > .category-drag-handle {
+  cursor: grab;
+  flex: 0 0 auto;
+}
+.admin-list-row > .category-drag-handle:active {
+  cursor: grabbing;
+}
+.admin-list-row > .category-drag-handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
 .admin-list-row h3 {
   font-size: 15px;
 }

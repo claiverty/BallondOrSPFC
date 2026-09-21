@@ -36,6 +36,9 @@ import { DiscordModule } from '../discord/discord';
 import { ZodPipe } from '../common/validation';
 const ReasonSchema = z.object({ reason: z.string().min(3).max(500) });
 const LinkMemberSchema = ReasonSchema.extend({ discord_user_id: snowflake });
+const ReorderCategoriesSchema = z.object({
+  category_ids: z.array(id).min(1).max(100).refine((ids) => new Set(ids).size === ids.length),
+});
 @ApiTags('Administration')
 @ApiBearerAuth()
 @UseGuards(AuthGuard, AdminGuard)
@@ -108,6 +111,15 @@ class AdminController {
     @Body(new ZodPipe(CreateCategorySchema)) b: z.output<typeof CreateCategorySchema>,
   ) {
     return this.categoriesService.saveCategory(r.identity.id, e, b, c);
+  }
+  @ApiZodBody(ReorderCategoriesSchema)
+  @Patch('editions/:edition/categories/reorder')
+  reorderCategories(
+    @Req() r: AuthRequest,
+    @Param('edition', ParseUUIDPipe) e: string,
+    @Body(new ZodPipe(ReorderCategoriesSchema)) b: z.output<typeof ReorderCategoriesSchema>,
+  ) {
+    return this.categoriesService.reorderCategories(r.identity.id, e, b.category_ids);
   }
   @Delete('editions/:edition/categories/:category') deleteCategory(
     @Req() r: AuthRequest,

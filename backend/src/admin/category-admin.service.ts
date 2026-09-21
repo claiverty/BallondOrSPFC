@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategorySchema } from '@awards/contracts';
 import { z } from 'zod';
 import { Database } from '../common/database';
@@ -57,6 +57,40 @@ export class CategoryAdminService {
       if (!rowCount) throw new NotFoundException('Categoria não encontrada.');
       await audit(c, actor, edition, 'category.deleted', id, 'Exclusão antes da abertura');
       return { deleted: true };
+    });
+  }
+
+  async reorderCategories(actor: string, edition: string, categoryIds: string[]) {
+    return this.db.transaction(async (c) => {
+      await lockEdition(c, edition, true);
+      const existing = await c.query<{ id: string }>(
+        'select id from awards.categories where edition_id=$1 for update',
+        [edition],
+      );
+
+      if (
+        existing.rows.length !== categoryIds.length ||
+        existing.rows.some(({ id }) => !categoryIds.includes(id))
+      )
+        throw new BadRequestException('A ordem informada não corresponde às categorias da edição.');
+
+      await c.query(
+        `update awards.categories as category
+         set display_order=ordered.position-1
+         from unnest($1::uuid[]) with ordinality as ordered(id,position)
+         where category.id=ordered.id and category.edition_id=$2`,
+        [categoryIds, edition],
+      );
+      await audit(
+        c,
+        actor,
+        edition,
+        'categories.reordered',
+        edition,
+        'Ordem das categorias atualizada',
+        { category_ids: categoryIds },
+      );
+      return { reordered: true };
     });
   }
 }
