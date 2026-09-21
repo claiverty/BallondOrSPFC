@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build -w @awards/contracts && npm run build -w @awards/web && npm run build -w @awards/api",
+    "typecheck": "npm run build -w @awards/contracts && npm run typecheck --workspaces --if-present",
     "lint": "eslint frontend backend packages tests",
     "test": "vitest run",
     "test:e2e": "playwright test",
