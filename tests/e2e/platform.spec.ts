@@ -76,7 +76,9 @@ test('nominations search, manual fallback and category navigation work', async (
   await page.getByRole('button', { name: 'Não encontrou? Indicar manualmente' }).click();
   await page.getByLabel('Nome para revisão').fill('Participante de exemplo');
   await page.getByRole('button', { name: 'Adicionar sugestão' }).click();
-  await expect(page.locator('.chosen-members')).toContainText('revisão obrigatória');
+  await expect(page.locator('.chosen-members')).toContainText(
+    'precisa ser associada ao Discord',
+  );
   await page.getByRole('button', { name: 'Membro do Ano', exact: true }).click();
   await expect(page.locator('.chosen-members')).toContainText('Claiverty');
   await page.getByRole('button', { name: 'Enviar indicações' }).click();
