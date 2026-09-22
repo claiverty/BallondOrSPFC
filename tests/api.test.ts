@@ -392,7 +392,8 @@ describe('Nest HTTP and transactional workflows', () => {
     const winners = (await app.inject({ url: `/api/winners/${edition}` })).json();
     expect(winners).toHaveLength(1);
     expect(winners[0].display_name).toBe('Candidate');
-    expect(winners[0].votes_count).toBeNull();
+    expect(winners[0].percentage).toBe(100);
+    expect(winners[0]).not.toHaveProperty('votes_count');
     expect(
       (
         await query<{ count: number }>(
@@ -513,9 +514,25 @@ describe('Nest HTTP and transactional workflows', () => {
     await phase('RESULTS_READY');
     expect((await app.inject({ url: `/api/winners/${e.slug}` })).json()).toEqual([]);
     await phase('RESULTS_PUBLISHED');
-    expect((await app.inject({ url: `/api/winners/${e.slug}` })).json()).toHaveLength(2);
+    const publishedResults = (await app.inject({ url: `/api/winners/${e.slug}` })).json();
+    expect(publishedResults).toHaveLength(4);
+    expect(publishedResults.map((result: { rank: number }) => result.rank).sort()).toEqual([
+      1, 1, 2, 2,
+    ]);
+    expect(
+      publishedResults.every(
+        (result: { percentage?: number }) => typeof result.percentage === 'number',
+      ),
+    ).toBe(true);
+    expect(JSON.stringify(publishedResults)).not.toContain('votes_count');
     await phase('ARCHIVED');
     expect((await app.inject({ url: `/api/editions/${e.slug}` })).json().status).toBe('ARCHIVED');
+    const hallOfFame = (await app.inject({ url: '/api/hall-of-fame' })).json();
+    const thisEditionHall = hallOfFame.filter(
+      (result: { edition_slug: string }) => result.edition_slug === e.slug,
+    );
+    expect(thisEditionHall).toHaveLength(2);
+    expect(thisEditionHall.every((result: { rank: number }) => result.rank === 1)).toBe(true);
   });
   it('generates OpenAPI for public and protected domains', () => {
     const document = SwaggerModule.createDocument(
