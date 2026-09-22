@@ -8,7 +8,10 @@
   --muted: #a6a69a;
   --border: #292929;
   --red: #c94740;
-  --radius: 3px;
+  --radius-card: 22px;
+  --radius-control: 14px;
+  --radius-pill: 999px;
+  --radius: var(--radius-card);
   --s1: 4px;
   --s2: 8px;
   --s3: 12px;
@@ -215,7 +218,7 @@ textarea:focus-visible {
   background: #0a1b2bc2;
   color: var(--gold-light);
   border: 1px solid #f5d89b55;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 9px 15px;
   min-height: 44px;
   display: flex;
@@ -259,7 +262,7 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius);
+  border-radius: var(--radius-control);
 }
 .icon-button:hover {
   background: var(--surface-raised);
@@ -290,7 +293,7 @@ textarea:focus-visible {
   background: #102a3ecc;
   color: #f7e5c2;
   border: 1px solid #f5d89b44;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 9px 22px;
   min-height: 48px;
   display: inline-flex;

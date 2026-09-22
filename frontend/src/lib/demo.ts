@@ -1,4 +1,4 @@
-import { Category, Edition, Nominee, Winner } from '@awards/contracts';
+import { Category, Edition, Nominee, Nomination, Winner } from '@awards/contracts';
 const uid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
 const names = [
   'Claiverty',
@@ -40,19 +40,8 @@ export const demoEdition: Edition = {
   nominations_close_at: '2026-08-31T00:00:00Z',
   voting_open_at: '2026-09-01T00:00:00Z',
   voting_close_at: '2026-11-25T02:59:59Z',
-  ceremony_at: '2026-11-30T00:00:00Z',
   nominees_reveal_at: null,
   publish_at: null,
-  ceremony_url: null,
-  ceremony_description:
-    'Uma noite para celebrar o que nos une. Encontro ao vivo na nossa comunidade no Discord.',
-  banner_url: null,
-  logo_url: null,
-  result_visibility: 'winner',
-  publish_counts: false,
-  publish_percentages: false,
-  eligible_count: null,
-  branding: { accent: '#d6b77a' },
   created_at: '2026-01-01T00:00:00Z',
 };
 const categoryData = [
@@ -111,6 +100,27 @@ export const demoCategories: Category[] = categoryData.map(
     nominees: indices.map((n) => demoMembers[n]),
   }),
 );
+export const demoAdminCategories: Category[] = demoCategories.map((category) => ({
+  ...category,
+  nominees: category.nominees.slice(0, 2),
+}));
+export const demoNominations: Nomination[] = demoCategories.flatMap((category, categoryIndex) =>
+  [
+    ...category.nominees.slice(0, 2),
+    ...demoMembers
+      .filter((nominee) => !category.nominees.slice(0, 2).some((item) => item.id === nominee.id))
+      .slice(0, 6),
+  ].map((nominee, nomineeIndex) => ({
+    id: uid(300 + categoryIndex * 10 + nomineeIndex),
+    category_id: category.id,
+    member_id: nominee.id,
+    manual_name: null,
+    display_name: nominee.display_name,
+    discord_user_id: nominee.discord_user_id,
+    status: 'pending_review' as const,
+    count: [18, 14, 11, 7, 4][(nomineeIndex + categoryIndex) % 5],
+  })),
+);
 export const demoArchive: Edition = {
   ...demoEdition,
   id: uid(2),
@@ -120,23 +130,27 @@ export const demoArchive: Edition = {
   status: 'ARCHIVED',
   is_current: false,
 };
-export const demoWinners: Winner[] = demoCategories.map((c, i) => {
-  const m = demoMembers[[3, 0, 1, 0, 2, 4][i]];
-  return {
-    edition_id: demoArchive.id,
-    edition_name: demoArchive.name,
-    year: 2025,
-    edition_slug: '2025',
-    category_id: c.id,
-    category_name: c.name,
-    category_slug: c.slug,
-    nominee_id: m.id,
-    display_name: m.display_name,
-    username: m.username,
-    discord_user_id: m.discord_user_id,
-    avatar_url: m.avatar_url,
-    rank: 1,
-  };
+export const demoWinners: Winner[] = demoCategories.flatMap((c, i) => {
+  const winnerIndex = [3, 0, 1, 0, 2, 4][i];
+  return [0, 1, 2].map((offset, rank) => {
+    const m = demoMembers[winnerIndex + offset];
+    return {
+      edition_id: demoArchive.id,
+      edition_name: demoArchive.name,
+      year: 2025,
+      edition_slug: '2025',
+      category_id: c.id,
+      category_name: c.name,
+      category_slug: c.slug,
+      nominee_id: m.id,
+      display_name: m.display_name,
+      username: m.username,
+      discord_user_id: m.discord_user_id,
+      avatar_url: m.avatar_url,
+      rank: rank + 1,
+      percentage: [52.4, 30.1, 17.5][rank],
+    };
+  });
 });
 
 export const demoArchive2024: Edition = {

@@ -125,7 +125,7 @@
 }
 .award-hero-status {
   border: 1px solid #d6b77a66;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--gold-light);
   padding: 6px 14px;
   font-size: 10px;
@@ -153,7 +153,7 @@
   min-height: 56px;
   padding: 6px 8px 6px 24px;
   border: 1px solid #f5d89b44;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: #f7e5c2;
   background: #102a3ecc;
   box-shadow:
@@ -201,6 +201,30 @@
 .award-hero-cta:focus-visible {
   outline: 3px solid #fff0c8;
   outline-offset: 4px;
+}
+.award-hero-stream {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  transition: color var(--ease);
+}
+.award-hero-stream span:last-child {
+  display: inline-flex;
+  align-items: center;
+  color: var(--gold-light);
+}
+.award-hero-stream img {
+  width: 19px;
+  height: 19px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+.award-hero-stream:hover {
+  color: var(--text);
 }
 .award-hero-footerline {
   color: var(--muted);
@@ -252,7 +276,7 @@
   align-items: center;
   gap: 8px;
   border: 1px solid #474532;
-  border-radius: 30px;
+  border-radius: var(--radius-pill);
   font-size: 10px;
   padding: 5px 12px;
   background: #29271b5c;
@@ -464,7 +488,7 @@
 }
 .category-card {
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
   overflow: hidden;
   position: relative;
   transition: border-color var(--ease);
@@ -558,33 +582,6 @@
   line-height: 1.9;
   margin-bottom: 18px;
   max-width: 415px;
-}
-.ceremony {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 48px;
-}
-.ceremony p {
-  margin-top: 18px;
-  max-width: 430px;
-  color: var(--muted);
-}
-.ceremony-date {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  color: var(--gold-light);
-  flex-wrap: wrap;
-  font-size: 12px;
-}
-.ceremony-date span {
-  display: block;
-  font-size: 8px;
-  letter-spacing: 1.4px;
-  border: 1px solid var(--border);
-  padding: 4px 8px;
 }
 .countdown {
   display: flex;

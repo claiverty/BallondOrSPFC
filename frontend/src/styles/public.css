@@ -34,6 +34,7 @@
   margin-bottom: 32px;
   padding: 20px 24px;
   border: 1px solid var(--border);
+  border-radius: var(--radius-card);
   background: var(--surface);
 }
 .stage-notice p {
@@ -52,6 +53,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
+  border-radius: var(--radius-control);
 }
 .category-jump a:hover {
   border-color: var(--gold);
@@ -187,6 +189,7 @@
   color: var(--muted);
   background: var(--surface);
   border: 1px solid var(--border);
+  border-radius: var(--radius-card);
   width: 100%;
   grid-column: 1/-1;
 }
@@ -231,7 +234,7 @@
   background: var(--surface);
   border: 1px solid var(--border);
   overflow: hidden;
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
   transition:
     border-color var(--ease),
     background var(--ease),
@@ -265,10 +268,21 @@
   color: var(--gold-light);
   font-size: 11px;
 }
+.winner-rank {
+  display: block;
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  margin-top: 7px;
+  text-transform: uppercase;
+}
 .winner-content p {
   color: var(--muted);
   font-size: 11px;
   margin-top: 2px;
+}
+.winner-percentage {
+  color: var(--gold-light);
 }
 .winner-content .text-link {
   margin-top: 14px;

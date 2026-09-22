@@ -1,6 +1,6 @@
 -- Fictional data only. Run on a separate development database.
-insert into awards.editions (id,name,slug,year,status,description,tagline,nominations_open_at,nominations_close_at,voting_open_at,voting_close_at,ceremony_at)
-values ('10000000-0000-4000-8000-000000000001','Ballon d’Or SPFC — Desenvolvimento','2027',2027,'DRAFT','Edição fictícia para desenvolvimento.','A comunidade faz história.','2027-01-01T00:00:00Z','2027-02-01T00:00:00Z','2027-03-01T00:00:00Z','2027-12-01T00:00:00Z','2027-12-05T00:00:00Z');
+insert into awards.editions (id,name,slug,year,status,description,tagline,nominations_open_at,nominations_close_at,voting_open_at,voting_close_at)
+values ('10000000-0000-4000-8000-000000000001','Ballon d’Or SPFC — Desenvolvimento','2027',2027,'DRAFT','Edição fictícia para desenvolvimento.','A comunidade faz história.','2027-01-01T00:00:00Z','2027-02-01T00:00:00Z','2027-03-01T00:00:00Z','2027-12-01T00:00:00Z');
 insert into awards.categories (edition_id,slug,name,description,display_order)
 select '10000000-0000-4000-8000-000000000001',slug,name,'Categoria fictícia de desenvolvimento.',ord from (values ('membro-do-ano','Membro do Ano',0),('staff-do-ano','Staff do Ano',1),('rei-da-resenha','Rei da resenha',2),('mais-querido','O mais querido',3),('membro-mais-ativo','Membro mais ativo',4),('o-mais-chato','O mais chato',5)) as c(slug,name,ord);
 insert into awards.members (discord_user_id,username,display_name) select (900000000000000000+i)::text,'dev-member-'||i,'Participante de teste '||i from generate_series(1,20) i;

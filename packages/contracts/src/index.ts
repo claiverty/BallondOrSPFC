@@ -118,24 +118,7 @@ export const CreateEditionSchema = z
     voting_open_at: date,
     voting_close_at: date,
     nominees_reveal_at: date,
-    ceremony_at: date,
     publish_at: date,
-    ceremony_url: safeUrl,
-    ceremony_description: z.string().max(1000).default(''),
-    banner_url: safeUrl,
-    logo_url: safeUrl,
-    result_visibility: z.enum(['winner', 'top3']).default('winner'),
-    publish_counts: z.boolean().default(false),
-    publish_percentages: z.boolean().default(false),
-    eligible_count: z.number().int().nonnegative().nullable().default(null),
-    branding: z
-      .object({
-        accent: z
-          .string()
-          .regex(/^#[0-9a-fA-F]{6}$/)
-          .default('#d6b77a'),
-      })
-      .default({ accent: '#d6b77a' }),
   })
   .refine(
     (v) =>
@@ -245,7 +228,6 @@ export interface Winner {
   discord_user_id: string;
   avatar_url: string | null;
   rank: number;
-  votes_count?: number;
   percentage?: number;
 }
 export interface Nomination {
@@ -261,8 +243,6 @@ export interface Nomination {
 }
 export interface Analytics {
   ballots: number;
-  eligible_count: number | null;
-  participation: number | null;
   categories: Array<{
     category_id: string;
     category_name: string;

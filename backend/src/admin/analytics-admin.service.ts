@@ -3,7 +3,6 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { Database } from '../common/database';
 import { audit, lockEdition } from '../common/domain';
@@ -32,13 +31,9 @@ export class AnalyticsAdminService {
     });
   }
   async analytics(id: string) {
-    const [ballots, edition, categories, timeline] = await Promise.all([
+    const [ballots, categories, timeline] = await Promise.all([
       this.db.query<{ count: number }>(
         'select count(*)::int count from awards.ballots where edition_id=$1',
-        [id],
-      ),
-      this.db.query<{ eligible_count: number | null }>(
-        'select eligible_count from awards.editions where id=$1',
         [id],
       ),
       this.db.query(
@@ -50,13 +45,9 @@ export class AnalyticsAdminService {
         [id],
       ),
     ]);
-    if (!edition[0]) throw new NotFoundException('Edição não encontrada.');
     const count = ballots[0].count;
-    const eligible = edition[0].eligible_count;
     return {
       ballots: count,
-      eligible_count: eligible,
-      participation: eligible ? (count / eligible) * 100 : null,
       categories,
       timeline,
     };

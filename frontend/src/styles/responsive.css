@@ -180,7 +180,7 @@
     margin-top: 28px;
     padding: 12px 18px;
     border: 1px solid #f5d89b66;
-    border-radius: 4px;
+    border-radius: var(--radius-control);
     color: var(--gold-light);
     background: #141414;
     box-shadow: 0 10px 24px #0006;
@@ -221,7 +221,7 @@
     min-height: 44px;
     padding: 0 14px;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius-control);
     color: var(--gold-light);
     background: transparent;
   }
@@ -740,17 +740,6 @@
   .community-inner > div > p {
     font-size: 13px;
   }
-  .ceremony {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 30px;
-  }
-  .ceremony p {
-    font-size: 13px;
-  }
-  .ceremony-date {
-    font-size: 11px;
-  }
   .countdown {
     justify-content: flex-start;
     gap: 32px;
@@ -1116,7 +1105,7 @@
     flex-wrap: wrap;
   }
   .category-arrange-row {
-    border-radius: 22px;
+    border-radius: var(--radius-card);
     padding: 12px;
   }
   .admin-list-row > .outline-number {
@@ -1143,7 +1132,7 @@
     gap: 12px;
   }
   .nominee-classification-list {
-    border-radius: 22px;
+    border-radius: var(--radius-card);
   }
   .nominee-classification-heading {
     align-items: flex-start;
@@ -1179,14 +1168,17 @@
     height: 40px;
   }
   .nomination-ranking-row {
-    grid-template-columns: 28px minmax(0, 1fr);
-    gap: 10px;
+    grid-template-columns: 48px minmax(0, 1fr) 68px 48px;
+    gap: 6px;
   }
-  .nomination-ranking-count,
-  .nomination-ranking-action {
-    grid-column: 2;
-    justify-self: start;
-    text-align: left;
+  .nomination-ranking-columns {
+    grid-template-columns: 48px minmax(0, 1fr) 68px 48px;
+    padding: 10px 16px 8px;
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  .nomination-ranking-row .nomination-ranking-action.muted {
+    font-size: 8px;
   }
   .analytics-row > div {
     min-width: 100%;

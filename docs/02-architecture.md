@@ -6,7 +6,7 @@ Transações usam lock de edição para coordenar fechamento/configuração com 
 
 Nominations: array por usuário/categoria substituído atomicamente, limite configurável, advisory lock; membership e regras de Discord role/blacklist/tempo mínimo validados no backend. Manual recebe pending_review e só vira nominee após resolução do Discord ID. Official nominees revisados, limite e elegibilidade antes de anúncio. Não promover automaticamente ranking.
 
-Resultados são apurados no servidor em snapshot privado em RESULTS_READY. Empates exigem decisão administrativa explícita e auditada. Publicação configura winner/top3 e inclusão de totais/percentuais. Nenhum voto individual sai pela API. Analytics agregados privados. Histórico/Hall/records derivados de snapshots publicados e memberships oficiais, identificados por category slug. Perfis históricos via Discord ID.
+Resultados são apurados no servidor em snapshot privado em RESULTS_READY. Empates exigem decisão administrativa explícita e auditada. Páginas de vencedores exibem o Top 3 com percentuais; o Hall da Fama exibe apenas os vencedores, sem quantidades ou percentuais. Nenhum voto individual sai pela API. Analytics agregados privados. Histórico/Hall/records derivados de snapshots publicados e memberships oficiais, identificados por category slug. Perfis históricos via Discord ID.
 
 State machine sequencial em contracts, verificada no backend e novamente em SQL trigger. Status não avança sozinho por relógio: admin controla reveal/publicação. Períodos UTC limitam escrita; frontend usa state copy centralizado. Datas são exibidas em America/Sao_Paulo. Nenhum scheduler externo necessário.
 

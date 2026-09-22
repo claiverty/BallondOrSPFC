@@ -17,7 +17,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   ArrowUpRight,
-  CalendarDays,
   ClipboardList,
   ContactRound,
   ChevronDown,
@@ -35,7 +34,7 @@ import {
 } from 'lucide-react';
 import { Analytics, Category, Edition, statuses } from '@awards/contracts';
 import { demoMode, request, useAuth } from '../lib/auth';
-import { demoCategories, demoEdition, demoArchive } from '../lib/demo';
+import { demoAdminCategories, demoCategories, demoEdition, demoArchive } from '../lib/demo';
 import { EditionForm } from './AdminForms';
 import { Notice, PageHeading, State } from '../components/ui';
 const tabs = [
@@ -46,7 +45,6 @@ const tabs = [
   ['nominees', 'Classificação', Users],
   ['voting', 'Votação', FileCheck2],
   ['results', 'Resultados', Trophy],
-  ['ceremony', 'Cerimônia', CalendarDays],
   ['media', 'Mídia', Image],
   ['members', 'Perfis', ContactRound],
   ['users', 'Usuários', ShieldCheck],
@@ -113,7 +111,7 @@ export function Admin() {
     queryKey: ['admin', 'categories', id],
     queryFn: () =>
       demoMode
-        ? Promise.resolve(demoCategories)
+        ? Promise.resolve(demoAdminCategories)
         : request<Category[]>(`/admin/editions/${id}/categories`),
     enabled: allowed && !!id,
   });
@@ -123,8 +121,6 @@ export function Admin() {
       demoMode
         ? Promise.resolve({
             ballots: 0,
-            eligible_count: null,
-            participation: null,
             categories: demoCategories.flatMap((category) =>
               category.nominees.map((nominee) => ({
                 category_id: category.id,
@@ -253,6 +249,10 @@ export function Admin() {
       </div>
     );
   if (tab === 'analytics') {
+    const query = searchParams.toString();
+    return <Navigate to={`/admin/overview${query ? `?${query}` : ''}`} replace />;
+  }
+  if (tab === 'ceremony') {
     const query = searchParams.toString();
     return <Navigate to={`/admin/overview${query ? `?${query}` : ''}`} replace />;
   }
@@ -411,7 +411,6 @@ export function Admin() {
                         nominations_close_at: null,
                         voting_open_at: null,
                         voting_close_at: null,
-                        ceremony_at: null,
                         publish_at: null,
                         nominees_reveal_at: null,
                       }
@@ -452,7 +451,7 @@ export function Admin() {
                       action={action}
                     />
                   )}
-                  {(tab === 'edition' || tab === 'ceremony') && (
+                  {tab === 'edition' && (
                     <EditionPanel
                       edition={edition}
                       id={id}

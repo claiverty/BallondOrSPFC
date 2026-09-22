@@ -31,10 +31,6 @@ export function EditionForm({
       year: new Date().getFullYear() + 1,
       description: '',
       tagline: 'A comunidade faz história.',
-      result_visibility: 'winner',
-      branding: { accent: '#d6b77a' },
-      publish_counts: false,
-      publish_percentages: false,
     },
   });
   const dateFields = [
@@ -95,48 +91,6 @@ export function EditionForm({
           Configure apenas os períodos de indicações e votação. O reveal dos indicados e a
           publicação dos resultados são feitos manualmente nas etapas administrativas.
         </p>
-        <label>
-          URL da cerimônia
-          <input type="url" {...f.register('ceremony_url', { setValueAs: (v) => v || null })} />
-        </label>
-        <label className="full">
-          Sobre a cerimônia
-          <textarea {...f.register('ceremony_description')} />
-        </label>
-        <label>
-          Banner (URL HTTPS)
-          <input type="url" {...f.register('banner_url', { setValueAs: (v) => v || null })} />
-        </label>
-        <label>
-          Logo próprio (URL HTTPS)
-          <input type="url" {...f.register('logo_url', { setValueAs: (v) => v || null })} />
-        </label>
-        <label>
-          Cor da edição
-          <input {...f.register('branding.accent')} />
-        </label>
-        <label>
-          Universo elegível (opcional)
-          <input
-            type="number"
-            {...f.register('eligible_count', { setValueAs: (v) => (v === '' ? null : Number(v)) })}
-          />
-        </label>
-        <label>
-          Resultado público
-          <select {...f.register('result_visibility')}>
-            <option value="winner">Somente vencedor</option>
-            <option value="top3">Top 3</option>
-          </select>
-        </label>
-        <label className="checkbox-label">
-          <input type="checkbox" {...f.register('publish_counts')} />
-          Publicar totais de votos
-        </label>
-        <label className="checkbox-label">
-          <input type="checkbox" {...f.register('publish_percentages')} />
-          Publicar percentuais
-        </label>
       </div>
       {Object.entries(f.formState.errors).length > 0 && (
         <div role="alert" className="error-text">

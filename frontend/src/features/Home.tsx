@@ -42,6 +42,18 @@ export function Home() {
             </span>
           </Link>
         </div>
+        <a
+          className="award-hero-stream"
+          href="https://kick.com/claiverty"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Abrir a transmissão na Kick"
+        >
+          <span>Transmissão na{' '}</span>
+          <span title="Kick">
+            <img src="/images/kick-icon.svg" alt="" aria-hidden="true" />
+          </span>
+        </a>
       </div>
     </section>
   );

@@ -63,7 +63,7 @@ export const useWinners = (slug?: string) =>
       demoMode
         ? Promise.resolve(
             !slug
-              ? demoAllWinners
+              ? demoAllWinners.filter((winner) => winner.rank === 1)
               : slug === '2025'
                 ? demoWinners
                 : slug === '2024'

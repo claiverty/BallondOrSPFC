@@ -141,7 +141,8 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                 </div>
                 <div className="winners-grid">
                   {yearRows.map((w) => {
-                    const poster = winnerCardAssets[`${w.year}:${w.category_slug}`];
+                    const poster =
+                      w.rank === 1 ? winnerCardAssets[`${w.year}:${w.category_slug}`] : undefined;
                     return (
                       <Link
                         key={`${w.edition_id}-${w.category_id}-${w.nominee_id}`}
@@ -158,8 +159,14 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                         </div>
                         <div className="winner-content">
                           <span className="winner-category">{w.category_name}</span>
+                          {!hall && <span className="winner-rank">{w.rank}º lugar</span>}
                           {!poster && <h2>{w.display_name}</h2>}
-                          <p>@{w.username}</p>
+                          <p>
+                            @{w.username}
+                            {!hall && typeof w.percentage === 'number' && (
+                              <span className="winner-percentage"> · {w.percentage.toFixed(1)}%</span>
+                            )}
+                          </p>
                           <span className="text-link">
                             Conhecer trajetória <ArrowUpRight size={18} />
                           </span>

@@ -6,7 +6,7 @@ export class ResultsService {
   constructor(@Inject(Database) private readonly db: Database) {}
   async winners(slug?: string) {
     return this.db.query(
-      `select e.id edition_id,e.name edition_name,e.year,e.slug edition_slug,c.id category_id,c.name category_name,c.slug category_slug,m.id nominee_id,m.display_name,m.username,m.discord_user_id,m.avatar_url,r.rank,case when e.publish_counts then r.votes_count end votes_count,case when e.publish_percentages then r.percentage::float end percentage from awards.result_snapshots r join awards.editions e on e.id=r.edition_id join awards.categories c on c.id=r.category_id join awards.members m on m.id=r.nominee_id where e.status in ('RESULTS_PUBLISHED','ARCHIVED') and ($1::text is null or e.slug=$1) and r.rank<=case when e.result_visibility='top3' then 3 else 1 end order by e.year desc,c.display_order,r.rank`,
+      `select e.id edition_id,e.name edition_name,e.year,e.slug edition_slug,c.id category_id,c.name category_name,c.slug category_slug,m.id nominee_id,m.display_name,m.username,m.discord_user_id,m.avatar_url,r.rank,case when $1::text is null then null else r.percentage::float end percentage from awards.result_snapshots r join awards.editions e on e.id=r.edition_id join awards.categories c on c.id=r.category_id join awards.members m on m.id=r.nominee_id where e.status in ('RESULTS_PUBLISHED','ARCHIVED') and ($1::text is null or e.slug=$1) and r.rank<=case when $1::text is null then 1 else 3 end order by e.year desc,c.display_order,r.rank`,
       [slug ?? null],
     );
   }

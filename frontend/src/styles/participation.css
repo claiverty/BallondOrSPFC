@@ -237,7 +237,7 @@ progress::-moz-progress-bar {
   min-height: 58px;
   padding: 14px 92px 14px 54px;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--text);
   background: var(--surface-raised);
   box-shadow:
@@ -297,7 +297,7 @@ progress::-moz-progress-bar {
   left: 0;
   overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-card);
   background: var(--surface-raised);
   box-shadow: var(--shadow);
 }
@@ -379,7 +379,7 @@ textarea {
 }
 input:not([type='checkbox']),
 select {
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 select {
   min-height: 58px;
@@ -392,7 +392,7 @@ select {
   -webkit-appearance: none;
 }
 textarea {
-  border-radius: 20px;
+  border-radius: var(--radius-control);
 }
 input:not([type='checkbox']):focus,
 select:focus,
