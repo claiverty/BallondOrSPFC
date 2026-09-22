@@ -64,6 +64,9 @@ test('admin preview and archive stay isolated from live actions', async ({ page 
   await expect(page.getByRole('heading', { name: 'Categorias', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Nova categoria', exact: true }).click();
   await expect(page.getByLabel('Máximo de indicados')).toHaveValue('5');
+  await page.goto('/admin/results');
+  await expect(page.getByRole('heading', { name: 'Votação por categoria', exact: true })).toBeVisible();
+  await expect(page.locator('.results-chart-card')).toHaveCount(6);
   await page.goto('/2025/winners');
   await expect(page).toHaveURL(/\/hall-of-fame$/);
   await expect(page.getByRole('heading', { name: 'Hall da Fama.' })).toBeVisible();

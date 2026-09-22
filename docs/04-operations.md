@@ -26,7 +26,9 @@ Não conceder uso do schema awards a anon/authenticated e não adicioná-lo aos 
 
 ## Migrations e seed
 
-Runner lê migrations em ordem, registra as aplicadas e usa lock e transação por arquivo. SQL 001 modela plataforma, 002 cria bucket, 003 reforça regras de submissão. Seed é transacional, contém edição fictícia, seis categorias, vinte membros sintéticos, três auth fixtures sem credenciais usáveis, cédulas e histórico fictício. Seed não cria admin automaticamente e nunca deve ser aplicado no banco de produção.
+Runner lê migrations em ordem, registra as aplicadas e usa lock e transação por arquivo. SQL 001 modela plataforma, 002 cria bucket, 003 reforça regras de submissão, 005 abre a exceção transacional usada pela exclusão explícita de uma edição e 006 reaplica o hardening de RLS. A 006 mantém RLS habilitada em todas as tabelas `awards`, revoga privilégios de `public`, `anon` e `authenticated` e instala políticas restritivas que negam acesso direto mesmo se um grant for reintroduzido por engano. O ledger `public.awards_migrations` também fica protegido. O backend continua sendo a única fronteira privilegiada; por isso, não usamos `FORCE ROW LEVEL SECURITY` com a role atual do pooler, pois isso bloquearia o próprio backend até existir uma role privada dedicada com configuração equivalente.
+
+Seed é transacional, contém edição fictícia, seis categorias, vinte membros sintéticos, três auth fixtures sem credenciais usáveis, cédulas e histórico fictício. Seed não cria admin automaticamente e nunca deve ser aplicado no banco de produção.
 
 Executar em staging após backup seguindo docs/03. Confirmar Storage bucket award-media público somente para leitura de imagens; sem policies de escrita para browser. API admin aceita PNG/JPEG/WebP com signature check e até 2 MB para manter payload base64 abaixo do limite de função. SVG não é aceito em uploads; o SVG de identidade é código original versionado.
 

@@ -37,6 +37,7 @@ beforeAll(async () => {
   await db.exec(await readFile('supabase/migrations/001_platform.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/003_submission_invariants.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/005_allow_edition_deletion.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/006_rls_hardening.sql', 'utf8'));
   let pending = Promise.resolve();
   const bridge = {
     query,

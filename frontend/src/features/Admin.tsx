@@ -125,11 +125,22 @@ export function Admin() {
             ballots: 0,
             eligible_count: null,
             participation: null,
-            categories: [],
+            categories: demoCategories.flatMap((category) =>
+              category.nominees.map((nominee) => ({
+                category_id: category.id,
+                category_name: category.name,
+                nominee_id: nominee.id,
+                display_name: nominee.display_name,
+                votes_count: 0,
+                percentage: 0,
+              })),
+            ),
             timeline: [],
           } as Analytics)
         : request<Analytics>(`/admin/editions/${id}/analytics`),
-    enabled: allowed && !!id && (tab === 'overview' || tab === 'voting'),
+    enabled: allowed && !!id && (tab === 'overview' || tab === 'voting' || tab === 'results'),
+    refetchInterval: tab === 'results' ? 5000 : false,
+    refetchIntervalInBackground: tab === 'results',
   });
   const results = useQuery({
     queryKey: ['admin', 'results', id],
@@ -489,6 +500,7 @@ export function Admin() {
                       mutation={mutation}
                       action={action}
                       results={results}
+                      analytics={analytics}
                     />
                   )}
                   {tab === 'audit' && <AuditPanel logs={logs} />}

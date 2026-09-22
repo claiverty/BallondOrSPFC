@@ -15,7 +15,7 @@ describe.skipIf(!url)('Real PostgreSQL independent connection concurrency', () =
     await pool.query(
       'create schema auth;create table auth.users(id uuid primary key);create role anon;create role authenticated;',
     );
-    for (const file of ['001_platform.sql', '003_submission_invariants.sql'])
+    for (const file of ['001_platform.sql', '003_submission_invariants.sql', '006_rls_hardening.sql'])
       await pool.query(await readFile(`supabase/migrations/${file}`, 'utf8'));
     const db = {
       transaction: async <T>(fn: (c: import('pg').PoolClient) => Promise<T>) => {

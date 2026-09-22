@@ -372,6 +372,9 @@
   .analytics-row progress {
     width: 60%;
   }
+  .results-chart-grid {
+    grid-template-columns: 1fr;
+  }
   .form-grid {
     gap: 16px;
   }
@@ -1191,6 +1194,20 @@
   }
   .analytics-row > span {
     min-width: 80px;
+  }
+  .results-live-heading {
+    flex-direction: column;
+  }
+  .results-live-meta {
+    grid-template-columns: 1fr;
+  }
+  .results-chart-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+  }
+  .results-chart-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
   .audit-row small {
     overflow-wrap: anywhere;

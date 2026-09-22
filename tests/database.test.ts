@@ -9,6 +9,10 @@ beforeAll(async () => {
   );
   await db.exec(await readFile('supabase/migrations/001_platform.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/003_submission_invariants.sql', 'utf8'));
+  await db.exec(
+    'create table public.awards_migrations(name text primary key, applied_at timestamptz default now())',
+  );
+  await db.exec(await readFile('supabase/migrations/006_rls_hardening.sql', 'utf8'));
 });
 afterAll(async () => {
   await db.close();
@@ -117,6 +121,20 @@ describe('PostgreSQL constraints and RLS', () => {
     );
     expect(rows.length).toBeGreaterThan(10);
     expect(rows.every((r) => r.relrowsecurity)).toBe(true);
+  });
+  it('installs restrictive deny policies for browser roles', async () => {
+    const { rows } = await db.query<{ tablename: string; permissive: string }>(
+      "select tablename,permissive from pg_policies where schemaname='awards' and policyname='awards_client_deny'",
+    );
+    expect(rows.length).toBeGreaterThan(10);
+    expect(rows.every((r) => r.permissive === 'RESTRICTIVE')).toBe(true);
+  });
+  it('protects the migration ledger from browser roles', async () => {
+    const { rows } = await db.query<{ permissive: string }>(
+      "select permissive from pg_policies where schemaname='public' and tablename='awards_migrations' and policyname='awards_migrations_client_deny'",
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0].permissive).toBe('RESTRICTIVE');
   });
   it('denies authenticated and anonymous direct access to ballots and results', async () => {
     for (const role of ['anon', 'authenticated'])
