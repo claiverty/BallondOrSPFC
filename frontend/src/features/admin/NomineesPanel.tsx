@@ -2,30 +2,18 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { AdminContext } from './types';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { demoMode } from '../../lib/auth';
-import { MemberSearch } from '../../components/MemberSearch';
 import { AdminPicker } from './AdminPicker';
 
 export function NomineesPanel({
   id,
   categories,
-  reason,
-  setReason,
   action,
   mutation,
   category,
   setCategoryId,
-  setMessage,
 }: Pick<
   AdminContext,
-  | 'id'
-  | 'categories'
-  | 'reason'
-  | 'setReason'
-  | 'action'
-  | 'mutation'
-  | 'category'
-  | 'setCategoryId'
-  | 'setMessage'
+  'id' | 'categories' | 'action' | 'mutation' | 'category' | 'setCategoryId'
 >) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [previewOrder, setPreviewOrder] = useState<string[]>([]);
@@ -106,16 +94,10 @@ export function NomineesPanel({
       order.every((nomineeId, index) => nomineeId === original[index])
     )
       return;
-    if (reason.trim().length < 3) {
-      setMessage('Informe o motivo antes de salvar a nova ordem.');
-      previewOrderRef.current = original;
-      setPreviewOrder(original);
-      return;
-    }
     if (demoMode) return;
     action(
       `/admin/editions/${id}/categories/${category.id}/nominees/reorder`,
-      { nominee_ids: order, reason },
+      { nominee_ids: order, reason: 'Ordem definida na classificação' },
       'PATCH',
     );
   };
@@ -137,31 +119,13 @@ export function NomineesPanel({
   return (
     <section className="admin-panel">
       <p>
-        Escolha manualmente os indicados que avançarão para a votação. A quantidade de indicações
-        serve como referência, mas a classificação final é administrativa.
+        Revise os membros classificados na categoria e arraste para definir a ordem da votação.
       </p>
       <AdminPicker
         label="Categoria"
         value={category?.id ?? ''}
         options={(categories.data ?? []).map((c) => ({ value: c.id, label: c.name }))}
         onChange={setCategoryId}
-      />
-      <label>
-        Motivo da classificação
-        <input value={reason} onChange={(e) => setReason(e.target.value)} />
-      </label>
-      <MemberSearch
-        onSelect={(m) => {
-          if (reason.trim().length < 3) {
-            setMessage('Informe o motivo antes de classificar um indicado.');
-            return;
-          }
-          action(`/admin/editions/${id}/categories/${category?.id}/nominees`, {
-            discord_user_id: m.discord_user_id,
-            display_order: category?.nominees.length ?? 0,
-            reason,
-          });
-        }}
       />
       {category && category.nominees.length > 0 && (
         <section className="nominee-classification-list" aria-label="Indicados classificados">
@@ -227,11 +191,10 @@ export function NomineesPanel({
               <button
                 className="icon-button nominee-remove-button"
                 aria-label={`Remover ${n.display_name}`}
-                disabled={reason.trim().length < 3}
                 onClick={() =>
                   action(
                     `/admin/editions/${id}/categories/${category.id}/nominees/${n.id}`,
-                    { reason },
+                    { reason: 'Remoção na classificação' },
                     'DELETE',
                   )
                 }

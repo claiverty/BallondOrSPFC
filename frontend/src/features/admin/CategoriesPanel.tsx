@@ -101,8 +101,8 @@ export function CategoriesPanel({
     <>
       <div className="panel-heading">
         <p>
-          Categorias e regras são editáveis na preparação. A ordem pode ser reorganizada a qualquer
-          momento.
+          Categorias e limites são editáveis na preparação. A ordem pode ser reorganizada a
+          qualquer momento.
         </p>
         <button className="button button-outline" onClick={() => setEditCat(null)}>
           <Plus size={16} />
@@ -159,8 +159,7 @@ export function CategoriesPanel({
                 {c.archived ? ' · Arquivada' : ''}
               </h3>
               <p>
-                {c.max_nominees} indicados · {c.max_nominations} indicação(ões) ·{' '}
-                {c.vote_required ? 'Obrigatória' : 'Opcional'}
+                {c.max_nominees} indicados · {c.max_nominations} indicação(ões) por membro
               </p>
             </div>
             <button

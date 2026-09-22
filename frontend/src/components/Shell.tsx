@@ -32,16 +32,30 @@ export function Shell() {
   const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
   const { data: edition } = useEdition(editionSlug);
   const year = edition?.slug ?? editionSlug;
+  const nomineesPublished =
+    edition && ['NOMINEES_ANNOUNCED', 'VOTING_CLOSED', 'RESULTS_READY'].includes(edition.status);
   const participationName =
     edition && isOpen(edition, 'nominations')
       ? 'Indicação'
       : edition && isOpen(edition, 'voting')
         ? 'Votação'
-        : edition && ['DRAFT', 'NOMINATIONS_OPEN', 'NOMINATIONS_REVIEW'].includes(edition.status)
-          ? 'Vencedores'
-          : 'Indicados';
+        : nomineesPublished
+          ? 'Indicados'
+          : 'Vencedores';
   const participationPath =
-    participationName === 'Vencedores' ? '/hall-of-fame' : year ? `/${year}/nominees` : '/history';
+    participationName === 'Vencedores'
+      ? '/hall-of-fame'
+      : participationName === 'Votação'
+        ? year
+          ? `/${year}/vote`
+          : '/history'
+        : participationName === 'Indicação'
+          ? year
+            ? `/${year}/nominations`
+            : '/history'
+          : year
+            ? `/${year}/nominees`
+            : '/history';
   const routes = [
     ['Início', '/'],
     [participationName, participationPath],

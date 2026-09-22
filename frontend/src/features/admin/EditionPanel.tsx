@@ -21,7 +21,7 @@ export function EditionPanel({
             <Copy size={16} />
             Duplicar para o próximo ano
           </button>
-            {edition.status !== 'ARCHIVED' && deleteEdition && (
+          {deleteEdition && (
             <button
               className="text-link danger"
               onClick={deleteEdition}

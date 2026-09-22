@@ -13,7 +13,7 @@ export async function request<T>(path: string, method = 'GET', body?: unknown): 
   const response = await fetch(`${apiBase}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
       ...(session ? { Authorization: `Bearer ${session.access_token}` } : {}),
     },
     body: body === undefined ? undefined : JSON.stringify(body),

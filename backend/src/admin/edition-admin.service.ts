@@ -59,18 +59,11 @@ export class EditionAdminService {
     return this.db.transaction(async (c) => {
       await c.query('select pg_advisory_xact_lock(9872026)');
       const e = await lockEdition(c, id, true);
-      if (e.status === 'ARCHIVED')
-        throw new ConflictException('Edições arquivadas não podem ser excluídas.');
-      const activity = await c.query<{ count: number }>(
-        `select (
-          (select count(*) from awards.nomination_items where edition_id=$1) +
-          (select count(*) from awards.ballots where edition_id=$1) +
-          (select count(*) from awards.result_snapshots where edition_id=$1)
-        )::int count`,
-        [id],
-      );
-      if (activity.rows[0]?.count)
-        throw new ConflictException('Esta edição já possui participações e não pode ser excluída.');
+      await c.query("select set_config('awards.allow_edition_delete', 'on', true)");
+      await c.query('delete from awards.result_snapshots where edition_id=$1', [id]);
+      await c.query('delete from awards.ballot_items where edition_id=$1', [id]);
+      await c.query('delete from awards.ballots where edition_id=$1', [id]);
+      await c.query('delete from awards.nomination_items where edition_id=$1', [id]);
       await c.query('delete from awards.media_assets where edition_id=$1', [id]);
       await c.query('delete from awards.audit_logs where edition_id=$1', [id]);
       await c.query('delete from awards.category_nominees where edition_id=$1', [id]);
@@ -78,8 +71,8 @@ export class EditionAdminService {
       await c.query('delete from awards.editions where id=$1', [id]);
       await c.query(
         `insert into awards.audit_logs(actor_id,action,entity_id,reason,details)
-         values($1,'edition.deleted',$2,'Exclusão de edição em rascunho',$3)`,
-        [actor, id, JSON.stringify({ status: e.status })],
+         values($1,'edition.deleted',$2,'Exclusão administrativa',$3)`,
+        [actor, id, JSON.stringify({ status: e.status, deleted_contents: true })],
       );
       return { id, deleted: true };
     });

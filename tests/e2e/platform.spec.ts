@@ -2,6 +2,20 @@ import { test, expect } from '@playwright/test';
 test('home, navigation and mobile layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Ballon d’Or.*SÃO PAULO/ })).toBeVisible();
+  await expect(page.locator('nav.main-nav a').filter({ hasText: 'Votação' })).toHaveAttribute(
+    'href',
+    '/2026/vote',
+  );
+  await page.goto('/2027');
+  await expect(page.locator('nav.main-nav a').filter({ hasText: 'Indicação' })).toHaveAttribute(
+    'href',
+    '/2027/nominations',
+  );
+  await page.goto('/2025');
+  await expect(page.locator('nav.main-nav a').filter({ hasText: 'Vencedores' })).toHaveAttribute(
+    'href',
+    '/hall-of-fame',
+  );
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto('/2026/vote');
   await expect(page.getByRole('heading', { name: 'Membro do Ano', exact: true })).toBeVisible();

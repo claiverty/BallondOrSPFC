@@ -36,6 +36,7 @@ beforeAll(async () => {
   );
   await db.exec(await readFile('supabase/migrations/001_platform.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/003_submission_invariants.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/005_allow_edition_deletion.sql', 'utf8'));
   let pending = Promise.resolve();
   const bridge = {
     query,
@@ -324,6 +325,40 @@ describe('Nest HTTP and transactional workflows', () => {
           await query<{ count: number }>(
             `select count(*)::int count from awards.${table} where edition_id=$1`,
             [id],
+          )
+        )[0].count,
+      ).toBe(0);
+  });
+  it('deletes an edition and all of its related data', async () => {
+    await post();
+    await admin();
+    const response = await app.inject({
+      method: 'DELETE',
+      url: `/api/admin/editions/${edition}`,
+      headers,
+    });
+    expect(response.statusCode, response.body).toBe(200);
+    expect(
+      (
+        await query<{ count: number }>(
+          'select count(*)::int count from awards.editions where id=$1',
+          [edition],
+        )
+      )[0].count,
+    ).toBe(0);
+    for (const table of [
+      'ballot_items',
+      'ballots',
+      'nomination_items',
+      'result_snapshots',
+      'category_nominees',
+      'categories',
+    ])
+      expect(
+        (
+          await query<{ count: number }>(
+            `select count(*)::int count from awards.${table} where edition_id=$1`,
+            [edition],
           )
         )[0].count,
       ).toBe(0);

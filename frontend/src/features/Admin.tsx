@@ -6,19 +6,17 @@ import {
   NomineesPanel,
   NominationsPanel,
   ResultsPanel,
-  AnalyticsPanel,
   AuditPanel,
   UsersPanel,
   MembersPanel,
   MediaWrapper,
 } from './admin/panels';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, NavLink, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, NavLink, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   ArrowUpRight,
-  BarChart3,
   CalendarDays,
   ClipboardList,
   ContactRound,
@@ -48,7 +46,6 @@ const tabs = [
   ['nominees', 'Classificação', Users],
   ['voting', 'Votação', FileCheck2],
   ['results', 'Resultados', Trophy],
-  ['analytics', 'Estatísticas', BarChart3],
   ['ceremony', 'Cerimônia', CalendarDays],
   ['media', 'Mídia', Image],
   ['members', 'Perfis', ContactRound],
@@ -132,7 +129,7 @@ export function Admin() {
             timeline: [],
           } as Analytics)
         : request<Analytics>(`/admin/editions/${id}/analytics`),
-    enabled: allowed && !!id,
+    enabled: allowed && !!id && (tab === 'overview' || tab === 'voting'),
   });
   const results = useQuery({
     queryKey: ['admin', 'results', id],
@@ -214,8 +211,12 @@ export function Admin() {
     mutation.mutate({ path, body, method });
   };
   const deleteEdition = () => {
-    if (!id || !edition || edition.status === 'ARCHIVED') return;
-    if (!window.confirm(`Excluir a edição ${edition.year}? Essa ação não pode ser desfeita.`))
+    if (!id || !edition) return;
+    if (
+      !window.confirm(
+        `Excluir a edição ${edition.year} e todos os seus dados? Essa ação não pode ser desfeita.`,
+      )
+    )
       return;
     action(`/admin/editions/${id}`, undefined, 'DELETE');
   };
@@ -240,6 +241,10 @@ export function Admin() {
         {message && <Notice message={message} />}
       </div>
     );
+  if (tab === 'analytics') {
+    const query = searchParams.toString();
+    return <Navigate to={`/admin/overview${query ? `?${query}` : ''}`} replace />;
+  }
   const next = edition ? statuses[statuses.indexOf(edition.status) + 1] : undefined;
   const category = categories.data?.find((c) => c.id === categoryId) ?? categories.data?.[0];
   return (
@@ -425,15 +430,13 @@ export function Admin() {
                 </button>
               ) : (
                 <>
-                  {(tab === 'overview' || tab === 'analytics' || tab === 'voting') && (
+                  {(tab === 'overview' || tab === 'voting') && (
                     <SummaryPanel edition={edition} categories={categories} analytics={analytics} />
                   )}
                   {(tab === 'overview' || tab === 'voting') && (
                     <TransitionPanel
                       id={id}
                       next={next}
-                      reason={reason}
-                      setReason={setReason}
                       mutation={mutation}
                       action={action}
                     />
@@ -462,13 +465,10 @@ export function Admin() {
                     <NomineesPanel
                       id={id}
                       categories={categories}
-                      reason={reason}
-                      setReason={setReason}
                       action={action}
                       mutation={mutation}
                       category={category}
                       setCategoryId={setCategoryId}
-                      setMessage={setMessage}
                     />
                   )}
                   {tab === 'nominations' && (
@@ -491,7 +491,6 @@ export function Admin() {
                       results={results}
                     />
                   )}
-                  {tab === 'analytics' && <AnalyticsPanel analytics={analytics} />}
                   {tab === 'audit' && <AuditPanel logs={logs} />}
                   {tab === 'users' && <UsersPanel action={action} users={users} auth={auth} />}
                   {tab === 'members' && (

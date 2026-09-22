@@ -11,14 +11,7 @@ export function SummaryPanel({
       <div className="admin-stats">
         {[
           [analytics.data?.ballots ?? 0, 'Cédulas confirmadas'],
-          [
-            analytics.data?.participation == null
-              ? '—'
-              : `${analytics.data.participation.toFixed(1)}%`,
-            'Participação',
-          ],
           [categories.data?.length ?? 0, 'Categorias'],
-          [categories.data?.reduce((n, c) => n + c.nominees.length, 0) ?? 0, 'Indicados oficiais'],
         ].map(([value, label]) => (
           <div key={label}>
             <small>{label}</small>

@@ -185,24 +185,44 @@ export function CategoryForm({
       rules: { required_role_ids: [], min_membership_days: 0, blacklisted_discord_ids: [] },
     },
   });
-  const split = (v: string) =>
-    typeof v === 'string'
-      ? v
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : v;
+  const name = f.watch('name');
+  useEffect(() => {
+    if (!category && name)
+      f.setValue(
+        'slug',
+        name
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, ''),
+        { shouldDirty: false },
+      );
+  }, [category, f, name]);
+  const submit = f.handleSubmit((value) =>
+    onSave({
+      ...value,
+      slug: category?.slug ?? value.slug,
+      image_url: category?.image_url ?? null,
+      vote_required: category?.vote_required ?? true,
+      allow_self_nomination: category?.allow_self_nomination ?? false,
+      display_order: category?.display_order ?? 0,
+      archived: category?.archived ?? false,
+      rules: category?.rules ?? {
+        required_role_ids: [],
+        min_membership_days: 0,
+        blacklisted_discord_ids: [],
+      },
+    }),
+  );
   return (
-    <form className="admin-form" onSubmit={f.handleSubmit(onSave)}>
+    <form className="admin-form" onSubmit={submit}>
       <div className="form-grid">
         <label>
           Nome
           <input {...f.register('name')} />
         </label>
-        <label>
-          Slug histórico
-          <input {...f.register('slug')} />
-        </label>
+        <input type="hidden" {...f.register('slug')} />
         <label className="full">
           Descrição
           <textarea {...f.register('description')} />
@@ -214,47 +234,6 @@ export function CategoryForm({
         <label>
           Indicações por membro
           <input type="number" {...f.register('max_nominations', { valueAsNumber: true })} />
-        </label>
-        <label>
-          Ordem
-          <input type="number" {...f.register('display_order', { valueAsNumber: true })} />
-        </label>
-        <label>
-          Imagem (URL HTTPS)
-          <input {...f.register('image_url', { setValueAs: (v) => v || null })} />
-        </label>
-        <label>
-          Cargos elegíveis (IDs separados por vírgula)
-          <input
-            defaultValue={category?.rules.required_role_ids.join(', ')}
-            {...f.register('rules.required_role_ids', { setValueAs: split })}
-          />
-        </label>
-        <label>
-          Tempo mínimo no servidor (dias)
-          <input
-            type="number"
-            {...f.register('rules.min_membership_days', { valueAsNumber: true })}
-          />
-        </label>
-        <label className="full">
-          Membros impedidos (IDs separados por vírgula)
-          <input
-            defaultValue={category?.rules.blacklisted_discord_ids.join(', ')}
-            {...f.register('rules.blacklisted_discord_ids', { setValueAs: split })}
-          />
-        </label>
-        <label className="checkbox-label">
-          <input type="checkbox" {...f.register('vote_required')} />
-          Voto obrigatório
-        </label>
-        <label className="checkbox-label">
-          <input type="checkbox" {...f.register('allow_self_nomination')} />
-          Permitir autoindicação
-        </label>
-        <label className="checkbox-label">
-          <input type="checkbox" {...f.register('archived')} />
-          Arquivar categoria
         </label>
       </div>
       {Object.keys(f.formState.errors).length > 0 && (
