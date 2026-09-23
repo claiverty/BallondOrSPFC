@@ -19,13 +19,6 @@
   max-width: 650px;
   line-height: 1.8;
 }
-.category-jump {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 32px;
-}
 .stage-notice {
   display: flex;
   align-items: center;
@@ -45,22 +38,12 @@
 .stage-notice .text-link {
   margin-left: auto;
 }
-.category-jump a {
-  border: 1px solid var(--border);
-  padding: 10px 16px;
-  min-height: 44px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  border-radius: var(--radius-control);
-}
-.category-jump a:hover {
-  border-color: var(--gold);
-}
 .nominee-section {
   padding-top: 52px;
   scroll-margin-top: 100px;
+}
+.nominee-section:first-of-type {
+  padding-top: 0;
 }
 .nominee-heading {
   display: flex;

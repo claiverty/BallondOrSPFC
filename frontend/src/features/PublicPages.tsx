@@ -25,6 +25,7 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
   const votingFinished =
     !!e.data &&
     ['VOTING_CLOSED', 'RESULTS_READY', 'RESULTS_PUBLISHED', 'ARCHIVED'].includes(e.data.status);
+  const resultsPublished = !!e.data && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(e.data.status);
   return (
     <State loading={e.isLoading || cats.isLoading} error={e.error ?? cats.error}>
       <div className="page public-page">
@@ -41,23 +42,23 @@ export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean 
               : 'O melhor da comunidade está aqui. Agora, o próximo capítulo é com você.'
           }
         />
-        {votingFinished && (
+        {!categoriesOnly && votingFinished && (
           <div className="stage-notice">
-            <span className="eyebrow">A VOTAÇÃO FOI ENCERRADA</span>
-            <p>Confira os vencedores no Hall da Fama.</p>
-            <Link className="text-link" to="/hall-of-fame">
-              Ir para o Hall da Fama <ArrowRight size={16} />
-            </Link>
+            <span className="eyebrow">
+              {resultsPublished ? 'RESULTADOS PUBLICADOS' : 'A VOTAÇÃO FOI ENCERRADA'}
+            </span>
+            <p>
+              {resultsPublished
+                ? 'O top 3 de cada categoria já está disponível.'
+                : 'Os vencedores serão divulgados em breve.'}
+            </p>
+            {resultsPublished && slug && (
+              <Link className="text-link" to={`/${slug}/winners`}>
+                Ver vencedores <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            )}
           </div>
         )}
-        <div className="category-jump">
-          {cats.data?.map((c) => (
-            <a key={c.id} href={`#${c.slug}`}>
-              {c.name}
-              <ArrowUpRight size={14} />
-            </a>
-          ))}
-        </div>
         {cats.data?.map((c, i) => (
           <section id={c.slug} className="nominee-section" key={c.id}>
             <div className="nominee-heading">
