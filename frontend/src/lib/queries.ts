@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Category, Edition, Winner } from '@awards/contracts';
 import { demoMode, request } from './auth';
+import { demoArtworkKey, getDemoArtworkUrls } from './demo-media';
 import {
   demoArchive,
   demoArchive2024,
@@ -59,16 +60,18 @@ export const useCategories = (edition?: Edition) =>
 export const useWinners = (slug?: string) =>
   useQuery({
     queryKey: ['winners', slug],
-    queryFn: () =>
-      demoMode
-        ? Promise.resolve(
-            !slug
-              ? demoAllWinners.filter((winner) => winner.rank === 1)
-              : slug === '2025'
-                ? demoWinners
-                : slug === '2024'
-                  ? demoWinners2024
-                  : [],
-          )
-        : request<Winner[]>(slug ? `/winners/${slug}` : '/hall-of-fame'),
+    queryFn: async () => {
+      if (!demoMode) return request<Winner[]>(slug ? `/winners/${slug}` : '/hall-of-fame');
+      if (slug === '2025') return demoWinners;
+      if (slug === '2024') return demoWinners2024;
+      if (slug) return [];
+      const artwork = await getDemoArtworkUrls();
+      return demoAllWinners
+        .filter((winner) => winner.rank === 1)
+        .map((winner) => ({
+          ...winner,
+          hall_of_fame_image_url:
+            artwork.get(demoArtworkKey(winner.edition_id, winner.category_id)) ?? null,
+        }));
+    },
   });

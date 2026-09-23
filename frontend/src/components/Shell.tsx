@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Menu, X, LogOut } from 'lucide-react';
 import { isOpen } from '@awards/contracts';
 import { demoMode, useAuth } from '../lib/auth';
 import { useEdition } from '../lib/queries';
+import { MemberDialog } from '../features/MemberDialog';
 function SpfcMark() {
   return <img className="spfc-mark" src="/images/spfc-gold-logo.png" alt="" aria-hidden="true" />;
 }
@@ -27,6 +28,20 @@ export function Shell() {
   const [error, setError] = useState('');
   const auth = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const selectedMember = new URLSearchParams(location.search).get('member');
+  const closeMember = () => {
+    const params = new URLSearchParams(location.search);
+    params.delete('member');
+    navigate(
+      {
+        pathname: location.pathname,
+        search: params.size ? `?${params.toString()}` : '',
+        hash: location.hash,
+      },
+      { replace: true },
+    );
+  };
   const firstSegment = location.pathname.split('/')[1];
   const reserved = ['history', 'hall-of-fame', 'records', 'rules', 'members', 'auth', 'admin'];
   const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
@@ -35,6 +50,7 @@ export function Shell() {
   const year = edition?.slug ?? editionSlug;
   const nomineesPublished =
     edition && ['NOMINEES_ANNOUNCED', 'VOTING_CLOSED', 'RESULTS_READY'].includes(edition.status);
+  const resultsPublished = edition && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(edition.status);
   const participationName = edition
     ? isOpen(edition, 'nominations')
       ? 'Indicação'
@@ -46,7 +62,9 @@ export function Shell() {
     : null;
   const participationPath =
     participationName === 'Vencedores'
-      ? '/hall-of-fame'
+      ? resultsPublished && year
+        ? `/${year}/winners`
+        : '/hall-of-fame'
       : participationName === 'Votação'
         ? year
           ? `/${year}/vote`
@@ -204,6 +222,9 @@ export function Shell() {
           <Link to="/rules">Regras e privacidade</Link>
         </div>
       </footer>
+      {selectedMember && (
+        <MemberDialog key={selectedMember} id={selectedMember} onClose={closeMember} />
+      )}
     </>
   );
 }

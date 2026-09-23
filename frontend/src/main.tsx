@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 import { useEffect } from 'react';
@@ -15,7 +15,7 @@ import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { Shell } from './components/Shell';
 import { Home } from './features/Home';
-import { Nominees, Winners, History, Member, Records, Rules } from './features/PublicPages';
+import { Nominees, Winners, History, Records, Rules } from './features/PublicPages';
 const EditionStage = React.lazy(() =>
   import('./features/EditionStage').then((m) => ({ default: m.EditionStage })),
 );
@@ -54,6 +54,10 @@ function Callback() {
     </div>
   );
 }
+function LegacyMemberRedirect() {
+  const { id } = useParams();
+  return <Navigate to={`/hall-of-fame?member=${encodeURIComponent(id ?? '')}`} replace />;
+}
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={client}>
@@ -73,7 +77,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="hall-of-fame" element={<Winners hall />} />
                 <Route path="records" element={<Records />} />
                 <Route path="rules" element={<Rules />} />
-                <Route path="members/:id" element={<Member />} />
+                <Route path="members/:id" element={<LegacyMemberRedirect />} />
                 <Route path="auth/callback" element={<Callback />} />
                 <Route path="admin" element={<Navigate to="/admin/overview" replace />} />
                 <Route path="admin/:tab" element={<Admin />} />
@@ -82,7 +86,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path=":slug/nominees" element={<EditionStage />} />
                 <Route path=":slug/nominations" element={<EditionStage />} />
                 <Route path=":slug/vote" element={<Voting />} />
-                <Route path=":slug/winners" element={<Navigate to="/hall-of-fame" replace />} />
+                <Route path=":slug/winners" element={<Winners />} />
                 <Route
                   path="*"
                   element={

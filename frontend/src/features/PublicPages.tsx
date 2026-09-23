@@ -1,24 +1,23 @@
 import { Link, useParams } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight, Medal } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Medal, PictureInPicture2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { phaseLabels, Nominee } from '@awards/contracts';
 import { useEdition, useCategories, useEditions, useWinners } from '../lib/queries';
 import { demoMode, request } from '../lib/auth';
 import { demoAllWinners, demoMembers } from '../lib/demo';
-import { NomineeCard, PageHeading, State } from '../components/ui';
+import { winnerCardAssets } from '../lib/winner-card-assets';
+import { MemberLink, NomineeCard, PageHeading, State } from '../components/ui';
 
-const winnerCardAssets: Record<string, string> = {
-  '2025:mais-querido': '/images/Winners 2025/ClaiQuerido.png',
-  '2025:staff-do-ano': '/images/Winners 2025/ClaiStaff.png',
-  '2025:membro-do-ano': '/images/Winners 2025/TheusAno.png',
-  '2025:membro-mais-ativo': '/images/Winners 2025/ThaisAtivo.png',
-  '2025:rei-da-resenha': '/images/Winners 2025/SukitaResenha.png',
-  '2025:o-mais-chato': '/images/Winners 2025/BambiChato.png',
-  '2024:mais-querido': '/images/Winners 2024/clai.png',
-  '2024:fabuloso': '/images/Winners 2024/Bambinox.png',
-  '2024:terror-do-morumbi': '/images/Winners 2024/Pudim.png',
-};
 const demoHistoricalWinners = demoAllWinners;
+function TrajectoryHint() {
+  return (
+    <span className="text-link winner-trajectory">
+      <span className="winner-trajectory-long">Conhecer trajetória</span>
+      <span className="winner-trajectory-short">Trajetória</span>
+      <PictureInPicture2 className="winner-trajectory-icon" size={16} aria-hidden="true" />
+    </span>
+  );
+}
 export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean }) {
   const { slug } = useParams();
   const e = useEdition(slug);
@@ -139,42 +138,99 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                   <span className="eyebrow">BALLON D’OR SPFC</span>
                   <h2>Vencedores — {year}</h2>
                 </div>
-                <div className="winners-grid">
-                  {yearRows.map((w) => {
-                    const poster =
-                      w.rank === 1 ? winnerCardAssets[`${w.year}:${w.category_slug}`] : undefined;
-                    return (
-                      <Link
-                        key={`${w.edition_id}-${w.category_id}-${w.nominee_id}`}
-                        className="winner-card"
-                        aria-label={`${w.display_name}, @${w.username}, ${w.category_name}`}
-                        to={`/members/${w.discord_user_id}`}
+                {hall ? (
+                  <div className="winners-grid">
+                    {yearRows.map((w) => {
+                      const legacyPoster = winnerCardAssets[`${w.year}:${w.category_slug}`];
+                      const poster = w.hall_of_fame_image_url ?? legacyPoster;
+                      return (
+                        <MemberLink
+                          key={`${w.edition_id}-${w.category_id}-${w.nominee_id}`}
+                          className="winner-card"
+                          aria-label={`${w.display_name}, @${w.username}, ${w.category_name}`}
+                          memberId={w.discord_user_id}
+                        >
+                          <div className="winner-poster-media">
+                            <img
+                              src={poster ?? w.avatar_url ?? '/images/user.png'}
+                              alt=""
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="winner-content">
+                            <span className="winner-category">{w.category_name}</span>
+                            {(!poster || w.hall_of_fame_image_url) && <h3>{w.display_name}</h3>}
+                            <p>@{w.username}</p>
+                            <TrajectoryHint />
+                          </div>
+                        </MemberLink>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="winner-categories">
+                    {Array.from(
+                      yearRows.reduce((groups, winner) => {
+                        const category = groups.get(winner.category_id) ?? [];
+                        category.push(winner);
+                        groups.set(winner.category_id, category);
+                        return groups;
+                      }, new Map<string, typeof yearRows>()),
+                    ).map(([categoryId, categoryRows]) => (
+                      <section
+                        className="winner-category-section"
+                        aria-labelledby={`winner-category-${year}-${categoryId}`}
+                        key={categoryId}
                       >
-                        <div className="winner-poster-media">
-                          <img
-                            src={poster ?? w.avatar_url ?? '/images/user.png'}
-                            alt=""
-                            loading="lazy"
-                          />
+                        <div className="winner-category-heading">
+                          <h3 id={`winner-category-${year}-${categoryId}`}>
+                            {categoryRows[0].category_name}
+                          </h3>
+                          <span>Top 3</span>
                         </div>
-                        <div className="winner-content">
-                          <span className="winner-category">{w.category_name}</span>
-                          {!hall && <span className="winner-rank">{w.rank}º lugar</span>}
-                          {!poster && <h2>{w.display_name}</h2>}
-                          <p>
-                            @{w.username}
-                            {!hall && typeof w.percentage === 'number' && (
-                              <span className="winner-percentage"> · {w.percentage.toFixed(1)}%</span>
-                            )}
-                          </p>
-                          <span className="text-link">
-                            Conhecer trajetória <ArrowUpRight size={18} />
-                          </span>
+                        <div
+                          className="winner-podium"
+                          aria-label={`Top 3 de ${categoryRows[0].category_name}`}
+                        >
+                          {[...categoryRows]
+                            .sort((a, b) => {
+                              const podiumOrder = [2, 1, 3];
+                              return podiumOrder.indexOf(a.rank) - podiumOrder.indexOf(b.rank);
+                            })
+                            .map((w) => (
+                              <MemberLink
+                                key={w.nominee_id}
+                                className={`winner-card winner-card--podium winner-card--rank-${w.rank}`}
+                                memberId={w.discord_user_id}
+                                aria-label={`${w.rank}º lugar: ${w.display_name}, @${w.username}, ${w.category_name}${typeof w.percentage === 'number' ? `, ${w.percentage.toFixed(1)}% dos votos` : ''}`}
+                              >
+                                <div className="winner-poster-media">
+                                  <img
+                                    src={w.avatar_url ?? '/images/user.png'}
+                                    alt=""
+                                    loading="lazy"
+                                  />
+                                </div>
+                                <div className="winner-content">
+                                  <span className="winner-rank">{w.rank}º lugar</span>
+                                  <h4>{w.display_name}</h4>
+                                  <p className="winner-meta">
+                                    <span className="winner-username">@{w.username}</span>
+                                    {typeof w.percentage === 'number' && (
+                                      <span className="winner-percentage">
+                                        {w.percentage.toFixed(1)}%
+                                      </span>
+                                    )}
+                                  </p>
+                                  <TrajectoryHint />
+                                </div>
+                              </MemberLink>
+                            ))}
                         </div>
-                      </Link>
-                    );
-                  })}
-                </div>
+                      </section>
+                    ))}
+                  </div>
+                )}
               </section>
             ))}
           </div>
@@ -218,8 +274,7 @@ export function History() {
 interface MemberProfile extends Nominee {
   history: Array<{ year: number; edition_slug: string; category_name: string; rank: number }>;
 }
-export function Member() {
-  const { id } = useParams();
+export function Member({ id }: { id: string }) {
   const q = useQuery({
     queryKey: ['member', id],
     queryFn: async () => {
@@ -311,12 +366,12 @@ export function Records() {
         />
         <div className="records-list">
           {q.data?.map((r, i) => (
-            <Link to={`/members/${r.discord_user_id}`} key={r.discord_user_id}>
+            <MemberLink memberId={r.discord_user_id} key={r.discord_user_id}>
               <span>{String(i + 1).padStart(2, '0')}</span>
               <h2>{r.display_name}</h2>
               <strong>{r.wins} vitórias</strong>
               <ArrowUpRight />
-            </Link>
+            </MemberLink>
           ))}
           {!q.data?.length && (
             <p className="empty">As marcas aparecem após a primeira publicação de resultados.</p>

@@ -22,7 +22,9 @@ export function Home() {
         ? 'Votar agora'
         : 'Conhecer indicados';
   const ctaPath = showWinners
-    ? '/hall-of-fame'
+    ? slug && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(edition.data!.status)
+      ? `/${slug}/winners`
+      : '/hall-of-fame'
     : slug
       ? `/${slug}/${votingOpen ? 'vote' : nominationsOpen ? 'nominations' : 'nominees'}`
       : '/';

@@ -229,6 +229,7 @@ export interface Winner {
   avatar_url: string | null;
   rank: number;
   percentage?: number;
+  hall_of_fame_image_url?: string | null;
 }
 export interface Nomination {
   category_name?: string;

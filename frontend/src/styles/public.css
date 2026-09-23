@@ -230,6 +230,67 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
+.winner-categories {
+  display: grid;
+  gap: 56px;
+}
+.winner-category-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.winner-category-heading h3 {
+  font-size: 28px;
+  color: var(--text);
+}
+.winner-category-heading span {
+  flex: none;
+  color: var(--gold-light);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.winner-podium {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(10px, 2vw, 20px);
+  max-width: 780px;
+  margin: 0 auto;
+  padding-top: 12px;
+}
+.winner-card--podium {
+  min-width: 0;
+}
+.winner-card--rank-1 {
+  grid-column: 2;
+  margin-bottom: 20px;
+}
+.winner-card--rank-2 {
+  grid-column: 1;
+}
+.winner-card--rank-3 {
+  grid-column: 3;
+}
+.winner-card--podium .winner-content {
+  padding: 14px 16px 16px;
+}
+.winner-card--podium .winner-content h4 {
+  font-size: clamp(22px, 2.5vw, 32px);
+  overflow-wrap: anywhere;
+}
+.winner-card--podium .winner-content p {
+  overflow-wrap: anywhere;
+}
+.winner-card--podium .text-link {
+  gap: 6px;
+  font-size: 11px;
+}
 .winner-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -259,9 +320,15 @@
   padding: 18px 20px 20px;
   position: relative;
 }
-.winner-content h2 {
+.winner-card .winner-content {
+  text-align: center;
+}
+.winner-content :is(h3, h4) {
   font-size: 34px;
   margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.04;
 }
 .winner-category {
   display: block;
@@ -286,6 +353,76 @@
 }
 .winner-content .text-link {
   margin-top: 14px;
+}
+.winner-card--podium .winner-percentage::before {
+  content: ' · ';
+}
+.winner-trajectory-short {
+  display: none;
+}
+.member-dialog {
+  width: min(760px, calc(100vw - 32px));
+  max-height: min(88dvh, 900px);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.member-dialog::backdrop {
+  background: #000b;
+  backdrop-filter: blur(5px);
+}
+.member-dialog-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 60px;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.member-dialog-toolbar .icon-button {
+  width: 40px;
+  height: 40px;
+}
+.member-dialog .public-page,
+.member-dialog .state {
+  padding: 28px 32px 36px;
+}
+.member-dialog .profile-heading {
+  gap: 24px;
+}
+.member-dialog .profile-heading > img {
+  width: 112px;
+  height: 112px;
+  flex: none;
+  border-radius: 50%;
+}
+.member-dialog .page-heading h1 {
+  font-size: clamp(36px, 5vw, 56px);
+}
+.member-dialog .profile-stats {
+  gap: 32px;
+  margin: 24px 0;
+}
+.member-dialog .profile-stats strong {
+  font-size: 42px;
+}
+.member-dialog .history-list > a {
+  gap: 20px;
+  padding: 16px 0;
+}
+.member-dialog .history-year {
+  font-size: 42px;
+}
+.member-dialog .history-list h2 {
+  font-size: 27px;
 }
 .history-list > a {
   display: flex;

@@ -38,6 +38,7 @@ beforeAll(async () => {
   await db.exec(await readFile('supabase/migrations/003_submission_invariants.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/005_allow_edition_deletion.sql', 'utf8'));
   await db.exec(await readFile('supabase/migrations/006_rls_hardening.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/010_hall_of_fame_media.sql', 'utf8'));
   let pending = Promise.resolve();
   const bridge = {
     query,
@@ -413,6 +414,73 @@ describe('Nest HTTP and transactional workflows', () => {
         )
       )[0].count,
     ).toBe(3);
+  });
+  it('lets admins manage artwork only for published Hall of Fame winners', async () => {
+    expect((await app.inject({ url: `/api/admin/media/${edition}`, headers })).statusCode).toBe(
+      403,
+    );
+
+    await post();
+    await admin();
+    for (const status of ['VOTING_CLOSED', 'RESULTS_READY', 'RESULTS_PUBLISHED']) {
+      const response = await app.inject({
+        method: 'POST',
+        url: `/api/admin/editions/${edition}/transition`,
+        headers,
+        payload: { status, reason: 'Publish test winner' },
+      });
+      expect(response.statusCode, response.body).toBe(201);
+    }
+
+    const imageUrl = 'https://example.test/hall-winner.webp';
+    await db.query(
+      'insert into awards.media_assets(edition_id,category_id,storage_path,url,created_by) values($1,$2,$3,$4,$5)',
+      [edition, cat, `${edition}/${cat}/winner.webp`, imageUrl, profile],
+    );
+
+    const adminImages = await app.inject({ url: `/api/admin/media/${edition}`, headers });
+    expect(adminImages.statusCode).toBe(200);
+    expect(adminImages.json()).toHaveLength(1);
+    expect(adminImages.json()[0]).toMatchObject({
+      category_id: cat,
+      display_name: 'Candidate',
+      hall_of_fame_image_url: imageUrl,
+    });
+
+    const hall = await app.inject({ url: '/api/hall-of-fame' });
+    const thisEditionWinner = hall
+      .json()
+      .find((winner: { edition_id: string }) => winner.edition_id === edition);
+    expect(thisEditionWinner.hall_of_fame_image_url).toBe(imageUrl);
+    const editionWinners = await app.inject({ url: `/api/winners/${edition}` });
+    expect(editionWinners.json()[0].hall_of_fame_image_url).toBeNull();
+  });
+  it('rejects invalid artwork and refuses to upload before publication', async () => {
+    await admin();
+    const payload = {
+      edition_id: edition,
+      category_id: cat,
+      mime_type: 'image/png',
+      base64: Buffer.from('not an image').toString('base64'),
+    };
+    const invalidImage = await app.inject({
+      method: 'POST',
+      url: '/api/admin/media',
+      headers,
+      payload,
+    });
+    expect(invalidImage.statusCode).toBe(400);
+
+    const invalidPhase = await app.inject({
+      method: 'POST',
+      url: '/api/admin/media',
+      headers,
+      payload: {
+        ...payload,
+        base64: Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]).toString('base64'),
+      },
+    });
+    expect(invalidPhase.statusCode).toBe(400);
   });
   it('runs a new configurable edition from creation through nominations, voting and archive', async () => {
     await admin();

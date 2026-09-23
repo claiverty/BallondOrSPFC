@@ -13,6 +13,7 @@ beforeAll(async () => {
     'create table public.awards_migrations(name text primary key, applied_at timestamptz default now())',
   );
   await db.exec(await readFile('supabase/migrations/006_rls_hardening.sql', 'utf8'));
+  await db.exec(await readFile('supabase/migrations/010_hall_of_fame_media.sql', 'utf8'));
 });
 afterAll(async () => {
   await db.close();

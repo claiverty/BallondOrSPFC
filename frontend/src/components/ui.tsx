@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { AlertCircle, ArrowUpRight, Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, type LinkProps } from 'react-router-dom';
 import { Nominee } from '@awards/contracts';
 export function State({
   loading,
@@ -51,6 +51,23 @@ export function PageHeading({
     </div>
   );
 }
+export function MemberLink({
+  memberId,
+  children,
+  ...props
+}: Omit<LinkProps, 'to'> & { memberId: string }) {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  params.set('member', memberId);
+  return (
+    <Link
+      {...props}
+      to={{ pathname: location.pathname, search: `?${params.toString()}`, hash: location.hash }}
+    >
+      {children}
+    </Link>
+  );
+}
 export function NomineeCard({
   nominee,
   selected,
@@ -91,9 +108,9 @@ export function NomineeCard({
       {content}
     </button>
   ) : (
-    <Link className="nominee-card" to={`/members/${nominee.discord_user_id}`}>
+    <MemberLink className="nominee-card" memberId={nominee.discord_user_id}>
       {content}
-    </Link>
+    </MemberLink>
   );
 }
 export function Notice({ message }: { message: string }) {

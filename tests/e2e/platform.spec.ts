@@ -19,7 +19,7 @@ test('home, navigation and mobile layout', async ({ page }) => {
   await page.goto('/2025');
   await expect(page.locator('nav.main-nav a').filter({ hasText: 'Vencedores' })).toHaveAttribute(
     'href',
-    '/hall-of-fame',
+    '/2025/winners',
   );
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto('/2026/vote');
@@ -109,22 +109,89 @@ test('admin preview and archive stay isolated from live actions', async ({ page 
   await page.getByRole('button', { name: 'Nova categoria', exact: true }).click();
   await expect(page.getByLabel('Máximo de indicados')).toHaveValue('5');
   await page.goto('/admin/results');
-  await expect(page.getByRole('heading', { name: 'Votação por categoria', exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Votação por categoria', exact: true }),
+  ).toBeVisible();
   await expect(page.locator('.results-chart-card')).toHaveCount(6);
+  await page.goto('/admin/media?edition=00000000-0000-4000-8000-000000000002');
+  await expect(
+    page.getByRole('heading', { name: 'Artes dos vencedores', exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.media-winner-card')).toHaveCount(6);
+  await expect(page.getByLabel('Enviar arte para Theus, Membro do Ano')).toBeEnabled();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.goto('/2025/winners');
-  await expect(page).toHaveURL(/\/hall-of-fame$/);
-  await expect(page.getByRole('heading', { name: 'Hall da Fama.' })).toBeVisible();
-  await expect(page.locator('.winner-card')).toHaveCount(9);
+  await expect(page).toHaveURL(/\/2025\/winners$/);
+  await expect(page.getByRole('heading', { name: 'Eles fizeram história.' })).toBeVisible();
+  await expect(page.locator('.winner-category-section')).toHaveCount(6);
+  await expect(page.locator('.winner-category-section').first()).toContainText('Membro do Ano');
+  await expect(page.locator('.winner-podium')).toHaveCount(6);
+  await expect(page.locator('.winner-podium').first().locator('.winner-card')).toHaveCount(3);
+  await expect(page.locator('.winner-podium').first().locator('.winner-rank')).toHaveText([
+    '2º lugar',
+    '1º lugar',
+    '3º lugar',
+  ]);
+  await expect(page.locator('.winner-card')).toHaveCount(18);
+  await expect(page.locator('.winner-percentage')).toHaveCount(18);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
-test('reduced motion and member pages render without browser errors', async ({ page }) => {
+test('demo artwork upload appears in Hall da Fama and can be removed', async ({ page }) => {
+  await page.goto('/admin/media?edition=00000000-0000-4000-8000-000000000002');
+  await page.getByLabel('Enviar arte para Theus, Membro do Ano').setInputFiles({
+    name: 'arte-teste.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==',
+      'base64',
+    ),
+  });
+  await expect(page.getByLabel('Trocar arte para Theus, Membro do Ano')).toBeEnabled();
+  await page.reload();
+  await expect(page.getByLabel('Trocar arte para Theus, Membro do Ano')).toBeEnabled();
+  await page.goto('/hall-of-fame');
+  const winner = page.getByRole('link', { name: 'Theus, @theus, Membro do Ano' });
+  await expect(winner.locator('img')).toHaveAttribute('src', /^blob:/);
+  await page.goto('/admin/media?edition=00000000-0000-4000-8000-000000000002');
+  await page
+    .getByRole('button', {
+      name: 'Remover arte personalizada de Theus, Membro do Ano',
+    })
+    .click();
+  await expect(page.getByLabel('Enviar arte para Theus, Membro do Ano')).toBeEnabled();
+});
+test('trajectory opens as a dialog from cards and direct profile links', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await page.goto('/hall-of-fame');
   await page.locator('.winner-card').first().click();
-  await expect(page.locator('.profile-heading')).toBeVisible();
+  const dialog = page.getByRole('dialog', { name: 'Trajetória do membro' });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('.profile-heading')).toBeVisible();
+  await expect(page).toHaveURL(/\/hall-of-fame\?member=/);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(page).toHaveURL(/\/hall-of-fame$/);
+  await page.goto('/members/900000000000000003');
+  await expect(page).toHaveURL(/\/hall-of-fame\?member=900000000000000003$/);
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Fechar trajetória' }).click();
+  await expect(dialog).toHaveCount(0);
   expect(errors).toEqual([]);
+});
+
+test('small screens keep the full podium and compact trajectory label', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/2025/winners');
+  const firstCategory = page.locator('.winner-podium').first();
+  await expect(firstCategory.locator('.winner-card')).toHaveCount(3);
+  await expect(firstCategory.locator('.winner-card--rank-2 .winner-rank')).toHaveText('2º lugar');
+  await expect(firstCategory.locator('.winner-card--rank-1 .winner-rank')).toHaveText('1º lugar');
+  await expect(firstCategory.locator('.winner-card--rank-3 .winner-rank')).toHaveText('3º lugar');
+  await expect(firstCategory.locator('.winner-card--rank-1 .winner-trajectory-short')).toBeVisible();
+  await expect(firstCategory.locator('.winner-card--rank-1 .winner-percentage')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
 test('nominations search, manual fallback and category navigation work', async ({ page }) => {
@@ -137,9 +204,7 @@ test('nominations search, manual fallback and category navigation work', async (
   await page.getByRole('button', { name: 'Não encontrou? Indicar manualmente' }).click();
   await page.getByLabel('Nome para revisão').fill('Participante de exemplo');
   await page.getByRole('button', { name: 'Adicionar sugestão' }).click();
-  await expect(page.locator('.chosen-members')).toContainText(
-    'precisa ser associada ao Discord',
-  );
+  await expect(page.locator('.chosen-members')).toContainText('precisa ser associada ao Discord');
   await page.getByRole('button', { name: 'Membro do Ano', exact: true }).click();
   await expect(page.locator('.chosen-members')).toContainText('Claiverty');
   await page.getByRole('button', { name: 'Enviar indicações' }).click();
