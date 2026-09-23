@@ -2,11 +2,16 @@ import { test, expect } from '@playwright/test';
 test('home, navigation and mobile layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Ballon d’Or.*SÃO PAULO/ })).toBeVisible();
+  await expect(page.locator('.award-hero-cta')).toHaveText(/Votar agora/);
+  await expect(page.locator('.award-hero-cta')).toHaveAttribute('href', '/2026/vote');
+  await expect(page.locator('nav.main-nav a').filter({ hasText: 'Votação' })).toHaveCount(1);
   await expect(page.locator('nav.main-nav a').filter({ hasText: 'Votação' })).toHaveAttribute(
     'href',
     '/2026/vote',
   );
   await page.goto('/2027');
+  await expect(page.locator('.award-hero-cta')).toHaveText(/Indicar candidatos/);
+  await expect(page.locator('.award-hero-cta')).toHaveAttribute('href', '/2027/nominations');
   await expect(page.locator('nav.main-nav a').filter({ hasText: 'Indicação' })).toHaveAttribute(
     'href',
     '/2027/nominations',
@@ -24,6 +29,45 @@ test('history shows only current and closed editions in descending order', async
   await page.goto('/history');
   await expect(page.locator('.history-year')).toHaveText(['2026', '2025', '2024']);
   await expect(page.getByText('2027', { exact: true })).toHaveCount(0);
+});
+test('edition schedule opens the themed calendar and accepts a local time', async ({ page }) => {
+  await page.goto('/admin/edition');
+  const field = page.getByRole('group', { name: 'Início das indicações' });
+  await field.getByRole('button').first().click();
+  const picker = page.getByRole('dialog', {
+    name: 'Selecionar data e hora: Início das indicações',
+  });
+  await expect(picker).toBeVisible();
+  await expect(picker).toHaveAttribute('aria-modal', 'true');
+  await expect(picker.getByRole('heading', { name: /2026/ })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const bounds = await picker.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      centerX: rect.left + rect.width / 2,
+      centerY: rect.top + rect.height / 2,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+    };
+  });
+  expect(bounds.top).toBeGreaterThanOrEqual(0);
+  expect(bounds.right).toBeLessThanOrEqual(bounds.viewportWidth);
+  expect(bounds.bottom).toBeLessThanOrEqual(bounds.viewportHeight);
+  expect(Math.abs(bounds.centerX - bounds.viewportWidth / 2)).toBeLessThan(2);
+  expect(Math.abs(bounds.centerY - bounds.viewportHeight / 2)).toBeLessThan(2);
+  const timeInput = picker.getByRole('textbox', { name: 'Horário' });
+  await expect(timeInput).toHaveAttribute('placeholder', 'HH:MM');
+  await timeInput.fill('25:75');
+  await expect(picker.getByRole('button', { name: 'Concluir' })).toBeDisabled();
+  await timeInput.fill('07:30');
+  await expect(picker.getByRole('button', { name: 'Concluir' })).toBeEnabled();
+  await expect(field.getByRole('button', { name: /horário 07:30/ })).toBeVisible();
+  await picker.getByRole('button', { name: 'Concluir' }).click();
+  await expect(picker).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 test('voting preserves selections, shows review and never records a demo vote', async ({
   page,

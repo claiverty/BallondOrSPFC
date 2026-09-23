@@ -30,18 +30,20 @@ export function Shell() {
   const firstSegment = location.pathname.split('/')[1];
   const reserved = ['history', 'hall-of-fame', 'records', 'rules', 'members', 'auth', 'admin'];
   const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
-  const { data: edition } = useEdition(editionSlug);
+  const editionQuery = useEdition(editionSlug);
+  const edition = editionQuery.data;
   const year = edition?.slug ?? editionSlug;
   const nomineesPublished =
     edition && ['NOMINEES_ANNOUNCED', 'VOTING_CLOSED', 'RESULTS_READY'].includes(edition.status);
-  const participationName =
-    edition && isOpen(edition, 'nominations')
+  const participationName = edition
+    ? isOpen(edition, 'nominations')
       ? 'Indicação'
-      : edition && isOpen(edition, 'voting')
+      : isOpen(edition, 'voting')
         ? 'Votação'
         : nomineesPublished
           ? 'Indicados'
-          : 'Vencedores';
+          : 'Vencedores'
+    : null;
   const participationPath =
     participationName === 'Vencedores'
       ? '/hall-of-fame'
@@ -56,11 +58,6 @@ export function Shell() {
           : year
             ? `/${year}/nominees`
             : '/history';
-  const routes = [
-    ['Início', '/'],
-    [participationName, participationPath],
-    ['Histórico', '/history'],
-  ];
   return (
     <>
       <a className="skip-link" href="#main">
@@ -84,11 +81,34 @@ export function Shell() {
             </span>
           </Link>
           <nav className={menu ? 'main-nav open' : 'main-nav'} aria-label="Navegação principal">
-            {routes.map(([name, path]) => (
-              <NavLink key={name} end to={path} onClick={() => setMenu(false)}>
-                {name}
+            <NavLink end to="/" onClick={() => setMenu(false)}>
+              Início
+            </NavLink>
+            {participationName ? (
+              <NavLink to={participationPath} onClick={() => setMenu(false)}>
+                {participationName}
               </NavLink>
-            ))}
+            ) : (
+              <span
+                className={
+                  editionQuery.isError ? 'main-nav-state-unavailable' : 'main-nav-state-placeholder'
+                }
+                role="status"
+                aria-busy={editionQuery.isPending}
+              >
+                {editionQuery.isError ? (
+                  'Edição indisponível'
+                ) : (
+                  <>
+                    <span className="main-nav-state-sr-only">Carregando status da edição</span>
+                    <span className="main-nav-state-bar" aria-hidden="true" />
+                  </>
+                )}
+              </span>
+            )}
+            <NavLink to="/history" onClick={() => setMenu(false)}>
+              Histórico
+            </NavLink>
             <NavLink to="/hall-of-fame" onClick={() => setMenu(false)}>
               Hall da Fama
             </NavLink>

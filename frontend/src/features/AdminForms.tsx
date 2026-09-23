@@ -1,15 +1,10 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Category, CreateCategorySchema, CreateEditionSchema, Edition } from '@awards/contracts';
 import { Check } from 'lucide-react';
-const nullableDate = (v: string) => (v ? new Date(v).toISOString() : null);
-function localDate(v: string | null | undefined) {
-  if (!v) return '';
-  const d = new Date(v);
-  return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-}
+import { DateTimePicker } from '../components/DateTimePicker';
 export function EditionForm({
   edition,
   onSave,
@@ -77,16 +72,30 @@ export function EditionForm({
           Descrição
           <textarea {...f.register('description')} />
         </label>
-        {dateFields.map((key, i) => (
-          <label key={key}>
-            {labels[i]}
-            <input
-              type="datetime-local"
-              defaultValue={localDate(edition?.[key])}
-              {...f.register(key, { setValueAs: nullableDate })}
-            />
-          </label>
-        ))}
+        {dateFields.map((key, i) => {
+          const labelId = `edition-${key}-label`;
+          return (
+            <div className="admin-date-field" key={key} role="group" aria-labelledby={labelId}>
+              <span className="admin-date-label" id={labelId}>
+                {labels[i]}
+              </span>
+              <Controller
+                control={f.control}
+                name={key}
+                render={({ field }) => (
+                  <DateTimePicker
+                    id={`edition-${key}`}
+                    label={labels[i]}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    controlRef={field.ref}
+                  />
+                )}
+              />
+            </div>
+          );
+        })}
         <p className="form-hint full">
           Configure apenas os períodos de indicações e votação. O reveal dos indicados e a
           publicação dos resultados são feitos manualmente nas etapas administrativas.

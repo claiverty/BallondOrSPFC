@@ -391,6 +391,285 @@
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
+.admin-date-field {
+  position: relative;
+  min-width: 0;
+}
+.admin-date-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.admin-datetime {
+  position: relative;
+}
+.admin-datetime.is-open {
+  z-index: 40;
+}
+.admin-datetime-trigger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 58px;
+  padding: 6px 8px;
+  border: 1px solid #4a4b3d;
+  border-radius: var(--radius-control);
+  background: var(--bg);
+  transition:
+    border-color var(--ease),
+    box-shadow var(--ease),
+    background var(--ease);
+}
+.admin-datetime-trigger:focus-within,
+.admin-datetime.is-open .admin-datetime-trigger {
+  border-color: var(--gold);
+  background: #191811;
+  box-shadow: 0 0 0 3px #d6b77a24;
+}
+.admin-datetime-trigger button {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+}
+.admin-datetime-trigger button:hover {
+  background: #ffffff08;
+}
+.admin-datetime-date {
+  gap: 10px;
+  padding: 0 10px;
+}
+.admin-datetime-date svg,
+.admin-datetime-time svg {
+  flex: 0 0 auto;
+  color: var(--gold-light);
+}
+.admin-datetime-date span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-datetime-time {
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-left: 1px solid var(--border) !important;
+  font-variant-numeric: tabular-nums;
+}
+.admin-datetime-popover {
+  position: fixed;
+  z-index: 1001;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  width: min(600px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--admin-card-border, var(--border));
+  border-radius: var(--radius-card);
+  background: var(--surface-raised);
+  box-shadow: 0 22px 55px #000b;
+  transform: translate(-50%, -50%);
+}
+.admin-datetime-backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: block;
+  border: 0;
+  background: #000a;
+  backdrop-filter: blur(2px);
+}
+.admin-datetime-calendar {
+  min-width: 0;
+  padding: 14px;
+}
+.admin-datetime-month {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.admin-datetime-month h3 {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: capitalize;
+}
+.admin-datetime-month button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  color: var(--gold-light);
+  background: var(--surface);
+}
+.admin-datetime-month button:hover {
+  border-color: var(--gold);
+  background: #d6b77a18;
+}
+.admin-datetime-weekdays,
+.admin-datetime-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.admin-datetime-weekdays {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.admin-datetime-weekdays span {
+  padding: 6px 0;
+}
+.admin-datetime-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--text);
+  background: transparent;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.admin-datetime-day:hover {
+  border-color: #d6b77a66;
+  background: #d6b77a14;
+}
+.admin-datetime-day.is-outside {
+  color: #77776d;
+}
+.admin-datetime-day.is-today:not(.is-selected)::after {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  content: '';
+}
+.admin-datetime-day.is-selected {
+  border-color: var(--gold);
+  color: var(--bg);
+  background: var(--gold-light);
+  font-weight: 700;
+}
+.admin-datetime-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  margin-top: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--radius-control);
+  color: var(--muted);
+  background: transparent;
+  font-size: 11px;
+}
+.admin-datetime-clear:hover {
+  color: var(--gold-light);
+  background: #d6b77a14;
+}
+.admin-datetime-times {
+  min-width: 0;
+  padding: 14px 10px 10px;
+  border-left: 1px solid var(--border);
+  background: #08080866;
+}
+.admin-datetime-times h3 {
+  margin: 0 0 10px 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.admin-datetime-times p {
+  padding: 10px 4px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.admin-datetime-time-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid #4a4b3d;
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+.admin-datetime-time-entry:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px #d6b77a24;
+}
+.admin-datetime-time-entry svg {
+  flex: 0 0 auto;
+  color: var(--gold-light);
+}
+.admin-datetime-time-entry input:not([type='checkbox']) {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  color: var(--text);
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.admin-datetime-times .admin-datetime-time-error {
+  margin-top: 6px;
+  padding: 0;
+  color: var(--gold-light);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.admin-datetime-done {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: 10px;
+  padding: 0 14px;
+  border: 1px solid #d6b77a55;
+  border-radius: var(--radius-control);
+  color: var(--gold-light);
+  background: #d6b77a14;
+  font-size: 12px;
+  font-weight: 600;
+}
+.admin-datetime-done:hover {
+  border-color: var(--gold);
+  background: #d6b77a24;
+}
 .form-grid .full {
   grid-column: 1/-1;
 }

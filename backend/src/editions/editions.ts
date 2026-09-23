@@ -28,9 +28,18 @@ export class EditionsService {
     return rows[0];
   }
   async current() {
-    const rows = await this.list();
+    const rows = await this.db.query<Edition>(
+      `select * from awards.editions
+       where (status<>'DRAFT' or is_public)
+       order by case
+         when is_current then 0
+         when status<>'ARCHIVED' then 1
+         else 2
+       end, year desc, created_at desc
+       limit 1`,
+    );
     if (!rows[0]) throw new NotFoundException('A próxima edição está em preparação.');
-    return rows.find((e) => e.is_current) ?? rows.find((e) => e.status !== 'ARCHIVED') ?? rows[0];
+    return rows[0];
   }
   async categories(id: string) {
     const e = (

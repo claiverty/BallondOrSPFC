@@ -165,6 +165,17 @@ async function admin() {
   await db.query("insert into awards.user_roles(user_id,role) values($1,'super_admin')", [profile]);
 }
 describe('Nest HTTP and transactional workflows', () => {
+  it('returns the selected current edition from the dedicated endpoint', async () => {
+    const currentId = crypto.randomUUID();
+    await db.query(
+      "insert into awards.editions(id,name,slug,year,status,is_public,is_current) values($1,'Current edition test',$2,2028,'NOMINEES_ANNOUNCED',true,true)",
+      [currentId, currentId],
+    );
+    const response = await app.inject({ url: '/api/editions/current' });
+    expect(response.statusCode).toBe(200);
+    expect(response.json().id).toBe(currentId);
+    expect(response.json().is_current).toBe(true);
+  });
   it('blocks unauthenticated ballots', async () =>
     expect((await post(body(), false)).statusCode).toBe(401));
   it('blocks an invalid JWT', async () =>

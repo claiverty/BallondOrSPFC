@@ -400,6 +400,7 @@
   gap: 12px;
   align-items: flex-start;
   border: 1px solid #665633;
+  border-radius: var(--radius-card);
   background: #292519;
   color: var(--gold-light);
   padding: 16px 20px;
