@@ -15,7 +15,7 @@ export function Home() {
     (['DRAFT', 'NOMINATIONS_REVIEW'].includes(edition.data.status) ||
       ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(edition.data.status));
   const ctaLabel = showWinners
-    ? 'Conhecer vencedores'
+    ? `Ver vencedores ${edition.data.year}`
     : nominationsOpen
       ? 'Indicar candidatos'
       : votingOpen

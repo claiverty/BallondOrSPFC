@@ -77,13 +77,13 @@ export const phaseCopy: Record<
   RESULTS_PUBLISHED: {
     headline: 'A comunidade fez sua escolha.',
     description: 'O talento, a presença e as histórias que mereceram o nosso maior reconhecimento.',
-    cta: 'Conhecer vencedores',
+    cta: 'Ver vencedores',
     path: 'winners',
   },
   ARCHIVED: {
     headline: 'Um ano. Histórias para sempre.',
     description: 'Relembre os nomes que ficaram na história da comunidade.',
-    cta: 'Conhecer vencedores',
+    cta: 'Ver vencedores',
     path: 'winners',
   },
 };
