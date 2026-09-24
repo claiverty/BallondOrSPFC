@@ -16,7 +16,7 @@ const ManualSchema = z.object({
 export function Nominations() {
   const { slug } = useParams();
   const e = useEdition(slug);
-  const cats = useCategories(e.data);
+  const cats = useCategories(e.data ?? undefined);
   const auth = useAuth();
   const client = useQueryClient();
   const [catId, setCatId] = useState('');

@@ -106,6 +106,10 @@ export function Shell() {
               <NavLink to={participationPath} onClick={() => setMenu(false)}>
                 {participationName}
               </NavLink>
+            ) : editionQuery.isSuccess && editionQuery.data === null ? (
+              <span className="main-nav-state-unavailable" role="status">
+                Sem edição ativa
+              </span>
             ) : (
               <span
                 className={

@@ -176,6 +176,20 @@ describe('Nest HTTP and transactional workflows', () => {
     expect(response.statusCode).toBe(200);
     expect(response.json().id).toBe(currentId);
     expect(response.json().is_current).toBe(true);
+    await db.query('delete from awards.editions where id=$1', [currentId]);
+  });
+  it('does not fall back to an archived edition when no current edition is selected', async () => {
+    for (const status of ['VOTING_CLOSED', 'RESULTS_READY', 'RESULTS_PUBLISHED']) {
+      await db.query('update awards.editions set status=$1 where id=$2', [status, edition]);
+    }
+    await db.query(
+      "update awards.editions set status='ARCHIVED',is_public=true,is_current=false where id=$1",
+      [edition],
+    );
+
+    const response = await app.inject({ url: '/api/editions/current' });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toBeNull();
   });
   it('blocks unauthenticated ballots', async () =>
     expect((await post(body(), false)).statusCode).toBe(401));

@@ -21,7 +21,7 @@ function TrajectoryHint() {
 export function Nominees({ categoriesOnly = false }: { categoriesOnly?: boolean }) {
   const { slug } = useParams();
   const e = useEdition(slug);
-  const cats = useCategories(e.data);
+  const cats = useCategories(e.data ?? undefined);
   const votingFinished =
     !!e.data &&
     ['VOTING_CLOSED', 'RESULTS_READY', 'RESULTS_PUBLISHED', 'ARCHIVED'].includes(e.data.status);

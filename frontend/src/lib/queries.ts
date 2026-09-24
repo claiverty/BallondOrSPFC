@@ -40,7 +40,9 @@ export const useEdition = (slug = 'current') =>
               : slug === 'current' || slug === '2026'
                 ? Promise.resolve(demoEdition)
                 : Promise.reject(new Error('Edição não encontrada.'))
-        : request<Edition>(`/editions/${slug}`),
+        : slug === 'current'
+          ? request<Edition | null>('/editions/current')
+          : request<Edition>(`/editions/${slug}`),
   });
 export const useCategories = (edition?: Edition) =>
   useQuery({

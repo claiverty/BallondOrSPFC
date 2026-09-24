@@ -27,19 +27,16 @@ export class EditionsService {
     if (!rows[0]) throw new NotFoundException('Edição não encontrada.');
     return rows[0];
   }
-  async current() {
+  async current(): Promise<Edition | null> {
     const rows = await this.db.query<Edition>(
       `select * from awards.editions
-       where (status<>'DRAFT' or is_public)
-       order by case
-         when is_current then 0
-         when status<>'ARCHIVED' then 1
-         else 2
-       end, year desc, created_at desc
+       where is_current
+         and status <> 'ARCHIVED'
+         and (status <> 'DRAFT' or is_public)
+       order by year desc, created_at desc
        limit 1`,
     );
-    if (!rows[0]) throw new NotFoundException('A próxima edição está em preparação.');
-    return rows[0];
+    return rows[0] ?? null;
   }
   async categories(id: string) {
     const e = (

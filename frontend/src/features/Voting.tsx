@@ -18,7 +18,7 @@ import { readDraft, saveDraft } from '../lib/draft';
 export function Voting() {
   const { slug } = useParams();
   const e = useEdition(slug);
-  const cats = useCategories(e.data);
+  const cats = useCategories(e.data ?? undefined);
   const auth = useAuth();
   return (
     <State loading={e.isLoading || cats.isLoading || auth.loading} error={e.error ?? cats.error}>
