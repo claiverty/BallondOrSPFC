@@ -559,13 +559,6 @@
     width: 24px;
     height: 12px;
   }
-  .award-hero-status {
-    margin-top: 25px;
-  }
-  .award-hero-description {
-    font-size: 12px;
-    max-width: 270px;
-  }
   .award-hero-actions {
     flex-direction: column;
     width: min(100%, 310px);

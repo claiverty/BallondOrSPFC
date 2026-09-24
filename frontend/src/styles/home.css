@@ -123,46 +123,6 @@
   border-top: 2px solid var(--gold);
   background: repeating-linear-gradient(90deg, var(--gold) 0 2px, transparent 2px 5px);
 }
-.award-hero-status {
-  border: 1px solid #d6b77a66;
-  border-radius: var(--radius-pill);
-  color: var(--gold-light);
-  padding: 6px 14px;
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  margin-top: 31px;
-}
-.award-hero-description {
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 12px;
-}
-.award-hero-history-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: min(300px, 72vw);
-  min-height: 48px;
-  padding: 10px 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  color: var(--muted);
-  font-size: 14px;
-  transition:
-    border-color var(--ease),
-    color var(--ease),
-    background var(--ease);
-}
-.award-hero-history-link:hover {
-  border-color: #d6b77a80;
-  color: var(--gold-light);
-  background: #d6b77a0d;
-}
-.award-hero-history-link:focus-visible {
-  outline: 3px solid #fff0c8;
-  outline-offset: 4px;
-}
 .award-hero-actions {
   display: flex;
   align-items: center;
@@ -292,13 +252,27 @@
   color: var(--gold-light);
 }
 .award-hero-stream img {
-  width: 19px;
-  height: 19px;
-  border-radius: 4px;
-  object-fit: cover;
+  display: block;
+  width: 31px;
+  height: 10px;
+  object-fit: contain;
+  transition:
+    filter var(--ease),
+    transform var(--ease);
 }
-.award-hero-stream:hover {
+.award-hero-stream:hover,
+.award-hero-stream:focus-visible {
   color: var(--text);
+}
+.award-hero-stream:hover img,
+.award-hero-stream:focus-visible img {
+  filter: drop-shadow(0 0 5px #d6b77a99);
+  transform: translateY(-1px) scale(1.06);
+}
+.award-hero-stream:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 .award-hero-footerline {
   color: var(--muted);

@@ -44,14 +44,6 @@ export function Home() {
             <strong>SÃO PAULO</strong>
           </h1>
         </div>
-        {noCurrentEdition && (
-          <div className="award-hero-preparation" role="status">
-            <p className="award-hero-status">NENHUMA EDIÇÃO EM ANDAMENTO</p>
-            <p className="award-hero-description">
-              As edições anteriores continuam disponíveis no histórico e no Hall da Fama.
-            </p>
-          </div>
-        )}
         <div className="award-hero-actions">
           {waitingForEdition ? (
             <div className="award-hero-cta-skeleton" role="status" aria-live="polite">
@@ -72,17 +64,12 @@ export function Home() {
               </span>
             </button>
           ) : noCurrentEdition ? (
-            <>
-              <Link className="award-hero-cta" to="/hall-of-fame">
-                <span>Conhecer o Hall da Fama</span>
-                <span className="award-hero-cta-arrow" aria-hidden="true">
-                  <ArrowRight size={22} strokeWidth={1.8} />
-                </span>
-              </Link>
-              <Link className="award-hero-history-link" to="/history">
-                Ver histórico
-              </Link>
-            </>
+            <Link className="award-hero-cta" to="/hall-of-fame">
+              <span>Conhecer o Hall da Fama</span>
+              <span className="award-hero-cta-arrow" aria-hidden="true">
+                <ArrowRight size={22} strokeWidth={1.8} />
+              </span>
+            </Link>
           ) : (
             <Link className="award-hero-cta" to={ctaPath}>
               <span>{ctaLabel}</span>
