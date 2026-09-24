@@ -7,6 +7,7 @@ import { demoMode, request } from '../lib/auth';
 import { demoAllWinners, demoMembers } from '../lib/demo';
 import { winnerCardAssets } from '../lib/winner-card-assets';
 import { MemberLink, NomineeCard, PageHeading, State } from '../components/ui';
+import '../styles/public-entry.css';
 
 const demoHistoricalWinners = demoAllWinners;
 function TrajectoryHint() {

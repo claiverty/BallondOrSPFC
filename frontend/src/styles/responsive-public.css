@@ -1,0 +1,180 @@
+@media (max-width: 900px) {
+  .winners-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .nominee-section {
+    padding-top: 36px;
+  }
+  .nominee-heading {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .nominee-heading h2 {
+    font-size: 33px;
+  }
+  .nominee-heading p {
+    font-size: 11px;
+    max-width: 245px;
+  }
+  .nominee-heading > .text-link {
+    display: none;
+  }
+  .outline-number {
+    font-size: 42px;
+  }
+  .category-rules {
+    gap: 12px;
+    font-size: 11px;
+  }
+  .winners-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .winner-category-heading {
+    padding-bottom: 12px;
+  }
+  .winner-category-heading h3 {
+    font-size: 21px;
+  }
+  .winner-categories {
+    gap: 44px;
+  }
+  .winner-podium {
+    gap: 8px;
+    padding-top: 8px;
+  }
+  .winner-card--rank-1 {
+    margin-bottom: 12px;
+  }
+  .winner-card--podium .winner-content {
+    padding: 9px 8px 11px;
+  }
+  .winner-card--podium .winner-content h4 {
+    font-size: clamp(16px, 4.5vw, 20px);
+  }
+  .winner-card--podium .winner-content p {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .winner-card--podium .winner-meta {
+    display: grid;
+    gap: 2px;
+  }
+  .winner-card--podium .winner-percentage {
+    font-weight: 700;
+  }
+  .winner-card--podium .winner-percentage::before {
+    content: none;
+  }
+  .winner-trajectory-long {
+    display: none;
+  }
+  .winner-trajectory-short {
+    display: inline;
+  }
+  .winner-trajectory-icon {
+    width: 13px;
+    height: 13px;
+    flex: none;
+  }
+  .winner-card--podium .winner-trajectory {
+    display: inline-flex;
+    justify-content: center;
+    gap: 3px;
+    min-height: 0;
+    margin-top: 8px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  .winner-content :is(h3, h4) {
+    font-size: 38px;
+  }
+  .history-list > a {
+    gap: 20px;
+    align-items: flex-start;
+    padding: 28px 0;
+  }
+  .history-year {
+    font-size: 50px;
+  }
+  .history-list h2 {
+    font-size: 25px;
+  }
+  .history-list > a > svg {
+    width: 20px;
+    flex-shrink: 0;
+  }
+  .history-list p {
+    font-size: 11px;
+  }
+  .records-list > a {
+    padding-inline: 0;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .records-list h2 {
+    font-size: 29px;
+  }
+  .records-list strong {
+    font-size: 11px;
+  }
+  .records-list > a > svg {
+    width: 17px;
+  }
+  .profile-heading {
+    gap: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-heading > img {
+    width: 180px;
+    height: 225px;
+  }
+  .profile-stats {
+    gap: 44px;
+  }
+  .profile-stats strong {
+    font-size: 48px;
+  }
+  .member-dialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .member-dialog-toolbar {
+    padding-inline: 16px;
+  }
+  .member-dialog .public-page,
+  .member-dialog .state {
+    padding: 20px 16px 28px;
+  }
+  .member-dialog .profile-heading {
+    gap: 12px;
+  }
+  .member-dialog .profile-heading > img {
+    width: 80px;
+    height: 80px;
+  }
+  .member-dialog .page-heading h1 {
+    font-size: 36px;
+  }
+  .member-dialog .profile-stats {
+    gap: 24px;
+  }
+  .member-dialog .profile-stats strong {
+    font-size: 38px;
+  }
+  .member-dialog .history-year {
+    font-size: 34px;
+  }
+  .member-dialog .history-list h2 {
+    font-size: 21px;
+  }
+  .prose h2 {
+    font-size: 29px;
+  }
+  .prose > p {
+    font-size: 14px;
+  }
+}

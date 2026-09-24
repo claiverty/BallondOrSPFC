@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import '../styles/member-search.css';
 import { useQuery } from '@tanstack/react-query';
 import { Search, UserRound, ArrowRight, ChevronDown, X } from 'lucide-react';
 import { Nominee } from '@awards/contracts';

@@ -1,0 +1,97 @@
+@media (max-width: 640px) {
+  .voting-page {
+    padding-top: 24px;
+    padding-bottom: 48px;
+  }
+  .vote-topline {
+    font-size: 8px;
+    gap: 12px;
+  }
+  .vote-topline > .text-link {
+    font-size: 10px;
+  }
+  .vote-topline > span:last-child {
+    display: none;
+  }
+  .voting-progress {
+    margin: 20px 0 32px;
+  }
+  .voting-progress > div:first-child {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+  .step-buttons {
+    gap: 6px;
+    justify-content: flex-start;
+    overflow: auto;
+    padding: 6px;
+    margin-inline: -6px;
+  }
+  .step-buttons button {
+    min-width: 42px;
+    min-height: 44px;
+  }
+  .vote-category-heading {
+    text-align: left;
+    margin-bottom: 28px;
+  }
+  .vote-category-heading h1 {
+    font-size: 48px;
+  }
+  .vote-category-heading p {
+    font-size: 13px;
+  }
+  .vote-footnote {
+    font-size: 9px;
+    align-items: flex-start;
+    text-align: center;
+  }
+  .vote-footnote svg {
+    flex-shrink: 0;
+  }
+  .vote-review {
+    padding: 0 16px;
+  }
+  .vote-review > div {
+    gap: 14px;
+  }
+  .vote-review strong {
+    font-size: 25px;
+  }
+  .vote-review small {
+    font-size: 10px;
+  }
+  .vote-review .text-link {
+    font-size: 10px;
+    gap: 6px;
+  }
+  .nomination-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .nomination-categories {
+    flex-direction: row;
+    overflow: auto;
+    padding-bottom: 8px;
+  }
+  .nomination-categories button {
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 12px;
+    gap: 10px;
+  }
+  .nomination-workspace {
+    padding: 22px;
+  }
+  .nomination-workspace h2 {
+    font-size: 36px;
+  }
+  .nomination-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .nomination-actions > .button {
+    width: 100%;
+  }
+}

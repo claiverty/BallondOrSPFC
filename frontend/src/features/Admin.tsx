@@ -37,6 +37,7 @@ import { demoMode, request, useAuth } from '../lib/auth';
 import { demoAdminCategories, demoCategories, demoEdition, demoArchive } from '../lib/demo';
 import { EditionForm } from './AdminForms';
 import { Notice, PageHeading, State } from '../components/ui';
+import '../styles/admin-entry.css';
 const tabs = [
   ['overview', 'Visão geral', LayoutDashboard],
   ['edition', 'Edição', Settings],

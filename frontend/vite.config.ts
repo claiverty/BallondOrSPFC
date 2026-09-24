@@ -1,9 +1,23 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
+
+const nonBlockingStylesheet: Plugin = {
+  name: 'non-blocking-app-stylesheet',
+  transformIndexHtml: {
+    order: 'post',
+    handler(html) {
+      return html.replace(
+        /<link rel="stylesheet" crossorigin href="([^"]+)"\s*\/?>/,
+        '<link rel="preload" as="style" href="$1" crossorigin />\n    <link rel="stylesheet" crossorigin href="$1" media="print" data-app-stylesheet onload="this.media=\'all\'" />\n    <noscript><link rel="stylesheet" crossorigin href="$1" /></noscript>',
+      );
+    },
+  },
+};
+
 export default defineConfig({
   root: fileURLToPath(new URL('.', import.meta.url)),
-  plugins: [react()],
+  plugins: [react(), nonBlockingStylesheet],
   resolve: {
     alias: {
       '@awards/contracts': fileURLToPath(

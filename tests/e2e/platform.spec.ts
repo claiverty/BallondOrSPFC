@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 test('brand loader gates the first opening without replaying on section navigation', async ({
   page,
 }) => {
+  const openingStartedAt = Date.now();
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const loader = page.locator('.app-loading-screen');
   const homeHeading = page.getByRole('heading', { name: /Ballon d’Or.*SÃO PAULO/ });
@@ -9,6 +10,7 @@ test('brand loader gates the first opening without replaying on section navigati
   await expect(loader).toBeVisible();
   await expect(homeHeading).not.toBeVisible();
   await expect(homeHeading).toBeVisible();
+  expect(Date.now() - openingStartedAt).toBeGreaterThanOrEqual(1900);
   await expect(loader).toHaveCount(0);
 
   const historyLink = page.locator('nav.main-nav').getByRole('link', { name: 'Histórico' });
@@ -126,6 +128,87 @@ test('required categories cannot be skipped and keyboard selection works', async
   await card.focus();
   await page.keyboard.press('Enter');
   await expect(card).toHaveAttribute('aria-pressed', 'true');
+});
+test('direct voting and admin routes keep their card and control layouts', async ({ page }) => {
+  await page.goto('/2026/vote');
+  const cardLayout = await page.locator('.voting-grid').evaluate((grid) => {
+    const cards = [...grid.querySelectorAll<HTMLElement>('.nominee-card')];
+    const bounds = grid.getBoundingClientRect();
+    return {
+      display: getComputedStyle(grid).display,
+      columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+      cardsFit: cards.every((card) => {
+        const rect = card.getBoundingClientRect();
+        return rect.width > 100 && rect.left >= bounds.left && rect.right <= bounds.right + 1;
+      }),
+    };
+  });
+  expect(cardLayout.display).toBe('grid');
+  expect(cardLayout.columns).toBe(page.viewportSize()!.width <= 640 ? 2 : 5);
+  expect(cardLayout.cardsFit).toBe(true);
+
+  await page.goto('/admin/edition?edition=00000000-0000-4000-8000-000000000002');
+  const editionField = page.getByLabel('Nome da edição');
+  await expect(editionField).toBeVisible();
+  const formLayout = await editionField.evaluate((input) => {
+    const label = input.closest('label')!;
+    return {
+      labelDisplay: getComputedStyle(label).display,
+      labelDirection: getComputedStyle(label).flexDirection,
+      inputWidth: input.getBoundingClientRect().width,
+      labelWidth: label.getBoundingClientRect().width,
+    };
+  });
+  expect(formLayout.labelDisplay).toBe('flex');
+  expect(formLayout.labelDirection).toBe('column');
+  expect(formLayout.inputWidth).toBeGreaterThan(200);
+  expect(Math.abs(formLayout.inputWidth - formLayout.labelWidth)).toBeLessThan(2);
+
+  await page.goto('/admin/nominations?edition=00000000-0000-4000-8000-000000000002');
+  const statusButton = page.getByRole('button', { name: 'Classificar pessoa' }).first();
+  await expect(statusButton).toBeVisible();
+  const iconOffset = await statusButton.evaluate((button) => {
+    const outer = button.getBoundingClientRect();
+    const icon = button.querySelector('.nomination-classify-default')!.getBoundingClientRect();
+    return Math.abs(outer.left + outer.width / 2 - (icon.left + icon.width / 2));
+  });
+  expect(iconOffset).toBeLessThan(2);
+  const pagination = await page.locator('.vote-navigation').evaluate((nav) => {
+    const [previous, current, next] = [...nav.children].map((item) =>
+      item.getBoundingClientRect(),
+    );
+    return {
+      display: getComputedStyle(nav).display,
+      before: current.left - previous.right,
+      after: next.left - current.right,
+    };
+  });
+  expect(pagination.display).toBe('flex');
+  expect(pagination.before).toBeGreaterThanOrEqual(8);
+  expect(pagination.after).toBeGreaterThanOrEqual(8);
+  if (page.viewportSize()!.width <= 640) {
+    await page.setViewportSize({ width: 320, height: 720 });
+    const compactTable = await page.locator('.nomination-ranking').evaluate((table) => {
+      const row = table.querySelector('.nomination-ranking-row')!;
+      const name = row.children[1].getBoundingClientRect();
+      const count = row.children[2].getBoundingClientRect();
+      const userId = row.querySelector('small')!;
+      return {
+        rowFits: row.getBoundingClientRect().right <= window.innerWidth,
+        columnsSeparated: name.right <= count.left,
+        userIdContained: userId.getBoundingClientRect().right <= name.right,
+        headersFit: [...table.querySelectorAll<HTMLElement>('.nomination-ranking-columns span')].every(
+          (label) => label.scrollWidth <= label.clientWidth,
+        ),
+      };
+    });
+    expect(compactTable).toEqual({
+      rowFits: true,
+      columnsSeparated: true,
+      userIdContained: true,
+      headersFit: true,
+    });
+  }
 });
 test('admin preview and archive stay isolated from live actions', async ({ page }) => {
   await page.goto('/admin/categories');

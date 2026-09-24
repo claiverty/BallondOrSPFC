@@ -15,6 +15,7 @@ import { useEdition, useCategories } from '../lib/queries';
 import { demoMode, request, useAuth } from '../lib/auth';
 import { Notice, NomineeCard, PageHeading, State } from '../components/ui';
 import { readDraft, saveDraft } from '../lib/draft';
+import '../styles/participation-entry.css';
 export function Voting() {
   const { slug } = useParams();
   const e = useEdition(slug);

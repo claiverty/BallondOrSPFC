@@ -1,0 +1,61 @@
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+input:not([type='checkbox']),
+select,
+textarea {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid #4a4b3d;
+  padding: 12px 14px;
+  min-height: 46px;
+  transition:
+    border-color var(--ease),
+    box-shadow var(--ease),
+    background var(--ease);
+}
+input:not([type='checkbox']),
+select {
+  border-radius: var(--radius-pill);
+}
+select {
+  min-height: 58px;
+  padding-right: 52px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23e9d5a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 18px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+textarea {
+  border-radius: var(--radius-control);
+}
+input:not([type='checkbox']):focus,
+select:focus,
+textarea:focus {
+  border-color: var(--gold);
+  background: #191811;
+  box-shadow: 0 0 0 3px #d6b77a24;
+  outline: 0;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #919285;
+}
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+select {
+  cursor: pointer;
+}
+option {
+  color: var(--text);
+  background: var(--surface-raised);
+}

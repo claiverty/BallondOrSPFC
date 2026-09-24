@@ -388,6 +388,25 @@
   align-items: center;
   gap: 24px;
 }
+.phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #474532;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  padding: 5px 12px;
+  background: #29271b5c;
+  color: var(--gold-light);
+}
+.status-dot {
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+  box-shadow: 0 0 10px #d6b77a66;
+}
 .phase-panel h2 {
   margin-top: 12px;
   margin-bottom: 12px;
@@ -1290,6 +1309,8 @@
 }
 .nomination-classify-button svg {
   position: absolute;
+  inset: 0;
+  margin: auto;
   opacity: 0;
   transform: scale(0.72);
   transition:

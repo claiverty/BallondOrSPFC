@@ -118,7 +118,6 @@ textarea:focus-visible {
   background:
     radial-gradient(ellipse at 50% 43%, #17334b66 0, #0b1e2d26 29%, transparent 62%), var(--bg);
   text-align: center;
-  animation: loading-screen-appear 180ms 100ms both;
 }
 .app-loading-mark {
   display: grid;
@@ -162,7 +161,9 @@ textarea:focus-visible {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, var(--gold-light), var(--gold));
-  transition: width 90ms linear;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 90ms linear;
 }
 .app-loading-progress-value {
   min-width: 3.5ch;
@@ -171,18 +172,7 @@ textarea:focus-visible {
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
-@keyframes loading-screen-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .app-loading-screen {
-    animation: none;
-  }
   .app-loading-progress-track span {
     transition: none;
   }

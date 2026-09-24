@@ -5,15 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#10100e" />
     <link rel="preload" as="image" href="/images/backgroud.webp" fetchpriority="high" />
-    <link rel="preload" as="image" href="/images/ballon-top.webp" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/ballon-top.webp"
+      imagesrcset="/images/ballon-top-1200.webp 1200w, /images/ballon-top.webp 1447w"
+      imagesizes="(min-width: 700px) min(110vw, 1600px), min(145vw, 1450px)"
+      fetchpriority="high"
+    />
+    <link rel="preload" as="image" href="/images/spfc-gold-logo.webp" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/manrope-latin-400-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/manrope-latin-600-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/cormorant-garamond-latin-500-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/cormorant-garamond-latin-400-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/cormorant-garamond-latin-400-italic.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/manrope-latin-700-normal.woff2"
+      crossorigin
+    />
     <meta
       name="description"
       content="O palco é nosso. A escolha é sua. A premiação da comunidade São Paulo FC no Discord."
     />
     <title>Ballon d’Or SPFC — A comunidade faz história</title>
+    <style>
+      body {
+        margin: 0;
+        background: #050505;
+        color: #f3f0e8;
+      }
+      .app-loading-screen {
+        position: fixed;
+        z-index: 200;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding: 24px;
+        background: radial-gradient(ellipse at 50% 43%, #17334b66 0, #0b1e2d26 29%, transparent 62%), #050505;
+        text-align: center;
+      }
+      .app-loading-mark {
+        display: grid;
+        width: 72px;
+        height: 72px;
+        place-items: center;
+        margin-bottom: 30px;
+      }
+      .app-loading-mark img {
+        width: 68px;
+        height: 68px;
+        object-fit: contain;
+      }
+      .app-loading-eyebrow {
+        margin: 0;
+        color: #d6b77a;
+        font: 600 10px/1.6 Manrope, sans-serif;
+        letter-spacing: .28em;
+      }
+      .app-loading-label {
+        margin: 8px 0 0;
+        color: #f3f0e8;
+        font: 400 clamp(22px, 5vw, 28px)/1.2 'Cormorant Garamond', Georgia, serif;
+      }
+      .app-loading-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: min(244px, 72vw);
+        margin-top: 28px;
+      }
+      .app-loading-progress-track {
+        flex: 1;
+        height: 2px;
+        overflow: hidden;
+        background: #d6b77a2b;
+      }
+      .app-loading-progress-track span {
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform: scaleX(0);
+        transform-origin: left center;
+        background: linear-gradient(90deg, #e9d5a8, #d6b77a);
+      }
+      .app-loading-progress-value {
+        min-width: 3.5ch;
+        color: #e9d5a8;
+        font: 400 11px/1.6 Manrope, sans-serif;
+        font-variant-numeric: tabular-nums;
+        text-align: right;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <div id="boot-splash" class="app-loading-screen" role="status" aria-live="polite">
+      <div class="app-loading-mark" aria-hidden="true">
+        <img src="/images/spfc-gold-logo.webp" alt="" width="72" height="72" />
+      </div>
+      <p class="app-loading-eyebrow">BALLON D’OR SÃO PAULO</p>
+      <p class="app-loading-label">Carregando o site…</p>
+      <div class="app-loading-progress">
+        <div
+          class="app-loading-progress-track"
+          role="progressbar"
+          aria-label="Carregamento"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span></span>
+        </div>
+        <span class="app-loading-progress-value">0%</span>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

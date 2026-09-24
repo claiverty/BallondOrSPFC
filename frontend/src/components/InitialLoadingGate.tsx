@@ -5,6 +5,7 @@ import { LoadingScreen } from './LoadingScreen';
 import { useAuth } from '../lib/auth';
 
 const InitialRouteReadyContext = createContext<() => void>(() => {});
+const EXTRA_LOADING_TIME_MS = 2000;
 
 export function useMarkInitialRouteReady() {
   return useContext(InitialRouteReadyContext);
@@ -25,42 +26,47 @@ export function InitialLoadingGate({ children }: { children: ReactNode }) {
   const auth = useAuth();
   const [fontsReady, setFontsReady] = useState(false);
   const [routeReady, setRouteReady] = useState(false);
-  const [minimumTimeElapsed, setMinimumTimeElapsed] = useState(false);
   const [ready, setReady] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
   const markRouteReady = useCallback(() => setRouteReady(true), []);
+  const revealContent = useCallback(() => setContentVisible(true), []);
 
   useEffect(() => {
     let active = true;
-    const minimumTimer = window.setTimeout(() => setMinimumTimeElapsed(true), 650);
+    const stylesheet = document.querySelector<HTMLLinkElement>('link[data-app-stylesheet]');
+    const markFontsReady = () => {
+      if ('fonts' in document) {
+        void document.fonts.ready.then(() => {
+          if (active) setFontsReady(true);
+        });
+      } else {
+        setFontsReady(true);
+      }
+    };
+    const markStylesReady = () => {
+      if (stylesheet?.media === 'print') stylesheet.media = 'all';
+      markFontsReady();
+    };
 
-    if ('fonts' in document) {
-      void document.fonts.ready.then(() => {
-        if (active) setFontsReady(true);
-      });
+    if (!stylesheet || (stylesheet.sheet && stylesheet.media !== 'print')) {
+      markFontsReady();
     } else {
-      setFontsReady(true);
+      stylesheet.addEventListener('load', markStylesReady, { once: true });
+      stylesheet.addEventListener('error', markStylesReady, { once: true });
     }
 
     return () => {
       active = false;
-      window.clearTimeout(minimumTimer);
+      stylesheet?.removeEventListener('load', markStylesReady);
+      stylesheet?.removeEventListener('error', markStylesReady);
     };
   }, []);
 
   useEffect(() => {
-    if (!routeReady || !fontsReady || !minimumTimeElapsed || fetching > 0 || auth.loading) return;
-
-    const stableTimer = window.setTimeout(() => setReady(true), 180);
-    return () => window.clearTimeout(stableTimer);
-  }, [auth.loading, fetching, fontsReady, minimumTimeElapsed, routeReady]);
-
-  useEffect(() => {
-    if (!ready) return;
-
-    const revealTimer = window.setTimeout(() => setContentVisible(true), 300);
-    return () => window.clearTimeout(revealTimer);
-  }, [ready]);
+    if (ready || !routeReady || !fontsReady || fetching > 0 || auth.loading) return;
+    const timeout = window.setTimeout(() => setReady(true), EXTRA_LOADING_TIME_MS);
+    return () => window.clearTimeout(timeout);
+  }, [auth.loading, fetching, fontsReady, ready, routeReady]);
 
   return (
     <InitialRouteReadyContext.Provider value={markRouteReady}>
@@ -71,7 +77,7 @@ export function InitialLoadingGate({ children }: { children: ReactNode }) {
       >
         {children}
       </div>
-      <LoadingScreen loading={!ready} label="Carregando o site…" />
+      <LoadingScreen loading={!ready} label="Carregando o site…" onDismiss={revealContent} />
     </InitialRouteReadyContext.Provider>
   );
 }

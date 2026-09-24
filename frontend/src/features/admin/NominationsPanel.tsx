@@ -31,7 +31,7 @@ export function NominationsPanel({
   });
   const category = categories.data?.find((item) => item.id === categoryId);
   return (
-    <section className="admin-panel">
+    <section className="admin-panel admin-nominations-panel">
       <p>
         Todas as indicações recebidas são válidas. Selecione uma categoria para ver os nomes
         organizados pela quantidade de indicações recebidas. Clique em Classificar para escolher
@@ -81,7 +81,9 @@ export function NominationsPanel({
                   <span className="nomination-ranking-position">{index + 1}</span>
                   <div>
                     <strong>{n.display_name ?? n.manual_name ?? 'Nome não informado'}</strong>
-                    <small>{n.discord_user_id ? `@${n.discord_user_id}` : 'Indicação manual'}</small>
+                    <small title={n.discord_user_id ? `@${n.discord_user_id}` : 'Indicação manual'}>
+                      {n.discord_user_id ? `@${n.discord_user_id}` : 'Indicação manual'}
+                    </small>
                   </div>
                   <strong
                     className="nomination-ranking-count"

@@ -1,6 +1,5 @@
 @import './styles/base.css';
+@import './styles/forms.css';
+@import './styles/shared-components.css';
 @import './styles/home.css';
-@import './styles/public.css';
-@import './styles/participation.css';
-@import './styles/admin.css';
-@import './styles/responsive.css';
+@import './styles/responsive-shared.css';

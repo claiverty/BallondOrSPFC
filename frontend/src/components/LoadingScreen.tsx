@@ -4,13 +4,19 @@ export function LoadingScreen({
   label = 'Preparando o palco…',
   loading = true,
   dismissOnComplete = true,
+  onDismiss,
 }: {
   label?: string;
   loading?: boolean;
   dismissOnComplete?: boolean;
+  onDismiss?: () => void;
 }) {
   const [visible, setVisible] = useState(loading);
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    document.getElementById('boot-splash')?.remove();
+  }, []);
 
   useEffect(() => {
     if (loading) {
@@ -23,19 +29,18 @@ export function LoadingScreen({
 
     setProgress(100);
     if (!dismissOnComplete) return;
-    const timeout = window.setTimeout(() => setVisible(false), 260);
+    const timeout = window.setTimeout(() => {
+      setVisible(false);
+      onDismiss?.();
+    }, 260);
     return () => window.clearTimeout(timeout);
-  }, [dismissOnComplete, loading, visible]);
+  }, [dismissOnComplete, loading, onDismiss, visible]);
 
   useEffect(() => {
     if (!loading || !visible) return;
 
     const interval = window.setInterval(() => {
-      setProgress((current) => {
-        if (current < 70) return Math.min(70, current + 10);
-        if (current < 90) return Math.min(90, current + 5);
-        return Math.min(94, current + 1);
-      });
+      setProgress((current) => Math.min(94, current + 2));
     }, 45);
 
     return () => window.clearInterval(interval);
@@ -59,7 +64,7 @@ export function LoadingScreen({
           aria-valuemax={100}
           aria-valuenow={Math.round(progress)}
         >
-          <span style={{ width: `${progress}%` }} />
+          <span style={{ transform: `scaleX(${progress / 100})` }} />
         </div>
         <span className="app-loading-progress-value">{Math.round(progress)}%</span>
       </div>

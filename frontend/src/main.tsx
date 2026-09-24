@@ -4,13 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from '
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Analytics } from '@vercel/analytics/react';
 import { useEffect } from 'react';
-import '@fontsource/cormorant-garamond/latin-400.css';
-import '@fontsource/cormorant-garamond/latin-500.css';
-import '@fontsource/cormorant-garamond/latin-400-italic.css';
-import '@fontsource/manrope/latin-400.css';
-import '@fontsource/manrope/latin-500.css';
-import '@fontsource/manrope/latin-600.css';
-import '@fontsource/manrope/latin-700.css';
+import './styles/fonts.css';
 import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { Shell } from './components/Shell';

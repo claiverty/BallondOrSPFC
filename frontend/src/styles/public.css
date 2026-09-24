@@ -1,24 +1,3 @@
-.public-page {
-  padding-top: 72px;
-  padding-bottom: 90px;
-  min-height: 65vh;
-}
-.page-heading {
-  margin-bottom: 36px;
-}
-.page-heading h1 {
-  font-size: 64px;
-  letter-spacing: -1px;
-  max-width: 850px;
-  margin-top: 16px;
-}
-.page-heading p {
-  margin-top: 22px;
-  color: var(--muted);
-  font-size: 15px;
-  max-width: 650px;
-  line-height: 1.8;
-}
 .stage-notice {
   display: flex;
   align-items: center;
@@ -67,96 +46,6 @@
 .nominee-heading > .text-link {
   margin-left: auto;
 }
-.nominee-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-}
-.nominee-card {
-  padding: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  text-align: left;
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition:
-    border-color var(--ease),
-    background var(--ease);
-  min-width: 0;
-  display: block;
-}
-.nominee-card:hover {
-  border-color: #86744b;
-  background: var(--surface-raised);
-}
-.nominee-photo {
-  position: relative;
-  height: 245px;
-  overflow: hidden;
-}
-.nominee-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: saturate(0.6);
-  transition: filter var(--ease);
-}
-.nominee-card:hover img,
-.nominee-card.selected img {
-  filter: saturate(1);
-}
-.avatar-fallback {
-  background: linear-gradient(130deg, #474331, #191b14);
-  font: 400 64px var(--font-display);
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: var(--gold);
-}
-.nominee-caption {
-  padding: 16px;
-  position: relative;
-}
-.nominee-caption h3 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 24px;
-  overflow-wrap: anywhere;
-}
-.nominee-caption > span {
-  color: var(--muted);
-  font-size: 10px;
-}
-.nominee-caption > svg {
-  position: absolute;
-  right: 14px;
-  bottom: 16px;
-  color: var(--gold);
-}
-.select-indicator {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  background: #050505d9;
-  border: 1px solid #d6b77a85;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-}
-.nominee-card.selected {
-  border-color: var(--gold);
-  background: #353020;
-  box-shadow: 0 0 0 1px var(--gold);
-}
-.nominee-card.selected .select-indicator {
-  background: var(--gold);
-  color: var(--bg);
-}
-.nominee-card.selected .nominee-caption > span {
-  color: var(--gold-light);
-}
 .category-rules {
   display: flex;
   flex-wrap: wrap;
@@ -165,28 +54,6 @@
   background: var(--surface);
   color: var(--muted);
   font-size: 12px;
-}
-.empty {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  width: 100%;
-  grid-column: 1/-1;
-}
-.empty h2 {
-  font-size: 36px;
-  color: var(--text);
-  margin: 16px 0;
-}
-.empty svg {
-  margin: auto;
-  color: var(--gold);
-}
-.empty p {
-  margin: 12px 0;
 }
 .winner-editions {
   display: grid;
@@ -491,47 +358,4 @@
   color: var(--muted);
   font-size: 15px;
   line-height: 1.9;
-}
-.state {
-  min-height: 60vh;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  align-items: center;
-  justify-content: center;
-}
-.state-loading-placeholder {
-  min-height: 28vh;
-  gap: 0;
-}
-.state-loading-line {
-  width: 44px;
-  height: 2px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--gold-light), #d6b77a45);
-}
-.state h1 {
-  font-size: 42px;
-}
-.notice {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  border: 1px solid #665633;
-  border-radius: var(--radius-card);
-  background: #292519;
-  color: var(--gold-light);
-  padding: 16px 20px;
-  margin: 20px 0;
-  font-size: 12px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-.notice svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.error-text,
-.danger {
-  color: #ef9991;
 }
