@@ -1,14 +1,15 @@
-import { lazy, useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Menu, X, LogOut } from 'lucide-react';
 import { isOpen } from '@awards/contracts';
 import { demoMode, useAuth } from '../lib/auth';
 import { useEdition } from '../lib/queries';
+import { RouteLoadingPlaceholder } from './ui';
 const MemberDialog = lazy(() =>
   import('../features/MemberDialog').then((module) => ({ default: module.MemberDialog })),
 );
 function SpfcMark() {
-  return <img className="spfc-mark" src="/images/spfc-gold-logo.png" alt="" aria-hidden="true" />;
+  return <img className="spfc-mark" src="/images/spfc-gold-logo.webp" alt="" aria-hidden="true" />;
 }
 function DiscordMark() {
   return (
@@ -202,7 +203,9 @@ export function Shell() {
         </div>
       )}
       <main id="main" key={location.pathname}>
-        <Outlet />
+        <Suspense fallback={<RouteLoadingPlaceholder label="Abrindo seção…" />}>
+          <Outlet />
+        </Suspense>
       </main>
       <footer className="footer">
         <div className="footer-top">
@@ -229,7 +232,9 @@ export function Shell() {
         </div>
       </footer>
       {selectedMember && (
-        <MemberDialog key={selectedMember} id={selectedMember} onClose={closeMember} />
+        <Suspense fallback={null}>
+          <MemberDialog key={selectedMember} id={selectedMember} onClose={closeMember} />
+        </Suspense>
       )}
     </>
   );

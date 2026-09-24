@@ -500,20 +500,18 @@
   align-items: center;
   justify-content: center;
 }
+.state-loading-placeholder {
+  min-height: 28vh;
+  gap: 0;
+}
+.state-loading-line {
+  width: 44px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--gold-light), #d6b77a45);
+}
 .state h1 {
   font-size: 42px;
-}
-.loading-line {
-  height: 2px;
-  width: 100px;
-  background: var(--gold);
-  animation: load 1s ease infinite alternate;
-}
-@keyframes load {
-  to {
-    opacity: 0.25;
-    transform: scaleX(0.4);
-  }
 }
 .notice {
   display: flex;

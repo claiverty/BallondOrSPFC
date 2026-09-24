@@ -15,13 +15,14 @@ export function Home() {
     currentEdition &&
     (['DRAFT', 'NOMINATIONS_REVIEW'].includes(currentEdition.status) ||
       ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(currentEdition.status));
-  const ctaLabel = showWinners && currentEdition
-    ? `Ver vencedores ${currentEdition.year}`
-    : nominationsOpen
-      ? 'Indicar candidatos'
-      : votingOpen
-        ? 'Votar agora'
-        : 'Conhecer indicados';
+  const ctaLabel =
+    showWinners && currentEdition
+      ? `Ver vencedores ${currentEdition.year}`
+      : nominationsOpen
+        ? 'Indicar candidatos'
+        : votingOpen
+          ? 'Votar agora'
+          : 'Conhecer indicados';
   const ctaPath = showWinners
     ? slug && currentEdition && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(currentEdition.status)
       ? `/${slug}/winners`
@@ -45,13 +46,7 @@ export function Home() {
           </h1>
         </div>
         <div className="award-hero-actions">
-          {waitingForEdition ? (
-            <div className="award-hero-cta-skeleton" role="status" aria-live="polite">
-              <span className="sr-only">Carregando a edição atual…</span>
-              <span className="award-hero-cta-skeleton-label" aria-hidden="true" />
-              <span className="award-hero-cta-skeleton-arrow" aria-hidden="true" />
-            </div>
-          ) : editionError ? (
+          {waitingForEdition ? null : editionError ? (
             <button
               className="award-hero-cta"
               type="button"
@@ -86,7 +81,7 @@ export function Home() {
           rel="noreferrer"
           aria-label="Abrir a transmissão na Kick"
         >
-          <span>Transmissão na{' '}</span>
+          <span>Transmissão na </span>
           <span title="Kick">
             <img src="/images/kick-icon.svg" alt="" aria-hidden="true" />
           </span>

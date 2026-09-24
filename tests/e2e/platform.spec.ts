@@ -1,4 +1,28 @@
 import { test, expect } from '@playwright/test';
+test('brand loader gates the first opening without replaying on section navigation', async ({
+  page,
+}) => {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  const loader = page.locator('.app-loading-screen');
+  const homeHeading = page.getByRole('heading', { name: /Ballon d’Or.*SÃO PAULO/ });
+
+  await expect(loader).toBeVisible();
+  await expect(homeHeading).not.toBeVisible();
+  await expect(homeHeading).toBeVisible();
+  await expect(loader).toHaveCount(0);
+
+  const historyLink = page.locator('nav.main-nav').getByRole('link', { name: 'Histórico' });
+  if (!(await historyLink.isVisible())) {
+    await page.getByRole('button', { name: 'Abrir menu' }).click();
+  }
+  await historyLink.click();
+  await expect(page).toHaveURL(/\/history$/);
+  await expect(page.locator('.app-loading-screen')).toHaveCount(0);
+  await expect(
+    page.getByRole('heading', { name: 'Anos que ficam. Histórias que inspiram.' }),
+  ).toBeVisible();
+});
+
 test('home, navigation and mobile layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /Ballon d’Or.*SÃO PAULO/ })).toBeVisible();
@@ -189,7 +213,9 @@ test('small screens keep the full podium and compact trajectory label', async ({
   await expect(firstCategory.locator('.winner-card--rank-2 .winner-rank')).toHaveText('2º lugar');
   await expect(firstCategory.locator('.winner-card--rank-1 .winner-rank')).toHaveText('1º lugar');
   await expect(firstCategory.locator('.winner-card--rank-3 .winner-rank')).toHaveText('3º lugar');
-  await expect(firstCategory.locator('.winner-card--rank-1 .winner-trajectory-short')).toBeVisible();
+  await expect(
+    firstCategory.locator('.winner-card--rank-1 .winner-trajectory-short'),
+  ).toBeVisible();
   await expect(firstCategory.locator('.winner-card--rank-1 .winner-percentage')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

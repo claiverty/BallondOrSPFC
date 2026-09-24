@@ -154,42 +154,6 @@
     color var(--ease),
     transform var(--ease);
 }
-.award-hero-cta-skeleton {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: min(300px, 72vw);
-  min-height: 56px;
-  padding: 6px 8px 6px 24px;
-  border: 1px solid #f5d89b44;
-  border-radius: var(--radius-pill);
-  background: #102a3eaa;
-}
-.award-hero .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-.award-hero-cta-skeleton-label {
-  width: 52%;
-  height: 12px;
-  border-radius: var(--radius-pill);
-  background: #f7e5c220;
-}
-.award-hero-cta-skeleton-arrow {
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  border: 1px solid #f5d89b44;
-  border-radius: 50%;
-  background: #f7e5c20d;
-}
 .award-hero-cta-arrow {
   display: grid;
   place-items: center;

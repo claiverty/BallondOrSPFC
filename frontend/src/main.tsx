@@ -14,6 +14,7 @@ import '@fontsource/manrope/latin-700.css';
 import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { Shell } from './components/Shell';
+import { InitialLoadingGate, InitialRouteReady } from './components/InitialLoadingGate';
 import { Home } from './features/Home';
 const loadPublicPages = () => import('./features/PublicPages');
 const Nominees = React.lazy(() => loadPublicPages().then((m) => ({ default: m.Nominees })));
@@ -68,42 +69,129 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={client}>
       <BrowserRouter>
         <AuthProvider>
-          <React.Suspense
-            fallback={
-              <div className="page state" role="status">
-                Preparando o palco…
-              </div>
-            }
-          >
+          <InitialLoadingGate>
             <Routes>
               <Route element={<Shell />}>
-                <Route index element={<Home />} />
-                <Route path="history" element={<History />} />
-                <Route path="hall-of-fame" element={<Winners hall />} />
-                <Route path="records" element={<Records />} />
-                <Route path="rules" element={<Rules />} />
+                <Route
+                  index
+                  element={
+                    <InitialRouteReady>
+                      <Home />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path="history"
+                  element={
+                    <InitialRouteReady>
+                      <History />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path="hall-of-fame"
+                  element={
+                    <InitialRouteReady>
+                      <Winners hall />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path="records"
+                  element={
+                    <InitialRouteReady>
+                      <Records />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path="rules"
+                  element={
+                    <InitialRouteReady>
+                      <Rules />
+                    </InitialRouteReady>
+                  }
+                />
                 <Route path="members/:id" element={<LegacyMemberRedirect />} />
-                <Route path="auth/callback" element={<Callback />} />
+                <Route
+                  path="auth/callback"
+                  element={
+                    <InitialRouteReady>
+                      <Callback />
+                    </InitialRouteReady>
+                  }
+                />
                 <Route path="admin" element={<Navigate to="/admin/overview" replace />} />
-                <Route path="admin/:tab" element={<Admin />} />
-                <Route path=":slug" element={<Home />} />
-                <Route path=":slug/categories" element={<Nominees categoriesOnly />} />
-                <Route path=":slug/nominees" element={<EditionStage />} />
-                <Route path=":slug/nominations" element={<EditionStage />} />
-                <Route path=":slug/vote" element={<Voting />} />
-                <Route path=":slug/winners" element={<Winners />} />
+                <Route
+                  path="admin/:tab"
+                  element={
+                    <InitialRouteReady>
+                      <Admin />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug"
+                  element={
+                    <InitialRouteReady>
+                      <Home />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug/categories"
+                  element={
+                    <InitialRouteReady>
+                      <Nominees categoriesOnly />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug/nominees"
+                  element={
+                    <InitialRouteReady>
+                      <EditionStage />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug/nominations"
+                  element={
+                    <InitialRouteReady>
+                      <EditionStage />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug/vote"
+                  element={
+                    <InitialRouteReady>
+                      <Voting />
+                    </InitialRouteReady>
+                  }
+                />
+                <Route
+                  path=":slug/winners"
+                  element={
+                    <InitialRouteReady>
+                      <Winners />
+                    </InitialRouteReady>
+                  }
+                />
                 <Route
                   path="*"
                   element={
-                    <div className="page public-page">
-                      <PageHeading eyebrow="404" title="Esta página não faz parte da história." />
-                    </div>
+                    <InitialRouteReady>
+                      <div className="page public-page">
+                        <PageHeading eyebrow="404" title="Esta página não faz parte da história." />
+                      </div>
+                    </InitialRouteReady>
                   }
                 />
               </Route>
             </Routes>
-          </React.Suspense>
-          <Analytics />
+            <Analytics />
+          </InitialLoadingGate>
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>

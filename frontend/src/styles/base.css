@@ -104,6 +104,89 @@ textarea:focus-visible {
   margin: auto;
   padding-inline: 48px;
 }
+.app-loading-screen {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse at 50% 43%, #17334b66 0, #0b1e2d26 29%, transparent 62%), var(--bg);
+  text-align: center;
+  animation: loading-screen-appear 180ms 100ms both;
+}
+.app-loading-mark {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  margin-bottom: 30px;
+}
+.app-loading-mark img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+}
+.app-loading-eyebrow {
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+}
+.app-loading-label {
+  margin-top: 8px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 5vw, 28px);
+  line-height: 1.2;
+}
+.app-loading-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(244px, 72vw);
+  margin-top: 28px;
+}
+.app-loading-progress-track {
+  flex: 1;
+  height: 2px;
+  overflow: hidden;
+  background: #d6b77a2b;
+}
+.app-loading-progress-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-light), var(--gold));
+  transition: width 90ms linear;
+}
+.app-loading-progress-value {
+  min-width: 3.5ch;
+  color: var(--gold-light);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+@keyframes loading-screen-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-loading-screen {
+    animation: none;
+  }
+  .app-loading-progress-track span {
+    transition: none;
+  }
+}
 .skip-link {
   position: fixed;
   left: 16px;

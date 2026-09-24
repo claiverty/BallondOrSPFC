@@ -2,6 +2,16 @@ import { ReactNode } from 'react';
 import { AlertCircle, ArrowUpRight, Check } from 'lucide-react';
 import { Link, useLocation, type LinkProps } from 'react-router-dom';
 import { Nominee } from '@awards/contracts';
+
+export function RouteLoadingPlaceholder({ label = 'Carregando conteúdo…' }: { label?: string }) {
+  return (
+    <div className="page state state-loading-placeholder" role="status" aria-live="polite">
+      <span className="state-loading-line" aria-hidden="true" />
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
 export function State({
   loading,
   error,
@@ -11,13 +21,8 @@ export function State({
   error?: Error | null;
   children: ReactNode;
 }) {
-  if (loading)
-    return (
-      <div className="page state" role="status">
-        <div className="loading-line" />
-        Preparando o palco…
-      </div>
-    );
+  if (loading) return <RouteLoadingPlaceholder />;
+
   if (error)
     return (
       <div className="page state" role="alert">
