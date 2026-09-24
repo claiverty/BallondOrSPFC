@@ -1,10 +1,14 @@
+import React from 'react';
 import { isOpen } from '@awards/contracts';
 import { useEdition } from '../lib/queries';
 import { useParams } from 'react-router-dom';
 import { State } from '../components/ui';
 import { Nominations } from './Nominations';
-import { Nominees } from './PublicPages';
 import { Voting } from './Voting';
+
+const Nominees = React.lazy(() =>
+  import('./PublicPages').then((module) => ({ default: module.Nominees })),
+);
 
 export function EditionStage() {
   const { slug } = useParams();

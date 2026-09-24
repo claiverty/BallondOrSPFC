@@ -15,7 +15,12 @@ import './styles.css';
 import { AuthProvider, useAuth } from './lib/auth';
 import { Shell } from './components/Shell';
 import { Home } from './features/Home';
-import { Nominees, Winners, History, Records, Rules } from './features/PublicPages';
+const loadPublicPages = () => import('./features/PublicPages');
+const Nominees = React.lazy(() => loadPublicPages().then((m) => ({ default: m.Nominees })));
+const Winners = React.lazy(() => loadPublicPages().then((m) => ({ default: m.Winners })));
+const History = React.lazy(() => loadPublicPages().then((m) => ({ default: m.History })));
+const Records = React.lazy(() => loadPublicPages().then((m) => ({ default: m.Records })));
+const Rules = React.lazy(() => loadPublicPages().then((m) => ({ default: m.Rules })));
 const EditionStage = React.lazy(() =>
   import('./features/EditionStage').then((m) => ({ default: m.EditionStage })),
 );

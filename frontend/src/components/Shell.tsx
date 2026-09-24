@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { lazy, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowUpRight, Menu, X, LogOut } from 'lucide-react';
 import { isOpen } from '@awards/contracts';
 import { demoMode, useAuth } from '../lib/auth';
 import { useEdition } from '../lib/queries';
-import { MemberDialog } from '../features/MemberDialog';
+const MemberDialog = lazy(() =>
+  import('../features/MemberDialog').then((module) => ({ default: module.MemberDialog })),
+);
 function SpfcMark() {
   return <img className="spfc-mark" src="/images/spfc-gold-logo.png" alt="" aria-hidden="true" />;
 }
