@@ -2,18 +2,30 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Pool } from 'pg';
 import { readFile } from 'node:fs/promises';
 import { BallotsService } from '../backend/src/ballots/ballots';
+import { NominationsService } from '../backend/src/nominations/nominations';
 import type { Database } from '../backend/src/common/database';
 import type { DiscordService } from '../backend/src/discord/discord';
 import type { Identity } from '@awards/contracts';
 const url = process.env.TEST_DATABASE_URL;
 describe.skipIf(!url)('Real PostgreSQL independent connection concurrency', () => {
-  let pool: Pool, service: BallotsService, edition: string, category: string, nominee: string;
+  let pool: Pool, service: BallotsService, nominations: NominationsService;
+  let edition: string, category: string, nominee: string;
+  let nextDiscordId = 900000000000000000n;
   beforeAll(async () => {
     if (!url || new URL(url).pathname !== '/awards_test')
       throw new Error('Use only the isolated awards_test database.');
     pool = new Pool({ connectionString: url, max: 5, ssl: false });
     await pool.query(
-      'create schema auth;create table auth.users(id uuid primary key);create role anon;create role authenticated;',
+      `create schema auth;
+       create table auth.users(id uuid primary key);
+       do $$ begin
+         if not exists (select 1 from pg_roles where rolname = 'anon') then
+           create role anon;
+         end if;
+         if not exists (select 1 from pg_roles where rolname = 'authenticated') then
+           create role authenticated;
+         end if;
+       end $$;`,
     );
     for (const file of ['001_platform.sql', '003_submission_invariants.sql', '006_rls_hardening.sql'])
       await pool.query(await readFile(`supabase/migrations/${file}`, 'utf8'));
@@ -35,6 +47,7 @@ describe.skipIf(!url)('Real PostgreSQL independent connection concurrency', () =
     } as Database;
     const discord = { eligible: async () => ({}) } as unknown as DiscordService;
     service = new BallotsService(db, discord);
+    nominations = new NominationsService(db, discord);
     edition = crypto.randomUUID();
     category = crypto.randomUUID();
     nominee = crypto.randomUUID();
@@ -58,7 +71,7 @@ describe.skipIf(!url)('Real PostgreSQL independent connection concurrency', () =
   afterAll(async () => pool?.end());
   async function user(): Promise<Identity> {
     const id = crypto.randomUUID();
-    const discord = String(900000000000000000n + BigInt(Math.floor(Math.random() * 1000000000)));
+    const discord = String(nextDiscordId++);
     await pool.query('insert into auth.users(id) values($1)', [id]);
     await pool.query(
       "insert into awards.profiles(id,discord_user_id,username,display_name) values($1,$2,'test','Test')",
@@ -96,6 +109,56 @@ describe.skipIf(!url)('Real PostgreSQL independent connection concurrency', () =
       service.submit(identity, payload),
     ]);
     expect(a.id).toBe(b.id);
+  });
+  it('accepts a burst of distinct voters only once each', async () => {
+    const identities = await Promise.all(Array.from({ length: 30 }, () => user()));
+    const requests = identities.flatMap((identity) => [
+      service.submit(identity, ballot()),
+      service.submit(identity, ballot()),
+    ]);
+    const settled = await Promise.allSettled(requests);
+    expect(settled.filter((result) => result.status === 'fulfilled')).toHaveLength(30);
+    expect(settled.filter((result) => result.status === 'rejected')).toHaveLength(30);
+    const { rows } = await pool.query(
+      'select count(*)::int count from awards.ballots where edition_id=$1',
+      [edition],
+    );
+    expect(rows[0].count).toBe(32);
+  });
+  it('accepts a burst of distinct nominators only once per category', async () => {
+    const nominationEdition = crypto.randomUUID();
+    const nominationCategory = crypto.randomUUID();
+    await pool.query(
+      `insert into awards.editions(id,name,slug,year,status,nominations_open_at,nominations_close_at)
+       values($1,'Nomination concurrency','nomination-concurrency',2028,'NOMINATIONS_OPEN',
+       now()-interval '1 day',now()+interval '1 day')`,
+      [nominationEdition],
+    );
+    await pool.query(
+      "insert into awards.categories(id,edition_id,name,slug) values($1,$2,'Category','category')",
+      [nominationCategory, nominationEdition],
+    );
+    const identities = await Promise.all(Array.from({ length: 20 }, () => user()));
+    const requests = identities.flatMap((identity) => [
+      nominations.save(identity, {
+        edition_id: nominationEdition,
+        category_id: nominationCategory,
+        items: [{ manual_name: 'Nominee' }],
+      }),
+      nominations.save(identity, {
+        edition_id: nominationEdition,
+        category_id: nominationCategory,
+        items: [{ manual_name: 'Nominee' }],
+      }),
+    ]);
+    const settled = await Promise.allSettled(requests);
+    expect(settled.filter((result) => result.status === 'fulfilled')).toHaveLength(20);
+    expect(settled.filter((result) => result.status === 'rejected')).toHaveLength(20);
+    const { rows } = await pool.query(
+      'select count(*)::int count from awards.nomination_items where edition_id=$1',
+      [nominationEdition],
+    );
+    expect(rows[0].count).toBe(20);
   });
   it('serializes edition closing against a pending submission', async () => {
     const identity = await user(),

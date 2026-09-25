@@ -13,6 +13,7 @@
     "typecheck": "npm run build -w @awards/contracts && npm run typecheck --workspaces --if-present",
     "lint": "eslint frontend backend packages tests",
     "test": "vitest run",
+    "test:stress": "vitest run --config vitest.stress.config.ts",
     "test:e2e": "playwright test",
     "db:migrate": "tsx backend/src/migrate.ts",
     "db:seed": "tsx backend/src/migrate.ts --seed",
