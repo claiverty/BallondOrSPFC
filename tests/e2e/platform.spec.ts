@@ -10,7 +10,7 @@ test('brand loader gates the first opening without replaying on section navigati
   await expect(loader).toBeVisible();
   await expect(homeHeading).not.toBeVisible();
   await expect(homeHeading).toBeVisible();
-  expect(Date.now() - openingStartedAt).toBeGreaterThanOrEqual(1900);
+  expect(Date.now() - openingStartedAt).toBeLessThan(1900);
   await expect(loader).toHaveCount(0);
 
   const historyLink = page.locator('nav.main-nav').getByRole('link', { name: 'Histórico' });

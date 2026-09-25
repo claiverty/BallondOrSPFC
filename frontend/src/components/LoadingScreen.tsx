@@ -40,8 +40,8 @@ export function LoadingScreen({
     if (!loading || !visible) return;
 
     const interval = window.setInterval(() => {
-      setProgress((current) => Math.min(94, current + 2));
-    }, 45);
+      setProgress((current) => Math.min(94, current + 8));
+    }, 25);
 
     return () => window.clearInterval(interval);
   }, [loading, visible]);

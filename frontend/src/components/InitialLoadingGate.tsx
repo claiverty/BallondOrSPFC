@@ -5,7 +5,6 @@ import { LoadingScreen } from './LoadingScreen';
 import { useAuth } from '../lib/auth';
 
 const InitialRouteReadyContext = createContext<() => void>(() => {});
-const EXTRA_LOADING_TIME_MS = 2000;
 
 export function useMarkInitialRouteReady() {
   return useContext(InitialRouteReadyContext);
@@ -64,8 +63,7 @@ export function InitialLoadingGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (ready || !routeReady || !fontsReady || fetching > 0 || auth.loading) return;
-    const timeout = window.setTimeout(() => setReady(true), EXTRA_LOADING_TIME_MS);
-    return () => window.clearTimeout(timeout);
+    setReady(true);
   }, [auth.loading, fetching, fontsReady, ready, routeReady]);
 
   return (
