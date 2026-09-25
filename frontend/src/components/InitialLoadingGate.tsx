@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useIsFetching } from '@tanstack/react-query';
 import { LoadingScreen } from './LoadingScreen';
 import { useAuth } from '../lib/auth';
 
@@ -21,7 +20,6 @@ export function InitialRouteReady({ children }: { children: ReactNode }) {
 }
 
 export function InitialLoadingGate({ children }: { children: ReactNode }) {
-  const fetching = useIsFetching();
   const auth = useAuth();
   const [fontsReady, setFontsReady] = useState(false);
   const [routeReady, setRouteReady] = useState(false);
@@ -62,9 +60,9 @@ export function InitialLoadingGate({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (ready || !routeReady || !fontsReady || fetching > 0 || auth.loading) return;
+    if (ready || !routeReady || !fontsReady || auth.loading) return;
     setReady(true);
-  }, [auth.loading, fetching, fontsReady, ready, routeReady]);
+  }, [auth.loading, fontsReady, ready, routeReady]);
 
   return (
     <InitialRouteReadyContext.Provider value={markRouteReady}>
