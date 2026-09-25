@@ -21,7 +21,7 @@ export function InitialRouteReady({ children }: { children: ReactNode }) {
 
 export function InitialLoadingGate({ children }: { children: ReactNode }) {
   const auth = useAuth();
-  const [stylesReady, setStylesReady] = useState(false);
+  const [fontsReady, setFontsReady] = useState(false);
   const [routeReady, setRouteReady] = useState(false);
   const [ready, setReady] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
@@ -29,29 +29,40 @@ export function InitialLoadingGate({ children }: { children: ReactNode }) {
   const revealContent = useCallback(() => setContentVisible(true), []);
 
   useEffect(() => {
+    let active = true;
     const stylesheet = document.querySelector<HTMLLinkElement>('link[data-app-stylesheet]');
+    const markFontsReady = () => {
+      if ('fonts' in document) {
+        void document.fonts.ready.then(() => {
+          if (active) setFontsReady(true);
+        });
+      } else {
+        setFontsReady(true);
+      }
+    };
     const markStylesReady = () => {
       if (stylesheet?.media === 'print') stylesheet.media = 'all';
-      setStylesReady(true);
+      markFontsReady();
     };
 
     if (!stylesheet || (stylesheet.sheet && stylesheet.media !== 'print')) {
-      setStylesReady(true);
+      markFontsReady();
     } else {
       stylesheet.addEventListener('load', markStylesReady, { once: true });
       stylesheet.addEventListener('error', markStylesReady, { once: true });
     }
 
     return () => {
+      active = false;
       stylesheet?.removeEventListener('load', markStylesReady);
       stylesheet?.removeEventListener('error', markStylesReady);
     };
   }, []);
 
   useEffect(() => {
-    if (ready || !routeReady || !stylesReady || auth.loading) return;
+    if (ready || !routeReady || !fontsReady || auth.loading) return;
     setReady(true);
-  }, [auth.loading, ready, routeReady, stylesReady]);
+  }, [auth.loading, fontsReady, ready, routeReady]);
 
   return (
     <InitialRouteReadyContext.Provider value={markRouteReady}>
