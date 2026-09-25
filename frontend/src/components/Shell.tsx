@@ -61,24 +61,30 @@ export function Shell() {
         ? 'Votação'
         : nomineesPublished
           ? 'Indicados'
-          : 'Vencedores'
+          : resultsPublished
+            ? 'Vencedores'
+            : 'Categorias'
     : null;
   const participationPath =
     participationName === 'Vencedores'
       ? resultsPublished && year
         ? `/${year}/winners`
         : '/hall-of-fame'
-      : participationName === 'Votação'
+      : participationName === 'Categorias'
         ? year
-          ? `/${year}/vote`
+          ? `/${year}/categories`
           : '/history'
-        : participationName === 'Indicação'
+        : participationName === 'Votação'
           ? year
-            ? `/${year}/nominations`
+            ? `/${year}/vote`
             : '/history'
-          : year
-            ? `/${year}/nominees`
-            : '/history';
+          : participationName === 'Indicação'
+            ? year
+              ? `/${year}/nominations`
+              : '/history'
+            : year
+              ? `/${year}/nominees`
+              : '/history';
   return (
     <>
       <a className="skip-link" href="#main">

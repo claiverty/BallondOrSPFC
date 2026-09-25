@@ -12,24 +12,27 @@ export function Home() {
   const nominationsOpen = currentEdition && isOpen(currentEdition, 'nominations');
   const votingOpen = currentEdition && isOpen(currentEdition, 'voting');
   const showWinners =
-    currentEdition &&
-    (['DRAFT', 'NOMINATIONS_REVIEW'].includes(currentEdition.status) ||
-      ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(currentEdition.status));
+    currentEdition && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(currentEdition.status);
+  const showHallOfFame =
+    currentEdition && ['DRAFT', 'NOMINATIONS_REVIEW'].includes(currentEdition.status);
   const ctaLabel =
     showWinners && currentEdition
       ? `Ver vencedores ${currentEdition.year}`
-      : nominationsOpen
-        ? 'Indicar candidatos'
-        : votingOpen
-          ? 'Votar agora'
-          : 'Conhecer indicados';
-  const ctaPath = showWinners
-    ? slug && currentEdition && ['RESULTS_PUBLISHED', 'ARCHIVED'].includes(currentEdition.status)
+      : showHallOfFame
+        ? 'Conhecer o Hall da Fama'
+        : nominationsOpen
+          ? 'Indicar candidatos'
+          : votingOpen
+            ? 'Votar agora'
+            : 'Conhecer indicados';
+  const ctaPath =
+    showWinners && slug
       ? `/${slug}/winners`
-      : '/hall-of-fame'
-    : slug
-      ? `/${slug}/${votingOpen ? 'vote' : nominationsOpen ? 'nominations' : 'nominees'}`
-      : '/';
+      : showHallOfFame
+        ? '/hall-of-fame'
+        : slug
+          ? `/${slug}/${votingOpen ? 'vote' : nominationsOpen ? 'nominations' : 'nominees'}`
+          : '/';
   const waitingForEdition = !edition.data && edition.isPending;
   const editionError = !edition.data && edition.isError;
   const noCurrentEdition = edition.isSuccess && edition.data === null;
