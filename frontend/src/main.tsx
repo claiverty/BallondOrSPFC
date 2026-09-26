@@ -21,6 +21,9 @@ const EditionStage = React.lazy(() =>
 );
 const Voting = React.lazy(() => import('./features/Voting').then((m) => ({ default: m.Voting })));
 const Admin = React.lazy(() => import('./features/Admin').then((m) => ({ default: m.Admin })));
+const MembershipPreview = import.meta.env.DEV
+  ? React.lazy(() => import('./features/MembershipPreview'))
+  : null;
 import { PageHeading } from './components/ui';
 const client = new QueryClient({
   defaultOptions: { queries: { staleTime: 30000, retry: 1, refetchOnWindowFocus: false } },
@@ -66,6 +69,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <InitialLoadingGate>
             <Routes>
               <Route element={<Shell />}>
+                {MembershipPreview && (
+                  <Route
+                    path="preview/membership"
+                    element={
+                      <InitialRouteReady>
+                        <MembershipPreview />
+                      </InitialRouteReady>
+                    }
+                  />
+                )}
                 <Route
                   index
                   element={

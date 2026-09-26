@@ -10,12 +10,13 @@ import type { Identity } from '@awards/contracts';
 import { Database } from '../backend/src/common/database';
 import { ErrorFilter } from '../backend/src/common/errors';
 import { AuthGuard } from '../backend/src/auth/auth';
-import { DiscordService } from '../backend/src/discord/discord';
+import { DiscordMemberNotFoundException, DiscordService } from '../backend/src/discord/discord';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 let app: NestFastifyApplication,
   db: PGlite,
   tokenUser: User,
-  eligible = true;
+  eligible = true,
+  missingMember: 'none' | 'voter' | 'nominee' = 'none';
 let edition: string, cat: string, nominee: string, discord: string, profile: string;
 const query = async <T extends Record<string, unknown>>(sql: string, params: unknown[] = []) =>
   (await db.query<T>(sql, params)).rows;
@@ -71,6 +72,7 @@ beforeAll(async () => {
     .overrideProvider(DiscordService)
     .useValue({
       eligible: async () => {
+        if (missingMember === 'voter') throw new DiscordMemberNotFoundException();
         if (!eligible)
           throw new (await import('@nestjs/common')).ForbiddenException('Membro inelegível.');
         return {
@@ -79,11 +81,14 @@ beforeAll(async () => {
           joined_at: '2025-01-01T00:00:00Z',
         };
       },
-      member: async (id: string) => ({
-        user: { id, username: 'candidate' },
-        roles: [],
-        joined_at: '2025-01-01T00:00:00Z',
-      }),
+      member: async (id: string) => {
+        if (missingMember === 'nominee') throw new DiscordMemberNotFoundException();
+        return {
+          user: { id, username: 'candidate' },
+          roles: [],
+          joined_at: '2025-01-01T00:00:00Z',
+        };
+      },
     })
     .compile();
   app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(), {
@@ -114,6 +119,7 @@ afterAll(async () => {
 });
 beforeEach(async () => {
   eligible = true;
+  missingMember = 'none';
   edition = crypto.randomUUID();
   cat = crypto.randomUUID();
   nominee = crypto.randomUUID();
@@ -213,6 +219,13 @@ describe('Nest HTTP and transactional workflows', () => {
     eligible = false;
     expect((await post()).statusCode).toBe(403);
   });
+  it('invites a voter whose login account is absent from the server', async () => {
+    missingMember = 'voter';
+    const response = await post();
+    expect(response.statusCode).toBe(403);
+    expect(response.json().message).toContain('discord.gg/saopaulo');
+    expect(response.json().message).toContain('para poder votar');
+  });
   it('blocks closed voting', async () => {
     await db.query("update awards.editions set status='VOTING_CLOSED' where id=$1", [edition]);
     expect((await post()).statusCode).toBe(409);
@@ -304,6 +317,46 @@ describe('Nest HTTP and transactional workflows', () => {
       (await app.inject({ method: 'POST', url: '/api/nominations', headers, payload })).statusCode,
     ).toBe(409);
   });
+  it('distinguishes an absent nominator from an absent nominee', async () => {
+    const e = crypto.randomUUID(),
+      c = crypto.randomUUID();
+    await db.query(
+      "insert into awards.editions(id,name,slug,year,status,nominations_open_at,nominations_close_at) values($1,'Membership test',$2,2027,'NOMINATIONS_OPEN',now()-interval '1 day',now()+interval '1 day')",
+      [e, e],
+    );
+    await db.query(
+      "insert into awards.categories(id,edition_id,name,slug) values($1,$2,'Membership','membership')",
+      [c, e],
+    );
+    const payload = {
+      edition_id: e,
+      category_id: c,
+      items: [{ discord_user_id: String(BigInt(discord) + 200000000000n) }],
+    };
+    missingMember = 'voter';
+    const nominator = await app.inject({
+      method: 'POST',
+      url: '/api/nominations',
+      headers,
+      payload,
+    });
+    expect(nominator.statusCode).toBe(403);
+    expect(nominator.json().message).toContain('discord.gg/saopaulo');
+    expect(nominator.json()).not.toHaveProperty('member_discord_user_id');
+    missingMember = 'nominee';
+    const nominee = await app.inject({ method: 'POST', url: '/api/nominations', headers, payload });
+    expect(nominee.statusCode).toBe(400);
+    expect(nominee.json().message).toContain('A pessoa indicada não está mais no servidor');
+    expect(nominee.json().member_discord_user_id).toBe(payload.items[0].discord_user_id);
+    expect(
+      (
+        await query<{ count: number }>(
+          'select count(*)::int count from awards.nomination_items where edition_id=$1',
+          [e],
+        )
+      )[0].count,
+    ).toBe(0);
+  });
   it('prevents self-nomination and ineligible candidates', async () => {
     const e = crypto.randomUUID(),
       c = crypto.randomUUID();
@@ -315,17 +368,16 @@ describe('Nest HTTP and transactional workflows', () => {
       'insert into awards.categories(id,edition_id,name,slug,rules) values($1,$2,\'Staff\',\'staff\',\'{"required_role_ids":["123456789012345678"],"blacklisted_discord_ids":[],"min_membership_days":0}\')',
       [c, e],
     );
-    for (const id of [discord, String(BigInt(discord) + 200000000000n)])
-      expect(
-        (
-          await app.inject({
-            method: 'POST',
-            url: '/api/nominations',
-            headers,
-            payload: { edition_id: e, category_id: c, items: [{ discord_user_id: id }] },
-          })
-        ).statusCode,
-      ).toBe(403);
+    for (const id of [discord, String(BigInt(discord) + 200000000000n)]) {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/nominations',
+        headers,
+        payload: { edition_id: e, category_id: c, items: [{ discord_user_id: id }] },
+      });
+      expect(response.statusCode).toBe(403);
+      expect(response.json().member_discord_user_id).toBe(id);
+    }
   });
   it('duplicates only categories and settings, never ballots/participants/results', async () => {
     await post();

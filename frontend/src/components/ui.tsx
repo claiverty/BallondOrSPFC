@@ -119,10 +119,22 @@ export function NomineeCard({
   );
 }
 export function Notice({ message }: { message: string }) {
+  const invite = 'discord.gg/saopaulo';
+  const inviteAt = message.indexOf(invite);
   return (
     <div className="notice" role="status">
       <AlertCircle size={18} aria-hidden="true" />
-      {message}
+      {inviteAt < 0 ? (
+        message
+      ) : (
+        <span>
+          {message.slice(0, inviteAt)}
+          <a href="https://discord.gg/saopaulo" target="_blank" rel="noopener noreferrer">
+            {invite}
+          </a>
+          {message.slice(inviteAt + invite.length)}
+        </span>
+      )}
     </div>
   );
 }

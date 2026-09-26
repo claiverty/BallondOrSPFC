@@ -27,6 +27,15 @@ function hasStoredSession() {
 export const demoMode =
   import.meta.env.VITE_DEMO_MODE === 'true' || (!url && !key && import.meta.env.DEV);
 export const apiBase = import.meta.env.VITE_API_URL ?? '/api';
+export class ApiRequestError extends Error {
+  constructor(
+    message: string,
+    readonly memberDiscordUserId?: string,
+  ) {
+    super(message);
+    this.name = 'ApiRequestError';
+  }
+}
 export async function request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
   const session = currentSession;
   const response = await fetch(`${apiBase}${path}`, {
@@ -40,7 +49,11 @@ export async function request<T>(path: string, method = 'GET', body?: unknown): 
   const data = await response
     .json()
     .catch(() => ({ message: 'A plataforma está indisponível. Tente novamente.' }));
-  if (!response.ok) throw new Error(data.message ?? 'Não foi possível concluir esta operação.');
+  if (!response.ok)
+    throw new ApiRequestError(
+      data.message ?? 'Não foi possível concluir esta operação.',
+      typeof data.member_discord_user_id === 'string' ? data.member_discord_user_id : undefined,
+    );
   return data as T;
 }
 const AuthContext = createContext<{

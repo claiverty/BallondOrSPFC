@@ -4,6 +4,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   Inject,
   Injectable,
@@ -22,7 +23,7 @@ import { createHash } from 'node:crypto';
 import { Database } from '../common/database';
 import { lockEdition, requireOpen } from '../common/domain';
 import { AuthGuard, AuthRequest } from '../auth/auth';
-import { DiscordModule, DiscordService } from '../discord/discord';
+import { DiscordMemberNotFoundException, DiscordModule, DiscordService } from '../discord/discord';
 import { ZodPipe } from '../common/validation';
 export function validateBallot(
   items: Array<{ category_id: string; nominee_id: string }>,
@@ -77,7 +78,15 @@ export class BallotsService {
         throw new ConflictException('Você já confirmou sua votação nesta edição.');
       }
       requireOpen(e, 'voting');
-      await this.discord.eligible(user.discord_user_id);
+      try {
+        await this.discord.eligible(user.discord_user_id);
+      } catch (error) {
+        if (error instanceof DiscordMemberNotFoundException)
+          throw new ForbiddenException(
+            'Entre no discord.gg/saopaulo com a conta usada no login para poder votar.',
+          );
+        throw error;
+      }
       const cats = (
         await c.query<Category>(
           'select * from awards.categories where edition_id=$1 and not archived',

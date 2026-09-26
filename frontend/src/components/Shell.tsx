@@ -46,7 +46,16 @@ export function Shell() {
     );
   };
   const firstSegment = location.pathname.split('/')[1];
-  const reserved = ['history', 'hall-of-fame', 'records', 'rules', 'members', 'auth', 'admin'];
+  const reserved = [
+    'history',
+    'hall-of-fame',
+    'records',
+    'rules',
+    'members',
+    'auth',
+    'admin',
+    'preview',
+  ];
   const editionSlug = firstSegment && !reserved.includes(firstSegment) ? firstSegment : undefined;
   const editionQuery = useEdition(editionSlug);
   const edition = editionQuery.data;

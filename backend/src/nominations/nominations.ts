@@ -1,5 +1,6 @@
 import { ApiZodBody } from '../common/openapi';
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -21,6 +22,7 @@ import { Database } from '../common/database';
 import { AuthGuard, AuthRequest } from '../auth/auth';
 import {
   DiscordModule,
+  DiscordMemberNotFoundException,
   DiscordService,
   memberSnapshot,
   validateEligibility,
@@ -43,7 +45,15 @@ export class NominationsService {
       const targets = data.items.map((i) => i.discord_user_id ?? i.manual_name?.toLowerCase());
       if (new Set(targets).size !== targets.length)
         throw new ForbiddenException('Não indique a mesma pessoa mais de uma vez nesta categoria.');
-      await this.discord.eligible(user.discord_user_id);
+      try {
+        await this.discord.eligible(user.discord_user_id);
+      } catch (error) {
+        if (error instanceof DiscordMemberNotFoundException)
+          throw new ForbiddenException(
+            'Entre no discord.gg/saopaulo com a conta usada no login para poder indicar.',
+          );
+        throw error;
+      }
       await c.query('select pg_advisory_xact_lock(hashtextextended($1,0))', [
         `${user.id}:${cat.id}`,
       ]);
@@ -56,10 +66,33 @@ export class NominationsService {
       const resolved: Array<{ member: string | null; manual: string | null }> = [];
       for (const item of data.items) {
         if (item.discord_user_id) {
+          const memberId = item.discord_user_id;
           if (!cat.allow_self_nomination && item.discord_user_id === user.discord_user_id)
-            throw new ForbiddenException('Autoindicação não permitida nesta categoria.');
-          const m = await this.discord.member(item.discord_user_id);
-          validateEligibility(m, cat.rules);
+            throw new ForbiddenException({
+              message: 'Autoindicação não permitida nesta categoria.',
+              member_discord_user_id: memberId,
+            });
+          let m;
+          try {
+            m = await this.discord.member(memberId);
+          } catch (error) {
+            if (error instanceof DiscordMemberNotFoundException)
+              throw new BadRequestException({
+                message: 'A pessoa indicada não está mais no servidor. Busque outro membro.',
+                member_discord_user_id: memberId,
+              });
+            throw error;
+          }
+          try {
+            validateEligibility(m, cat.rules);
+          } catch (error) {
+            if (error instanceof ForbiddenException)
+              throw new ForbiddenException({
+                message: error.message,
+                member_discord_user_id: memberId,
+              });
+            throw error;
+          }
           const s = memberSnapshot(m);
           const { rows } = await c.query<{ id: string }>(
             `insert into awards.members(discord_user_id,username,display_name,avatar_url) values($1,$2,$3,$4) on conflict(discord_user_id) do update set username=$2,display_name=$3,avatar_url=$4,updated_at=now() returning id`,

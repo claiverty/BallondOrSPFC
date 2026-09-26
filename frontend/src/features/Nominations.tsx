@@ -9,6 +9,7 @@ import { isOpen, Nomination, Nominee } from '@awards/contracts';
 import { ArrowRight, Plus, X, Check } from 'lucide-react';
 import { useEdition, useCategories } from '../lib/queries';
 import { demoMode, request, useAuth } from '../lib/auth';
+import { nominationErrorMessage } from '../lib/nomination-errors';
 import { MemberSearch } from '../components/MemberSearch';
 import { Notice, PageHeading, State } from '../components/ui';
 const ManualSchema = z.object({
@@ -22,7 +23,12 @@ export function Nominations() {
   const client = useQueryClient();
   const [catId, setCatId] = useState('');
   const [manual, setManual] = useState(false);
-  type Choice = { discord_user_id?: string; manual_name?: string; display_name: string };
+  type Choice = {
+    discord_user_id?: string;
+    manual_name?: string;
+    display_name: string;
+    username?: string;
+  };
   const [drafts, setDrafts] = useState<Record<string, Choice[]>>({});
   const [message, setMessage] = useState('');
   const form = useForm<z.infer<typeof ManualSchema>>({ resolver: zodResolver(ManualSchema) });
@@ -43,8 +49,6 @@ export function Nominations() {
         display_name: n.display_name ?? n.manual_name ?? 'Membro',
       }));
   const submitted = !!cat && !!mine.data?.some((n) => n.category_id === cat.id);
-  const setChosen = (choices: Choice[]) =>
-    setDrafts((previous) => ({ ...previous, [draftKey]: choices }));
   const active = !!e.data && isOpen(e.data, 'nominations');
   const save = useMutation({
     mutationFn: () =>
@@ -58,15 +62,24 @@ export function Nominations() {
       client.invalidateQueries({ queryKey: ['nominations'] });
     },
   });
+  const setChosen = (choices: Choice[]) => {
+    save.reset();
+    setMessage('');
+    setDrafts((previous) => ({ ...previous, [draftKey]: choices }));
+  };
   function select(m: Omit<Nominee, 'id'>) {
     if (chosen.length >= (cat?.max_nominations ?? 0)) return;
     if (chosen.some((c) => c.discord_user_id === m.discord_user_id)) return;
-    setChosen([...chosen, { discord_user_id: m.discord_user_id, display_name: m.display_name }]);
+    setChosen([
+      ...chosen,
+      { discord_user_id: m.discord_user_id, display_name: m.display_name, username: m.username },
+    ]);
   }
   function change(id: string) {
     setCatId(id);
     setManual(false);
     setMessage('');
+    save.reset();
   }
   return (
     <State
@@ -97,9 +110,7 @@ export function Nominations() {
               <div className="review-row" key={n.id}>
                 <span>{cats.data?.find((c) => c.id === n.category_id)?.name}</span>
                 <strong>{n.display_name ?? n.manual_name}</strong>
-                <span>
-                  Recebida
-                </span>
+                <span>Recebida</span>
               </div>
             ))}
             <Link className="text-link" to={`/${slug}/categories`}>
@@ -188,10 +199,10 @@ export function Nominations() {
                               {form.formState.errors.name && (
                                 <p role="alert">{form.formState.errors.name.message}</p>
                               )}
-                                <p>
-                                  Esta sugestão precisa ser associada a um membro real antes da
-                                  classificação.
-                                </p>
+                              <p>
+                                Esta sugestão precisa ser associada a um membro real antes da
+                                classificação.
+                              </p>
                               <button className="button button-outline">
                                 Adicionar sugestão
                                 <Plus size={16} />
@@ -215,7 +226,9 @@ export function Nominations() {
                     </div>
                   </>
                 )}
-                {(message || save.error) && <Notice message={message || save.error!.message} />}
+                {(message || save.error) && (
+                  <Notice message={message || nominationErrorMessage(save.error, chosen)} />
+                )}
               </section>
             )}
           </div>
