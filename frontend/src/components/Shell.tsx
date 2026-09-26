@@ -230,6 +230,14 @@ export function Shell() {
           <Link className="text-link" to="/hall-of-fame">
             Entre para a história <ArrowUpRight size={17} />
           </Link>
+          <a
+            className="text-link"
+            href="https://discord.gg/saopaulo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Entrar no Discord <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} Ballon d’Or SPFC</span>
