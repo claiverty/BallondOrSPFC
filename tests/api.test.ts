@@ -16,6 +16,7 @@ let app: NestFastifyApplication,
   db: PGlite,
   tokenUser: User,
   eligible = true,
+  discordMemberLookupUnavailable = false,
   missingMember: 'none' | 'voter' | 'nominee' = 'none';
 let edition: string, cat: string, nominee: string, discord: string, profile: string;
 const query = async <T extends Record<string, unknown>>(sql: string, params: unknown[] = []) =>
@@ -82,6 +83,7 @@ beforeAll(async () => {
         };
       },
       member: async (id: string) => {
+        if (discordMemberLookupUnavailable) throw new Error('Discord unavailable');
         if (missingMember === 'nominee') throw new DiscordMemberNotFoundException();
         return {
           user: { id, username: 'candidate' },
@@ -119,6 +121,7 @@ afterAll(async () => {
 });
 beforeEach(async () => {
   eligible = true;
+  discordMemberLookupUnavailable = false;
   missingMember = 'none';
   edition = crypto.randomUUID();
   cat = crypto.randomUUID();
@@ -638,7 +641,9 @@ describe('Nest HTTP and transactional workflows', () => {
         ).toBe(201);
     const before = (await app.inject({ url: `/api/editions/${e.id}/categories` })).json();
     expect(before[0].nominees).toEqual([]);
+    discordMemberLookupUnavailable = true;
     await phase('NOMINEES_ANNOUNCED');
+    discordMemberLookupUnavailable = false;
     await phase('VOTING_OPEN');
     const publicCategories = (await app.inject({ url: `/api/editions/${e.id}/categories` })).json();
     const ballot = await app.inject({

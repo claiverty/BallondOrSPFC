@@ -3,14 +3,10 @@ import { Category, CreateEditionSchema, TransitionSchema, canTransition } from '
 import { z } from 'zod';
 import { Database } from '../common/database';
 import { audit, lockEdition } from '../common/domain';
-import { DiscordService, validateEligibility } from '../discord/discord';
 import { writeData } from './data-access';
 @Injectable()
 export class EditionAdminService {
-  constructor(
-    @Inject(Database) private readonly db: Database,
-    @Inject(DiscordService) private readonly discord: DiscordService,
-  ) {}
+  constructor(@Inject(Database) private readonly db: Database) {}
   async editions() {
     return this.db.query('select * from awards.editions order by year desc,created_at desc');
   }
@@ -104,19 +100,19 @@ export class EditionAdminService {
           )
         ).rows;
         if (!cats.length) throw new BadRequestException('A edição precisa de categorias.');
+        // Eligibility is checked when nominees are accepted, reviewed, or assigned. Re-fetching
+        // every member here adds duplicate Discord requests and can rate-limit the phase change.
         for (const cat of cats) {
-          const nominees = (
-            await c.query<{ discord_user_id: string }>(
-              'select m.discord_user_id from awards.category_nominees cn join awards.members m on m.id=cn.nominee_id where cn.category_id=$1',
+          const nomineeCount = (
+            await c.query<{ count: number }>(
+              'select count(*)::int count from awards.category_nominees where category_id=$1',
               [cat.id],
             )
-          ).rows;
-          if (nominees.length < 2 || nominees.length > cat.max_nominees)
+          ).rows[0].count;
+          if (nomineeCount < 2 || nomineeCount > cat.max_nominees)
             throw new BadRequestException(
               `${cat.name}: defina entre 2 e ${cat.max_nominees} indicados.`,
             );
-          for (const n of nominees)
-            validateEligibility(await this.discord.member(n.discord_user_id), cat.rules);
         }
       }
       if (data.status === 'RESULTS_READY') {
