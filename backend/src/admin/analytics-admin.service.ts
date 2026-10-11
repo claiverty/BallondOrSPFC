@@ -40,8 +40,8 @@ export class AnalyticsAdminService {
         `select c.id category_id,c.name category_name,m.id nominee_id,m.display_name,count(bi.ballot_id)::int votes_count,case when sum(count(bi.ballot_id)) over(partition by c.id)=0 then 0 else count(bi.ballot_id)*100.0/sum(count(bi.ballot_id)) over(partition by c.id) end::float percentage from awards.category_nominees cn join awards.categories c on c.id=cn.category_id join awards.members m on m.id=cn.nominee_id left join awards.ballot_items bi on bi.category_id=c.id and bi.nominee_id=m.id where c.edition_id=$1 group by c.id,m.id order by c.display_order,votes_count desc`,
         [id],
       ),
-      this.db.query(
-        `select to_char(submitted_at at time zone 'America/Sao_Paulo','YYYY-MM-DD') day,count(*)::int count from awards.ballots where edition_id=$1 group by day order by day`,
+      this.db.query<{ vote_day: string; ballot_count: number }>(
+        `select to_char(submitted_at at time zone 'America/Sao_Paulo','YYYY-MM-DD') as vote_day,count(*)::int as ballot_count from awards.ballots where edition_id=$1 group by 1 order by 1`,
         [id],
       ),
     ]);
@@ -49,7 +49,10 @@ export class AnalyticsAdminService {
     return {
       ballots: count,
       categories,
-      timeline,
+      timeline: timeline.map(({ vote_day, ballot_count }) => ({
+        day: vote_day,
+        count: ballot_count,
+      })),
     };
   }
   async results(id: string) {

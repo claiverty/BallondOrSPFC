@@ -278,6 +278,41 @@ describe('Nest HTTP and transactional workflows', () => {
     expect(JSON.stringify(publicCats)).not.toContain('votes_count');
     expect(JSON.stringify(publicCats)).not.toContain('blacklisted_discord_ids');
   });
+  it('returns live analytics after a ballot is confirmed', async () => {
+    await admin();
+
+    const before = await app.inject({
+      url: `/api/admin/editions/${edition}/analytics`,
+      headers,
+    });
+    expect(before.statusCode).toBe(200);
+    expect(before.json()).toMatchObject({
+      ballots: 0,
+      categories: [{ votes_count: 0, percentage: 0 }],
+    });
+
+    expect((await post()).statusCode).toBe(201);
+
+    const after = await app.inject({
+      url: `/api/admin/editions/${edition}/analytics`,
+      headers,
+    });
+    expect(after.statusCode).toBe(200);
+    expect(after.json()).toMatchObject({
+      ballots: 1,
+      categories: [
+        {
+          category_id: cat,
+          category_name: 'Category',
+          nominee_id: nominee,
+          display_name: 'Candidate',
+          votes_count: 1,
+          percentage: 100,
+        },
+      ],
+      timeline: [{ day: expect.any(String), count: 1 }],
+    });
+  });
   it('applies nomination phase, limits and stable member identity', async () => {
     const e = crypto.randomUUID();
     await db.query(
