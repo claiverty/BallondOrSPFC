@@ -136,7 +136,7 @@ export function Admin() {
           } as Analytics)
         : request<Analytics>(`/admin/editions/${id}/analytics`),
     enabled: allowed && !!id && (tab === 'overview' || tab === 'voting' || tab === 'results'),
-    refetchInterval: tab === 'results' ? 5000 : false,
+    refetchInterval: ['overview', 'voting', 'results'].includes(tab) ? 5000 : false,
     refetchIntervalInBackground: tab === 'results',
   });
   const results = useQuery({
