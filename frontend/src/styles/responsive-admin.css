@@ -24,6 +24,303 @@
     font-size: 9px;
   }
 }
+
+@media (max-width: 900px) {
+  .reveal-presentation:fullscreen,
+  .reveal-presentation.is-fullscreen {
+    padding: 18px 28px 14px;
+  }
+  .reveal-cover-slide {
+    grid-template-columns: minmax(200px, 0.7fr) minmax(0, 1.3fr);
+    gap: 24px;
+  }
+  .reveal-nominee-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  .reveal-presentation .reveal-result-card {
+    grid-template-columns: minmax(180px, 0.8fr) minmax(220px, 1.2fr);
+    gap: 28px;
+  }
+  .reveal-result-photo-frame {
+    height: min(50vh, 490px);
+  }
+}
+
+@media (max-width: 640px) {
+  .reveal-presentation:fullscreen,
+  .reveal-presentation.is-fullscreen {
+    padding: 12px 16px 12px;
+  }
+  .reveal-presentation-bar {
+    min-height: 42px;
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .reveal-presentation > .reveal-category-grid {
+    grid-template-columns: 1fr;
+  }
+  .reveal-category-return {
+    gap: 5px;
+    padding-inline: 0;
+    font-size: 10px;
+  }
+  .reveal-edition-mark {
+    font-size: 7px;
+    letter-spacing: 1.2px;
+  }
+  .reveal-icon-action {
+    min-height: 34px;
+    padding: 0 9px;
+  }
+  .reveal-icon-action span {
+    display: none;
+  }
+  .reveal-cover-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 18px;
+    padding: 22px 0 15px;
+  }
+  .reveal-cover-copy h1 {
+    margin: 9px 0;
+    font-size: clamp(38px, 12vw, 60px);
+  }
+  .reveal-cover-copy p {
+    margin: 10px 0;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .reveal-cover-rule {
+    display: none;
+  }
+  .reveal-nominee-grid {
+    grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+    gap: 9px;
+  }
+  .reveal-nominee-tile {
+    gap: 6px;
+    font-size: 9px;
+  }
+  .reveal-nominee-tile .reveal-portrait {
+    max-width: 135px;
+    aspect-ratio: 0.82;
+  }
+  .reveal-cover-actions,
+  .reveal-ranking-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding-top: 12px;
+  }
+  .reveal-cover-actions > span,
+  .reveal-ranking-actions > span {
+    text-align: center;
+    font-size: 9px;
+  }
+  .reveal-cover-actions .button,
+  .reveal-ranking-actions .button {
+    width: 100%;
+    justify-content: center;
+  }
+  .reveal-presentation .reveal-stage-heading {
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .reveal-presentation .reveal-stage-heading h2 {
+    margin-top: 4px;
+    font-size: 19px;
+  }
+  .reveal-presentation .reveal-step-count {
+    padding: 7px 9px;
+    font-size: 9px;
+  }
+  .reveal-presentation .reveal-progress {
+    margin-top: 9px;
+  }
+  .reveal-presentation .reveal-result-card {
+    flex: 1 0 auto;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .reveal-result-photo-frame {
+    width: min(66vw, 260px);
+    height: min(31vh, 300px);
+    min-height: 170px;
+  }
+  .reveal-result-ordinal {
+    left: -3px;
+    font-size: clamp(145px, 43vw, 225px);
+  }
+  .reveal-photo-label {
+    top: 7px;
+    right: 7px;
+    padding: 7px;
+    font-size: 6px;
+  }
+  .reveal-result-copy {
+    align-items: center;
+    padding: 2px 0;
+    text-align: center;
+  }
+  .reveal-result-kicker {
+    margin-bottom: 5px;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+  }
+  .reveal-result-place {
+    font-size: 10px;
+  }
+  .reveal-presentation .reveal-result-copy h1 {
+    margin: 3px 0;
+    font-size: clamp(34px, 10vw, 52px);
+  }
+  .reveal-presentation .reveal-result-percentage {
+    margin-top: 5px;
+    font-size: 36px;
+  }
+  .reveal-presentation .reveal-result-caption {
+    margin-top: 3px;
+    font-size: 7px;
+  }
+  .reveal-result-category {
+    margin-top: 8px;
+    padding-top: 7px;
+    font-size: 9px;
+  }
+  .reveal-presentation .reveal-controls {
+    gap: 8px;
+    padding-top: 10px;
+  }
+  .reveal-presentation .reveal-controls .button {
+    min-height: 42px;
+    width: 100%;
+    justify-content: center;
+    font-size: 10px;
+  }
+  .reveal-presentation .reveal-full-row {
+    min-height: 54px;
+    grid-template-columns: 30px 34px minmax(0, 1fr) 76px;
+    gap: 7px;
+    padding: 7px 8px;
+  }
+  .reveal-presentation .reveal-full-row .reveal-portrait {
+    width: 32px;
+    height: 32px;
+  }
+  .reveal-presentation .reveal-full-rank {
+    font-size: 20px;
+  }
+  .reveal-presentation .reveal-full-row strong {
+    font-size: 10px;
+  }
+  .reveal-presentation .reveal-full-place {
+    display: none;
+  }
+  .reveal-presentation .reveal-full-percentage {
+    font-size: 18px;
+  }
+  .reveal-ranking-slide {
+    padding-top: 20px;
+  }
+  .reveal-ranking-heading h1 {
+    font-size: 35px;
+  }
+  .reveal-ranking-heading p {
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+  .reveal-presentation-footer {
+    padding-top: 10px;
+    font-size: 6px;
+    letter-spacing: 0.8px;
+  }
+  .reveal-presentation-footer span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .reveal-podium-stage {
+    min-height: clamp(240px, 34vh, 330px);
+    gap: 12px;
+  }
+  .reveal-podium-photo.reveal-portrait {
+    width: clamp(92px, 15vw, 145px);
+  }
+  .reveal-podium-card.place-1 .reveal-podium-photo {
+    width: clamp(112px, 18vw, 172px);
+  }
+  .reveal-podium-base {
+    min-height: 50px;
+  }
+  .reveal-podium-card.place-2 .reveal-podium-base {
+    min-height: 62px;
+  }
+  .reveal-podium-card.place-1 .reveal-podium-base {
+    min-height: 88px;
+  }
+  .reveal-podium-card.place-3 .reveal-podium-base {
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 640px) {
+  .reveal-podium-stage {
+    width: 100%;
+    min-height: 230px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .reveal-podium-photo.reveal-portrait {
+    width: clamp(68px, 24vw, 104px);
+    margin-bottom: 7px;
+  }
+  .reveal-podium-card.place-1 .reveal-podium-photo {
+    width: clamp(82px, 28vw, 118px);
+  }
+  .reveal-podium-place {
+    font-size: 7px;
+    letter-spacing: 1px;
+  }
+  .reveal-podium-card strong {
+    max-width: 100%;
+    font-size: clamp(11px, 3.3vw, 15px);
+    line-height: 1.05;
+  }
+  .reveal-podium-card.place-1 strong {
+    font-size: clamp(13px, 3.8vw, 17px);
+  }
+  .reveal-podium-percentage {
+    margin: 4px 0 8px;
+    font-size: clamp(16px, 5vw, 22px);
+  }
+  .reveal-podium-base {
+    min-height: 42px;
+    font-size: 23px;
+  }
+  .reveal-podium-card.place-2 .reveal-podium-base {
+    min-height: 52px;
+  }
+  .reveal-podium-card.place-1 .reveal-podium-base {
+    min-height: 68px;
+    font-size: 30px;
+  }
+  .reveal-podium-card.place-3 .reveal-podium-base {
+    min-height: 34px;
+  }
+  .reveal-remaining-ranks h2 {
+    font-size: 8px;
+  }
+  .reveal-remaining-ranks .reveal-full-list {
+    margin-bottom: 10px;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-layout {
     grid-template-columns: 190px 1fr;
@@ -223,6 +520,53 @@
   }
   .admin-panel h2 {
     font-size: 27px;
+  }
+  .reveal-panel {
+    margin: 18px 0;
+  }
+  .reveal-intro h2,
+  .reveal-stage-heading h2 {
+    font-size: 30px;
+  }
+  .reveal-category-grid {
+    grid-template-columns: 1fr;
+  }
+  .reveal-stage-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .reveal-result-card {
+    min-height: 310px;
+    padding: 32px 16px;
+  }
+  .reveal-result-percentage {
+    font-size: 36px;
+  }
+  .reveal-controls {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+  .reveal-controls .button {
+    width: 100%;
+  }
+  .reveal-next {
+    margin-left: 0;
+  }
+  .reveal-full-row {
+    min-height: 66px;
+    grid-template-columns: 40px minmax(0, 1fr) 72px;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .reveal-full-rank {
+    font-size: 23px;
+  }
+  .reveal-full-place {
+    display: none;
+  }
+  .reveal-full-percentage {
+    font-size: 12px;
   }
   .phase-panel h2 {
     font-size: 32px;

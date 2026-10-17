@@ -26,6 +26,7 @@ import {
   ListOrdered,
   Menu,
   Plus,
+  Sparkles,
   Settings,
   ShieldCheck,
   Trophy,
@@ -34,8 +35,15 @@ import {
 } from 'lucide-react';
 import { Analytics, Category, Edition, statuses } from '@awards/contracts';
 import { demoMode, request, useAuth } from '../lib/auth';
-import { demoAdminCategories, demoCategories, demoEdition, demoArchive } from '../lib/demo';
+import {
+  demoAdminCategories,
+  demoAdminResults,
+  demoCategories,
+  demoEdition,
+  demoArchive,
+} from '../lib/demo';
 import { EditionForm } from './AdminForms';
+import { RevealPanel } from './admin/RevealPanel';
 import { Notice, PageHeading, State } from '../components/ui';
 import '../styles/admin-entry.css';
 const tabs = [
@@ -46,6 +54,7 @@ const tabs = [
   ['nominees', 'Classificação', Users],
   ['voting', 'Votação', FileCheck2],
   ['results', 'Resultados', Trophy],
+  ['reveal', 'Revelação', Sparkles],
   ['media', 'Mídia', Image],
   ['members', 'Perfis', ContactRound],
   ['users', 'Usuários', ShieldCheck],
@@ -84,7 +93,8 @@ export function Admin() {
   const [message, setMessage] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [editionMenuOpen, setEditionMenuOpen] = useState(false);
-  const allowed = demoMode || (!!auth.identity && auth.identity.role !== 'user');
+  const allowed =
+    demoMode || auth.identity?.role === 'admin' || auth.identity?.role === 'super_admin';
   const selectEdition = useCallback(
     (editionId: string) => {
       window.localStorage.setItem('admin-selected-edition', editionId);
@@ -142,8 +152,10 @@ export function Admin() {
   const results = useQuery({
     queryKey: ['admin', 'results', id],
     queryFn: () =>
-      demoMode ? Promise.resolve([]) : request<Result[]>(`/admin/editions/${id}/results`),
-    enabled: allowed && !!id && tab === 'results',
+      demoMode
+        ? Promise.resolve(demoAdminResults)
+        : request<Result[]>(`/admin/editions/${id}/results`),
+    enabled: allowed && !!id && (tab === 'results' || tab === 'reveal'),
   });
   const logs = useQuery({
     queryKey: ['admin', 'audit', id],
@@ -501,6 +513,14 @@ export function Admin() {
                       action={action}
                       results={results}
                       analytics={analytics}
+                    />
+                  )}
+                  {tab === 'reveal' && (
+                    <RevealPanel
+                      key={id}
+                      edition={edition}
+                      categories={demoMode ? demoCategories : categories.data ?? []}
+                      results={results}
                     />
                   )}
                   {tab === 'audit' && <AuditPanel logs={logs} />}

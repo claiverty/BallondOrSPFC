@@ -104,6 +104,19 @@ export const demoAdminCategories: Category[] = demoCategories.map((category) => 
   ...category,
   nominees: category.nominees.slice(0, 2),
 }));
+const demoRevealVotes = [42, 25, 16, 10, 6];
+const demoRevealPercentages = [42.4, 25.3, 16.2, 10.1, 6];
+export const demoAdminResults = demoCategories.flatMap((category) =>
+  category.nominees.map((nominee, index) => ({
+    category_id: category.id,
+    nominee_id: nominee.id,
+    category_name: category.name,
+    display_name: nominee.display_name,
+    votes_count: demoRevealVotes[index],
+    rank: index + 1,
+    percentage: demoRevealPercentages[index],
+  })),
+);
 export const demoNominations: Nomination[] = demoCategories.flatMap((category, categoryIndex) =>
   [
     ...category.nominees.slice(0, 2),
