@@ -199,11 +199,7 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                             aria-label={`Top 3 de ${categoryRows[0].category_name}`}
                           >
                             {[...categoryRows]
-                              .sort((a, b) => {
-                                if (hasTiedRanks) return a.rank - b.rank;
-                                const podiumOrder = [2, 1, 3];
-                                return podiumOrder.indexOf(a.rank) - podiumOrder.indexOf(b.rank);
-                              })
+                              .sort((a, b) => a.rank - b.rank)
                               .map((w) => (
                                 <MemberLink
                                   key={w.nominee_id}
