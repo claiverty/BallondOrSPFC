@@ -127,6 +127,23 @@
 .winner-card--rank-3 {
   grid-column: 3;
 }
+.winner-podium--tied {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 1040px;
+}
+.winner-podium--tied .winner-card--podium {
+  flex: 1 1 220px;
+  max-width: 320px;
+}
+.winner-podium--tied .winner-card--rank-1,
+.winner-podium--tied .winner-card--rank-2,
+.winner-podium--tied .winner-card--rank-3 {
+  grid-column: auto;
+  margin-bottom: 0;
+}
 .winner-card--podium .winner-content {
   padding: 14px 16px 16px;
 }

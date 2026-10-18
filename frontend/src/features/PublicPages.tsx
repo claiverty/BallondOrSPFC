@@ -178,59 +178,65 @@ export function Winners({ hall = false }: { hall?: boolean }) {
                         groups.set(winner.category_id, category);
                         return groups;
                       }, new Map<string, typeof yearRows>()),
-                    ).map(([categoryId, categoryRows]) => (
-                      <section
-                        className="winner-category-section"
-                        aria-labelledby={`winner-category-${year}-${categoryId}`}
-                        key={categoryId}
-                      >
-                        <div className="winner-category-heading">
-                          <h3 id={`winner-category-${year}-${categoryId}`}>
-                            {categoryRows[0].category_name}
-                          </h3>
-                          <span>Top 3</span>
-                        </div>
-                        <div
-                          className="winner-podium"
-                          aria-label={`Top 3 de ${categoryRows[0].category_name}`}
+                    ).map(([categoryId, categoryRows]) => {
+                      const hasTiedRanks =
+                        new Set(categoryRows.map((winner) => winner.rank)).size <
+                        categoryRows.length;
+                      return (
+                        <section
+                          className="winner-category-section"
+                          aria-labelledby={`winner-category-${year}-${categoryId}`}
+                          key={categoryId}
                         >
-                          {[...categoryRows]
-                            .sort((a, b) => {
-                              const podiumOrder = [2, 1, 3];
-                              return podiumOrder.indexOf(a.rank) - podiumOrder.indexOf(b.rank);
-                            })
-                            .map((w) => (
-                              <MemberLink
-                                key={w.nominee_id}
-                                className={`winner-card winner-card--podium winner-card--rank-${w.rank}`}
-                                memberId={w.discord_user_id}
-                                aria-label={`${w.rank}º lugar: ${w.display_name}, @${w.username}, ${w.category_name}${typeof w.percentage === 'number' ? `, ${w.percentage.toFixed(1)}% dos votos` : ''}`}
-                              >
-                                <div className="winner-poster-media">
-                                  <img
-                                    src={w.avatar_url ?? '/images/user.png'}
-                                    alt=""
-                                    loading="lazy"
-                                  />
-                                </div>
-                                <div className="winner-content">
-                                  <span className="winner-rank">{w.rank}º lugar</span>
-                                  <h4>{w.display_name}</h4>
-                                  <p className="winner-meta">
-                                    <span className="winner-username">@{w.username}</span>
-                                    {typeof w.percentage === 'number' && (
-                                      <span className="winner-percentage">
-                                        {w.percentage.toFixed(1)}%
-                                      </span>
-                                    )}
-                                  </p>
-                                  <TrajectoryHint />
-                                </div>
-                              </MemberLink>
-                            ))}
-                        </div>
-                      </section>
-                    ))}
+                          <div className="winner-category-heading">
+                            <h3 id={`winner-category-${year}-${categoryId}`}>
+                              {categoryRows[0].category_name}
+                            </h3>
+                            <span>Top 3</span>
+                          </div>
+                          <div
+                            className={`winner-podium${hasTiedRanks ? ' winner-podium--tied' : ''}`}
+                            aria-label={`Top 3 de ${categoryRows[0].category_name}`}
+                          >
+                            {[...categoryRows]
+                              .sort((a, b) => {
+                                if (hasTiedRanks) return a.rank - b.rank;
+                                const podiumOrder = [2, 1, 3];
+                                return podiumOrder.indexOf(a.rank) - podiumOrder.indexOf(b.rank);
+                              })
+                              .map((w) => (
+                                <MemberLink
+                                  key={w.nominee_id}
+                                  className={`winner-card winner-card--podium winner-card--rank-${w.rank}`}
+                                  memberId={w.discord_user_id}
+                                  aria-label={`${w.rank}º lugar: ${w.display_name}, @${w.username}, ${w.category_name}${typeof w.percentage === 'number' ? `, ${w.percentage.toFixed(1)}% dos votos` : ''}`}
+                                >
+                                  <div className="winner-poster-media">
+                                    <img
+                                      src={w.avatar_url ?? '/images/user.png'}
+                                      alt=""
+                                      loading="lazy"
+                                    />
+                                  </div>
+                                  <div className="winner-content">
+                                    <span className="winner-rank">{w.rank}º lugar</span>
+                                    <h4>{w.display_name}</h4>
+                                    <p className="winner-meta">
+                                      <span className="winner-username">@{w.username}</span>
+                                      {typeof w.percentage === 'number' && (
+                                        <span className="winner-percentage">
+                                          {w.percentage.toFixed(1)}%
+                                        </span>
+                                      )}
+                                    </p>
+                                    <TrajectoryHint />
+                                  </div>
+                                </MemberLink>
+                              ))}
+                          </div>
+                        </section>
+                      );
+                    })}
                   </div>
                 )}
               </section>

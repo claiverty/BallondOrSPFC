@@ -42,11 +42,47 @@
     gap: 44px;
   }
   .winner-podium {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
     padding-top: 8px;
+    max-width: 420px;
+  }
+  .winner-podium--tied {
+    max-width: 420px;
+  }
+  .winner-podium--tied .winner-card--podium {
+    flex: 0 1 auto;
+    max-width: none;
+  }
+  .winner-card--podium {
+    display: grid;
+    grid-template-columns: min(92px, 26vw) minmax(0, 1fr);
+    align-items: center;
+  }
+  .winner-card--podium .winner-poster-media {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+  }
+  .winner-card--podium .winner-content {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
   }
   .winner-card--rank-1 {
-    margin-bottom: 12px;
+    order: 1;
+    grid-column: auto;
+    margin-bottom: 0;
+  }
+  .winner-card--rank-2 {
+    order: 2;
+    grid-column: auto;
+  }
+  .winner-card--rank-3 {
+    order: 3;
+    grid-column: auto;
   }
   .winner-card--podium .winner-content {
     padding: 9px 8px 11px;
