@@ -235,8 +235,8 @@ test('admin preview and archive stay isolated from live actions', async ({ page 
   await expect(page.locator('.winner-podium')).toHaveCount(6);
   await expect(page.locator('.winner-podium').first().locator('.winner-card')).toHaveCount(3);
   await expect(page.locator('.winner-podium').first().locator('.winner-rank')).toHaveText([
-    '2º lugar',
     '1º lugar',
+    '2º lugar',
     '3º lugar',
   ]);
   await expect(page.locator('.winner-card')).toHaveCount(18);
