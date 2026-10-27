@@ -1,6 +1,11 @@
 {
   "buildCommand": "vite build",
   "outputDirectory": "dist",
+  "crons": [
+    { "path": "/api/editions/current", "schedule": "17 9 * * *" },
+    { "path": "/api/winners/2026", "schedule": "37 15 * * *" },
+    { "path": "/api/records", "schedule": "23 21 * * *" }
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
