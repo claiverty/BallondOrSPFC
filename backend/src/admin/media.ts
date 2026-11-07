@@ -50,7 +50,7 @@ class MediaController {
   @Get(':edition')
   async hallOfFameImages(@Param('edition', ParseUUIDPipe) edition: string) {
     return this.db.query(
-      `select e.id edition_id,e.name edition_name,e.year,e.slug edition_slug,c.id category_id,c.name category_name,c.slug category_slug,m.id nominee_id,m.display_name,m.username,m.avatar_url,media.url hall_of_fame_image_url from awards.editions e join awards.categories c on c.edition_id=e.id join awards.result_snapshots r on r.edition_id=e.id and r.category_id=c.id and r.rank=1 join awards.members m on m.id=r.nominee_id left join awards.media_assets media on media.edition_id=e.id and media.category_id=c.id where e.id=$1 and e.status in ('RESULTS_PUBLISHED','ARCHIVED') order by c.display_order,c.name`,
+      `select e.id edition_id,e.name edition_name,e.year,e.slug edition_slug,c.id category_id,c.name category_name,c.slug category_slug,m.id nominee_id,m.display_name,m.username,case when e.year=2026 and m.avatar_url is not null then '/images/Winners%202026/' || m.discord_user_id || '.webp' else m.avatar_url end avatar_url,media.url hall_of_fame_image_url from awards.editions e join awards.categories c on c.edition_id=e.id join awards.result_snapshots r on r.edition_id=e.id and r.category_id=c.id and r.rank=1 join awards.members m on m.id=r.nominee_id left join awards.media_assets media on media.edition_id=e.id and media.category_id=c.id where e.id=$1 and e.status in ('RESULTS_PUBLISHED','ARCHIVED') order by c.display_order,c.name`,
       [edition],
     );
   }
